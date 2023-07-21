@@ -17,4 +17,6 @@ class ConclusionsController extends AbstractController
 
         return new JsonResponse($result);
     }
+
+
 }

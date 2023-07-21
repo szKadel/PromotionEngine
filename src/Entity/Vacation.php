@@ -3,11 +3,9 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Tests\Fixtures\ApiResource\User;
 use DateTimeInterface;
 use Symfony\Component\Validator\Constraints\Date;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints\DateTime;
 
 /** A manufactor
  * @ORM\Entity
@@ -26,11 +24,9 @@ class Vacation
     private ?int     $id = null;
 
     /**
-        * Employee Id
-        *
-        * @ORM\Column(type="integer")
+        * @ORM\ManyToOne(targetEntity="Employee", inversedBy="id")
      */
-    private int $employee;
+    private Employee $employee;
 
     /**
      * Vacation start date Y-m-d
@@ -38,15 +34,14 @@ class Vacation
      * @ORM\Column(type="datetime")
      */
 
-    private ?DateTimeInterface    $dateFrom;
+    private DateTimeInterface    $dateFrom;
 
     /**
      * Vacation end date Y-m-d
-     *
      * @ORM\Column(type="datetime")
      */
 
-    private ?DateTimeInterface    $dateTo;
+    private DateTimeInterface    $dateTo;
 
     /**
      * Vacation long in days
@@ -62,7 +57,7 @@ class Vacation
      * @ORM\Column(type="integer")
      */
 
-    private int     $replacement;
+    private Employee $replacement;
 
     /**
      * Vacation request comment
@@ -82,7 +77,7 @@ class Vacation
     /**
      * @param Date|null $dateFrom
      */
-    public function setDateFrom(?Date $dateFrom): void
+    public function setDateFrom(?DateTimeInterface $dateFrom): void
     {
         $this->dateFrom = $dateFrom;
     }
@@ -98,7 +93,7 @@ class Vacation
     /**
      * @param Date|null $dateTo
      */
-    public function setDateTo(?Date $dateTo): void
+    public function setDateTo(?DateTimeInterface $dateTo): void
     {
         $this->dateTo = $dateTo;
     }
@@ -117,22 +112,6 @@ class Vacation
     public function setDaysLong(int $daysLong): void
     {
         $this->daysLong = $daysLong;
-    }
-
-    /**
-     * @return User
-     */
-    public function getUser(): User
-    {
-        return $this->user;
-    }
-
-    /**
-     * @param User $user
-     */
-    public function setUser(User $user): void
-    {
-        $this->user = $user;
     }
 
     /**
@@ -162,7 +141,7 @@ class Vacation
     /**
      * @return Employee
      */
-    public function getEmployee(): int
+    public function getEmployee(): Employee
     {
         return $this->employee;
     }
@@ -170,24 +149,22 @@ class Vacation
     /**
      * @param Employee $employee
      */
-    public function setEmployee(int $employee): void
+    public function setEmployee(Employee $employee): void
     {
         $this->employee = $employee;
     }
 
     /**
-     * @return User
+     * @return Employee
      */
-    public function getReplacement(): User
+    public function getReplacement(): Employee
     {
         return $this->replacement;
     }
 
-    /**
-     * @param User $replacement
-     */
-    public function setReplacement(User $replacement): void
+    public function setReplacement(Employee $replacement): void
     {
         $this->replacement = $replacement;
     }
+
 }

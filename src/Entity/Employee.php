@@ -2,17 +2,59 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use Doctrine\ORM\Mapping as ORM;
+
+/** A Employees
+ * @ORM\Entity
+ */
+#[ApiResource]
 class Employee
 {
-    private ?string  $uuId = null;
+    /**
+     * Vacation Request Id
+     *
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\OneToMany(targetEntity="Vacation")
+     * @ORM\Column(type="integer")
+     */
+    private int     $id;
+
+    /**
+     * Employee Name
+     *
+     * @ORM\Column(type="string")
+     */
     private ?string  $name = '';
+
+    /**
+     * Employee Surname
+     *
+     * @ORM\Column(type="string")
+     */
     private ?string  $surname = '';
+
+    /**
+     * Employee Department
+     *
+     * @ORM\Column(type="string")
+     */
     private ?string  $department = '';
 
     /**
-     * @return string|null
+     * User Admin Rights
      *
+     * @ORM\Column(type="boolean")
      */
+    private ?bool  $isAdmin = false;
+    /**
+     * Employee Surname
+     *
+     * @ORM\Column(type="int")
+     */
+    private int $vacation_days_limit = 26;
+
     public function getName(): ?string
     {
         return $this->name;
@@ -59,10 +101,42 @@ class Employee
     }
 
     /**
-     * @return string|null
+     * @return int|null
      */
-    public function getUuId(): ?string
+    public function getId(): ?int
     {
-        return $this->uuId;
+        return $this->id;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getIsAdmin(): ?bool
+    {
+        return $this->isAdmin;
+    }
+
+    /**
+     * @param bool|null $isAdmin
+     */
+    public function setIsAdmin(?bool $isAdmin): void
+    {
+        $this->isAdmin = true;
+    }
+
+    /**
+     * @param int| $vacation_days_limit
+     */
+    public function setVacationDaysLimit(int $vacation_days_limit = 26): void
+    {
+        $this->vacation_days_limit = $vacation_days_limit;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVacationDaysLimit(): int
+    {
+        return $this->vacation_days_limit;
     }
 }
