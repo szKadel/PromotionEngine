@@ -29,6 +29,11 @@ class Vacation
     private Employee $employee;
 
     /**
+     * @ORM\ManyToOne(targetEntity="VacationType", inversedBy="id")
+     */
+    private VacationType $type;
+
+    /**
      * Vacation start date Y-m-d
      *
      * @ORM\Column(type="datetime")
@@ -57,6 +62,11 @@ class Vacation
      */
 
     private Employee $replacement;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="VacationRequestStatus", inversedBy="id")
+     */
+    private VacationType $status;
 
     /**
      * Vacation request comment
@@ -164,6 +174,38 @@ class Vacation
     public function setReplacement(Employee $replacement): void
     {
         $this->replacement = $replacement;
+    }
+
+    /**
+     * @return VacationType
+     */
+    public function getType(): VacationType
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param VacationType $type
+     */
+    public function setType(VacationType $type): void
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @return VacationType
+     */
+    public function getStatus(): VacationType
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param VacationType $status
+     */
+    public function setStatus(VacationType $status): void
+    {
+        $this->status = $status;
     }
 
 }

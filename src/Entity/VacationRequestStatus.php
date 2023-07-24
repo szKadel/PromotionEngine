@@ -24,7 +24,7 @@ class VacationRequestStatus
      *
      * @ORM\Column(type="string")
      */
-    private string  $status_name ;
+    private string  $status_name;
 
     /**
      * @return string|null
