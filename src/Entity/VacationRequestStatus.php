@@ -41,10 +41,4 @@ class VacationRequestStatus
     {
         $this->status_name = $status_name;
     }
-
-    /**
-     * Employee Surname
-     *
-     * @ORM\Column(type="string")
-     */
 }

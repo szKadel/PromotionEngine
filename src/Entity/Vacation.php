@@ -21,7 +21,7 @@ class Vacation
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private ?int     $id = null;
+    private int $id ;
 
     /**
         * @ORM\ManyToOne(targetEntity="Employee", inversedBy="id")
@@ -49,12 +49,11 @@ class Vacation
      * @ORM\Column(type="integer")
      */
 
-    private int      $daysLong;
+    private int $daysLong;
 
     /**
      * Employee to replace Id
-     *
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="Employee", inversedBy="id")
      */
 
     private Employee $replacement;
@@ -155,7 +154,7 @@ class Vacation
     }
 
     /**
-     * @return Employee
+     * @return Employee|null
      */
     public function getReplacement(): Employee
     {

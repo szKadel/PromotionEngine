@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /** A Employees
  * @ORM\Entity
@@ -26,6 +27,7 @@ class Employee
      *
      * @ORM\Column(type="string")
      */
+    #[Assert\NotBlank]
     private ?string  $name = '';
 
     /**
@@ -33,14 +35,16 @@ class Employee
      *
      * @ORM\Column(type="string")
      */
+    #[Assert\NotBlank]
     private ?string  $surname = '';
 
     /**
      * Employee Department
      *
-     * @ORM\Column(type="string")
+     * @ORM\ManyToOne(targetEntity="Department",inversedBy="id")
      */
-    private ?string  $department = '';
+    #[Assert\NotBlank]
+    private Department  $department;
 
     /**
      * User Admin Rights
@@ -51,7 +55,7 @@ class Employee
     /**
      * Employee Surname
      *
-     * @ORM\Column(type="int")
+     * @ORM\Column(type="integer")
      */
     private int $vacation_days_limit = 26;
 
@@ -85,17 +89,17 @@ class Employee
     }
 
     /**
-     * @return string|null
+     * @return Department
      */
-    public function getDepartment(): ?string
+    public function getDepartment(): Department
     {
         return $this->department;
     }
 
     /**
-     * @param string|null $department
+     * @param Department $department
      */
-    public function setDepartment(?string $department): void
+    public function setDepartment(Department $department): void
     {
         $this->department = $department;
     }
