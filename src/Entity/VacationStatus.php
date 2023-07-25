@@ -2,19 +2,29 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use Doctrine\ORM\Mapping as ORM;
 
 /** A manufactor
  * @ORM\Entity
  */
-class VacationRequestStatus
+#[ApiResource(
+    operations: [
+        new get(),
+        new GetCollection()
+    ])]
+class VacationStatus
 {
     /**
      * Vacation Request Id
      *
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\OneToMany()
+     * @ORM\OneToMany(targetEntity="Vacation")
      * @ORM\Column(type="integer")
      */
     private int     $id;

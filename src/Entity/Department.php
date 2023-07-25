@@ -4,12 +4,19 @@ namespace App\Entity;
 
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /** A Employees
  * @ORM\Entity
  */
-#[ApiResource]
+#[ApiResource(
+ operations: [
+     new get(),
+     new GetCollection()
+ ]
+)]
 class Department
 {
     /**
@@ -17,7 +24,7 @@ class Department
      *
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\OneToMany(targetEntity="Employee",inversedBy="department")
+     * @ORM\OneToMany(targetEntity="Employee")
      * @ORM\Column(type="integer")
      */
     private int     $id;

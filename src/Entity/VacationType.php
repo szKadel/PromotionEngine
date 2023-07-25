@@ -2,11 +2,19 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /** A manufactor
  * @ORM\Entity
  */
+#[ApiResource(
+    operations: [
+        new get(),
+        new GetCollection()
+    ])]
 class VacationType
 {
     /**
@@ -14,7 +22,7 @@ class VacationType
      *
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\OneToMany(targetEntity="Employee")
+     * @ORM\OneToMany(targetEntity="Vacation")
      * @ORM\Column(type="integer")
      */
     private int     $id;
@@ -22,7 +30,7 @@ class VacationType
     /**
      * Employee Name
      *
-     * @ORM\Column(type="string")
+     * @ORM\Column
      */
     private string  $name = '';
 
@@ -30,7 +38,24 @@ class VacationType
     /**
      * Vacation Type Limit
      *
-     * @ORM\Column(type="string")
+     * @ORM\Column
      */
     private int  $limitInDays = 0;
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLimitInDays(): int
+    {
+        return $this->limitInDays;
+    }
+
 }

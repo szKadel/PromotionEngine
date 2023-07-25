@@ -3,17 +3,27 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use DateTimeInterface;
 use Symfony\Component\Validator\Constraints\Date;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /** A manufactor
  * @ORM\Entity
  */
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new get(),
+        new GetCollection(),
+        new Post(),
+        new Put()
+    ])]
 class Vacation
 {
-
     /**
      * Vacation Request Id
      *
@@ -26,11 +36,13 @@ class Vacation
     /**
         * @ORM\ManyToOne(targetEntity="Employee", inversedBy="id")
      */
+    #[Assert\NotBlank]
     private Employee $employee;
 
     /**
      * @ORM\ManyToOne(targetEntity="VacationType", inversedBy="id")
      */
+    #[Assert\NotBlank]
     private VacationType $type;
 
     /**
@@ -38,14 +50,14 @@ class Vacation
      *
      * @ORM\Column(type="datetime")
      */
-
+    #[Assert\NotBlank]
     private DateTimeInterface    $dateFrom;
 
     /**
      * Vacation end date Y-m-d
      * @ORM\Column(type="datetime")
      */
-
+    #[Assert\NotBlank]
     private DateTimeInterface    $dateTo;
 
     /**
@@ -53,20 +65,21 @@ class Vacation
      *
      * @ORM\Column(type="integer")
      */
-
+    #[Assert\Blank]
     private int $daysLong;
 
     /**
      * Employee to replace Id
      * @ORM\ManyToOne(targetEntity="Employee", inversedBy="id")
      */
-
+    #[Assert\NotBlank]
     private Employee $replacement;
 
     /**
-     * @ORM\ManyToOne(targetEntity="VacationRequestStatus", inversedBy="id")
+     * @ORM\ManyToOne(targetEntity="VacationStatus", inversedBy="id")
      */
-    private VacationType $status;
+    #[Assert\Blank]
+    private VacationStatus $status;
 
     /**
      * Vacation request comment
@@ -193,17 +206,17 @@ class Vacation
     }
 
     /**
-     * @return VacationType
+     * @return VacationStatus
      */
-    public function getStatus(): VacationType
+    public function getStatus(): VacationStatus
     {
         return $this->status;
     }
 
     /**
-     * @param VacationType $status
+     * @param VacationStatus $status
      */
-    public function setStatus(VacationType $status): void
+    public function setStatus(VacationStatus $status): void
     {
         $this->status = $status;
     }
