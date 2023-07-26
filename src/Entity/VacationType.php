@@ -22,7 +22,7 @@ class VacationType
      *
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\OneToMany(targetEntity="Vacation")
+     * @ORM\OneToMany(targetEntity="Vacation", mappedBy="type")
      * @ORM\Column(type="integer")
      */
     private int     $id;
@@ -56,6 +56,14 @@ class VacationType
     public function getLimitInDays(): int
     {
         return $this->limitInDays;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
     }
 
 }

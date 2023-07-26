@@ -51,4 +51,12 @@ class VacationStatus
     {
         $this->status_name = $status_name;
     }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
 }
