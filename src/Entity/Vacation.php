@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -51,6 +53,7 @@ class Vacation
      * @ORM\Column(type="datetime")
      */
     #[Assert\NotBlank]
+    #[ApiFilter(DateFilter::class)]
     private DateTimeInterface    $dateFrom;
 
     /**
@@ -58,6 +61,7 @@ class Vacation
      * @ORM\Column(type="datetime")
      */
     #[Assert\NotBlank]
+    #[ApiFilter(DateFilter::class)]
     private DateTimeInterface    $dateTo;
 
     /**

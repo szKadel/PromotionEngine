@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Service\Bitrix\CRest;
 use App\Service\Bitrix\Instance;
+use Doctrine\DBAL\Schema\View;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,11 +30,13 @@ class BitrixController
     }
 
     #[Route('/bitrix/install')]
-    public function install(): JsonResponse
+    public function install(): View
     {
-       $instance = new Instance();
-       $instance -> install();
-        return new JsonResponse("Instalacja");
+            $result = CRest::installApp();
+            dd($result);
+            if ($result['rest_only'] === false) {
+                return new View("install.html.twig","");
+            }
     }
 
     #[Route('/bitrix/install')]

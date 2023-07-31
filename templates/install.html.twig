@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <script src="//api.bitrix24.com/api/v1/"></script>
+        <?php if($result['install'] == true):?>
+
+        <script>
+            BX24.init(function(){
+                BX24.installFinish();
+            });
+        </script>
+        <?php endif;?>
+    </head>
+    <body>
+    <?php return $result ?>
+    <?php if($result['install'] == true):?>
+    installation has been finished
+    <?php else:?>
+    installation error
+    <?php endif;?>
+    </body>
+    <?php endif;
+</html>
