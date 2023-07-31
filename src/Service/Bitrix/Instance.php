@@ -6,7 +6,7 @@ class Instance
 {
     public function install() :void
     {
-        if(isset($_REQUEST[ 'event' ])){
+        if(!empty($_REQUEST[ 'event' ])){
             $result = CRest::installApp();
             if($result['rest_only'] === false):?>
                 <head>
