@@ -27,7 +27,7 @@ class Employee
      *
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\OneToMany(targetEntity="Vacation")
+     * @ORM\ManyToOne(targetEntity="Employee",inversedBy="id")
      * @ORM\Column(type="integer")
      */
     private int     $id;
@@ -152,5 +152,13 @@ class Employee
     public function getVacationDaysLimit(): int
     {
         return $this->vacation_days_limit;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 }

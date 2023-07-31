@@ -24,7 +24,7 @@ class Department
      *
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\OneToMany(targetEntity="Employee")
+     * @ORM\OneToMany(targetEntity="Employee", mappedBy="department")
      * @ORM\Column(type="integer")
      */
     private int     $id;
@@ -58,5 +58,13 @@ class Department
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 }
