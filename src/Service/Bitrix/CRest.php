@@ -32,12 +32,11 @@ class CRest
 
 	public static function installApp()
 	{
-
-
 		$result = [
 			'rest_only' => true,
 			'install' => false
 		];
+        $_REQUEST[ 'event' ] = 'ONAPPINSTALL';
 		if($_REQUEST[ 'event' ] == 'ONAPPINSTALL' && !empty($_REQUEST[ 'auth' ]))
 		{
 			$result['install'] = static::setAppSettings($_REQUEST[ 'auth' ], true);

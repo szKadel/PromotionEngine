@@ -33,7 +33,7 @@ class BitrixController
     public function install(): View
     {
             $result = CRest::installApp();
-            dd($result);
+
             if ($result['rest_only'] === false) {
                 return new View("install.html.twig","");
             }
