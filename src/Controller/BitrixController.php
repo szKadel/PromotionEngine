@@ -30,7 +30,7 @@ class BitrixController
     #[Route('/bitrix/install')]
     public function install(): JsonResponse
     {
-        Instance::install();
+       // Instance::install();
         return new JsonResponse("Instalacja");
     }
 
