@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\Bitrix\Instance;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,6 +30,7 @@ class BitrixController
     #[Route('/bitrix/install')]
     public function install(): JsonResponse
     {
+        Instance::install();
         return new JsonResponse("Instalacja");
     }
 
