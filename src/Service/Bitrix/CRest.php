@@ -565,14 +565,6 @@ class CRest
 			unlink($path . 'test.txt');
 		}
 
-		if($print === true)
-		{
-			if(empty($return))
-			{
-				$return['success'] = 'Success!';
-			}
-		}
-
 		return $return;
 	}
 }
