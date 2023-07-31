@@ -6,12 +6,13 @@ use App\Service\Bitrix\CRest;
 use App\Service\Bitrix\Instance;
 use Doctrine\DBAL\Schema\View;
 use Exception;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Exception\LazyResponseException;
 
-class BitrixController
+class BitrixController extends AbstractController
 {
     #[Route('/bitrix/handler')]
     public function getHandler(): RedirectResponse | JsonResponse
@@ -30,13 +31,15 @@ class BitrixController
     }
 
     #[Route('/bitrix/install')]
-    public function install(): View
+    public function install(): \Symfony\Component\HttpFoundation\Response | JsonResponse
     {
             $result = CRest::installApp();
 
             if ($result['rest_only'] === false) {
-                return new View("install.html.twig","");
+                return $this->render("install.html.twig",["result"=>$result]);
             }
+
+            return new JsonResponse(["Instalation Faild"]);
     }
 
     #[Route('/bitrix/install')]
