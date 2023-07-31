@@ -571,10 +571,6 @@ class CRest
 			{
 				$return['success'] = 'Success!';
 			}
-			echo '<pre>';
-			print_r($return);
-			echo '</pre>';
-
 		}
 
 		return $return;

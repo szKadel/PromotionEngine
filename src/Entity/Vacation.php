@@ -11,9 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 /** A manufactor
  * @ORM\Entity
  */
-#[ApiResource(
-
-)]
+#[ApiResource]
 class Vacation
 {
     /**
