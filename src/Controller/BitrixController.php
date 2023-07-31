@@ -18,7 +18,7 @@ class BitrixController
             $domain =    $_REQUEST["DOMAIN"]    ?? throw new Exception('Bad Auth', 403);
             $member_id = $_REQUEST["member_id"] ?? throw new Exception('Bad Auth', 403);
 
-            return new RedirectResponse('https://github.beupsoft.pl/BeUpHR/home?domain='. $domain . '&member_id=' . $member_id);
+            return new RedirectResponse('https://github.beupsoft.pl/BeUpHR/home?domain='. $domain??'undefined' . '&member_id=' . $member_id??'undefined');
         } catch (Exception $e) {
             return new JsonResponse([
                 "message" => $e->getMessage()
@@ -30,7 +30,8 @@ class BitrixController
     #[Route('/bitrix/install')]
     public function install(): JsonResponse
     {
-       // Instance::install();
+       $instance = new Instance();
+       $instance -> install();
         return new JsonResponse("Instalacja");
     }
 
