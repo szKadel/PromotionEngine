@@ -82,7 +82,7 @@ class Vacation
      */
 
     #[Groups('vacation:read')]
-    private int $daysLong =0 ;
+    private ?int $daysLong =0 ;
 
     /**
      * Employee to replace Id
@@ -146,17 +146,17 @@ class Vacation
     }
 
     /**
-     * @return int
+     * @return ?int
      */
-    public function getDaysLong(): int
+    public function getDaysLong(): ?int
     {
         return $this->daysLong;
     }
 
     /**
-     * @param int $daysLong
+     * @param ?int $daysLong
      */
-    public function setDaysLong(int $daysLong): void
+    public function setDaysLong(?int $daysLong): void
     {
         $this->daysLong = WorkingDaysCounterService::countWorkingDays($this->dateFrom,$this->dateTo);
             $this->dateFrom->diff($this->dateTo)->days;
