@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ConclusionsController extends AbstractController
 {
-    #[Route('api/conclusions')]
+    #[Route('/')]
     public function index(): JsonResponse
     {
         $result = [

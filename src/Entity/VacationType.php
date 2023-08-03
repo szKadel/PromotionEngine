@@ -14,7 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
     operations: [
         new get(),
         new GetCollection()
-    ])]
+    ],
+    paginationItemsPerPage: 7)]
 class VacationType
 {
     /**
@@ -64,6 +65,14 @@ class VacationType
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 
 }

@@ -3,8 +3,6 @@
 namespace App\Controller;
 
 use App\Service\Bitrix\CRest;
-use App\Service\Bitrix\Instance;
-use Doctrine\DBAL\Schema\View;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -45,6 +43,8 @@ class BitrixController extends AbstractController
     #[Route('/bitrix/install')]
     private function mergeDepartments(): JsonResponse
     {
+        CRest::call('crm.deal.list',[]);
+
         return new JsonResponse("Instalacja");
     }
 

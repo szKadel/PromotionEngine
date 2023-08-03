@@ -2,12 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Odm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /** A Employees
@@ -19,7 +21,9 @@ use Symfony\Component\Validator\Constraints as Assert;
     new GetCollection(),
      new Post(),
      new Put()
-])]
+],
+    paginationItemsPerPage: 7
+)]
 class Employee
 {
     /**
@@ -46,6 +50,7 @@ class Employee
      * @ORM\Column(type="string")
      */
     #[Assert\NotBlank]
+
     private ?string  $surname = '';
 
     /**

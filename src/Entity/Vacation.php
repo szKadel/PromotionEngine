@@ -4,12 +4,17 @@ namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Service\WorkingDaysCounterService;
 use DateTimeInterface;
+use Symfony\Component\Security\Core\Signature\Exception\ExpiredSignatureException;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Date;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -22,8 +27,11 @@ use Symfony\Component\Validator\Constraints as Assert;
         new get(),
         new GetCollection(),
         new Post(),
-        new Put()
-    ])]
+        new Put(),
+        new Delete()
+    ],
+    paginationItemsPerPage: 7
+)]
 class Vacation
 {
     /**
@@ -33,6 +41,7 @@ class Vacation
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[Assert\Blank]
     private int $id ;
 
     /**
@@ -52,16 +61,18 @@ class Vacation
      *
      * @ORM\Column(type="datetime")
      */
-    #[Assert\NotBlank]
+
     #[ApiFilter(DateFilter::class)]
+    #[Groups('vacation:read')]
     private DateTimeInterface    $dateFrom;
 
     /**
      * Vacation end date Y-m-d
      * @ORM\Column(type="datetime")
      */
-    #[Assert\NotBlank]
+
     #[ApiFilter(DateFilter::class)]
+    #[Groups('vacation:read')]
     private DateTimeInterface    $dateTo;
 
     /**
@@ -69,20 +80,25 @@ class Vacation
      *
      * @ORM\Column(type="integer")
      */
-    #[Assert\Blank]
-    private int $daysLong;
+
+    #[Groups('vacation:read')]
+    private int $daysLong =0 ;
 
     /**
      * Employee to replace Id
      * @ORM\ManyToOne(targetEntity="Employee", inversedBy="id")
      */
+
     #[Assert\NotBlank]
+
+
     private Employee $replacement;
 
     /**
      * @ORM\ManyToOne(targetEntity="VacationStatus", inversedBy="id")
      */
-    #[Assert\Blank]
+
+    #[Groups('vacation:read')]
     private VacationStatus $status;
 
     /**
@@ -92,10 +108,15 @@ class Vacation
      */
     private string   $comment = '';
 
+    public function __construct()
+    {
+
+    }
+
     /**
      * @return Date|null
      */
-    public function getDateFrom(): ?DateTimeInterface
+    public function getDateFrom(): DateTimeInterface
     {
         return $this->dateFrom;
     }
@@ -103,7 +124,7 @@ class Vacation
     /**
      * @param Date|null $dateFrom
      */
-    public function setDateFrom(?DateTimeInterface $dateFrom): void
+    public function setDateFrom(DateTimeInterface $dateFrom): void
     {
         $this->dateFrom = $dateFrom;
     }
@@ -111,7 +132,7 @@ class Vacation
     /**
      * @return Date|null
      */
-    public function getDateTo(): ?DateTimeInterface
+    public function getDateTo(): DateTimeInterface
     {
         return $this->dateTo;
     }
@@ -119,7 +140,7 @@ class Vacation
     /**
      * @param Date|null $dateTo
      */
-    public function setDateTo(?DateTimeInterface $dateTo): void
+    public function setDateTo(DateTimeInterface $dateTo): void
     {
         $this->dateTo = $dateTo;
     }
@@ -137,7 +158,8 @@ class Vacation
      */
     public function setDaysLong(int $daysLong): void
     {
-        $this->daysLong = $daysLong;
+        $this->daysLong = WorkingDaysCounterService::countWorkingDays($this->dateFrom,$this->dateTo);
+            $this->dateFrom->diff($this->dateTo)->days;
     }
 
     /**
@@ -163,6 +185,7 @@ class Vacation
     {
         return $this->id;
     }
+
 
     /**
      * @return Employee
@@ -205,6 +228,8 @@ class Vacation
      * @param VacationType $type
      */
     public function setType(VacationType $type): void
+
+
     {
         $this->type = $type;
     }
@@ -223,6 +248,14 @@ class Vacation
     public function setStatus(VacationStatus $status): void
     {
         $this->status = $status;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 
 }

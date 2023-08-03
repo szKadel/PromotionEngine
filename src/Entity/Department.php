@@ -15,7 +15,8 @@ use Doctrine\ORM\Mapping as ORM;
  operations: [
      new get(),
      new GetCollection()
- ]
+ ],
+    paginationItemsPerPage: 7
 )]
 class Department
 {
