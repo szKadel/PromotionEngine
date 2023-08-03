@@ -17,10 +17,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ApiResource(
  operations: [
-    new get(),
-    new GetCollection(),
-     new Post(),
-     new Put()
+        new get(),
+        new GetCollection(),
+        new Post(),
+        new Put()
 ],
     paginationItemsPerPage: 7
 )]
@@ -31,7 +31,7 @@ class Employee
      *
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\ManyToOne(targetEntity="Employee",inversedBy="id")
+     * @ORM\OneToMany(targetEntity="Vacation",inversedBy="employee")
      * @ORM\Column(type="integer")
      */
     private int     $id;

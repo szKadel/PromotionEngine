@@ -1,0 +1,9 @@
+
+    - Filtr dla pracowników szukać po arrayce id zwraca pracowników
+    - Dni urlopowe żeby sie liczyły bez podania LongDays
+    - Automatycznie ustawiany status oczekujący
+    - Dodanie wszystkich typów wniosków (są na chacie bitirx - Ostap)
+    - Ustawienie limitów dla każdego wniosku.
+
+
+   - Migracja użytkowników i firm z bitrix - zapisać ich do bazy
