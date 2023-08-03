@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Put;
 use Doctrine\ORM\Mapping as ORM;
 
 /** A manufactor
@@ -13,7 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ApiResource(
     operations: [
         new get(),
-        new GetCollection()
+        new GetCollection(),
+        new Put()
     ],
     paginationItemsPerPage: 7)]
 class VacationType

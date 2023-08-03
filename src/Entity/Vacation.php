@@ -97,8 +97,6 @@ class Vacation
     /**
      * @ORM\ManyToOne(targetEntity="VacationStatus", inversedBy="id")
      */
-
-    #[Groups('vacation:read')]
     private VacationStatus $status;
 
     /**
