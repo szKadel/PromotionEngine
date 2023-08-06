@@ -4,256 +4,183 @@ namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Metadata\ApiFilter;
-use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Repository\VacationRepository;
+use App\Repository\VacationStatusRepository;
 use App\Service\WorkingDaysCounterService;
-use DateTimeInterface;
-use Symfony\Component\Security\Core\Signature\Exception\ExpiredSignatureException;
-use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Validator\Constraints\Date;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-/** A manufactor
- * @ORM\Entity
- */
+#[ORM\Entity(repositoryClass: VacationRepository::class)]
 #[ApiResource(
     operations: [
-        new get(),
-        new GetCollection(),
-        new Post(),
-        new Put(),
-        new Delete()
+        new get(normalizationContext: ['groups' => ['vacationRequest:read']]),
+        new GetCollection(denormalizationContext: ['groups' => ['vacationRequest:read']]),
+        new Post(normalizationContext: ['groups' => ['vacationRequest:write']]),
+        new Put(normalizationContext: ['groups' => ['vacationRequest:write']])
     ],
-    paginationItemsPerPage: 7
+    paginationItemsPerPage: 7,
 )]
 class Vacation
 {
-    /**
-     * Vacation Request Id
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    #[Assert\Blank]
-    private int $id ;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    #[Groups('vacationRequest:read')]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Employee", inversedBy="id")
-     */
-    #[Assert\NotBlank]
-    private Employee $employee;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="VacationType", inversedBy="id")
-     */
-    #[Assert\NotBlank]
-    private VacationType $type;
+    #[ORM\ManyToOne(inversedBy: 'vacations')]
 
-    /**
-     * Vacation start date Y-m-d
-     *
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
+    private ?Employee $employee = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
+    private ?VacationTypes $type = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[ApiFilter(DateFilter::class)]
-    #[Groups('vacation:read')]
-    private DateTimeInterface    $dateFrom;
+    #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
+    private ?\DateTimeInterface $dateFrom = null;
 
-    /**
-     * Vacation end date Y-m-d
-     * @ORM\Column(type="datetime")
-     */
-
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[ApiFilter(DateFilter::class)]
-    #[Groups('vacation:read')]
-    private DateTimeInterface    $dateTo;
+    #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
+    private ?\DateTimeInterface $dateTo = null;
 
-    /**
-     * Vacation long in days
-     *
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column]
+    #[Groups('vacationRequest:read')]
+    private ?int $SpendVacationDays = null;
 
-    #[Groups('vacation:read')]
-    private ?int $daysLong =0 ;
+    #[ORM\ManyToOne]
+    #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
+    private ?Employee $replacement = null;
 
-    /**
-     * Employee to replace Id
-     * @ORM\ManyToOne(targetEntity="Employee", inversedBy="id")
-     */
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
+    private ?VacationStatus $status = null;
 
-    #[Assert\NotBlank]
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
+    private ?string $comment = null;
 
-
-    private Employee $replacement;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="VacationStatus", inversedBy="id")
-     */
-    private VacationStatus $status;
-
-    /**
-     * Vacation request comment
-     *
-     * @ORM\Column(type="text")
-     */
-    private string   $comment = '';
 
     public function __construct()
     {
 
     }
 
-    /**
-     * @return Date|null
-     */
-    public function getDateFrom(): DateTimeInterface
-    {
-        return $this->dateFrom;
-    }
-
-    /**
-     * @param Date|null $dateFrom
-     */
-    public function setDateFrom(DateTimeInterface $dateFrom): void
-    {
-        $this->dateFrom = $dateFrom;
-    }
-
-    /**
-     * @return Date|null
-     */
-    public function getDateTo(): DateTimeInterface
-    {
-        return $this->dateTo;
-    }
-
-    /**
-     * @param Date|null $dateTo
-     */
-    public function setDateTo(DateTimeInterface $dateTo): void
-    {
-        $this->dateTo = $dateTo;
-    }
-
-    /**
-     * @return ?int
-     */
-    public function getDaysLong(): ?int
-    {
-        return $this->daysLong;
-    }
-
-    /**
-     * @param ?int $daysLong
-     */
-    public function setDaysLong(?int $daysLong): void
-    {
-        $this->daysLong = WorkingDaysCounterService::countWorkingDays($this->dateFrom,$this->dateTo);
-            $this->dateFrom->diff($this->dateTo)->days;
-    }
-
-    /**
-     * @return string
-     */
-    public function getComment(): string
-    {
-        return $this->comment;
-    }
-
-    /**
-     * @param string $comment
-     */
-    public function setComment(string $comment): void
-    {
-        $this->comment = $comment;
-    }
-
-    /**
-     * @return int|null
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-
-    /**
-     * @return Employee
-     */
-    public function getEmployee(): Employee
+    public function getEmployee(): ?Employee
     {
         return $this->employee;
     }
 
-    /**
-     * @param Employee $employee
-     */
-    public function setEmployee(Employee $employee): void
+    public function setEmployee(?Employee $employee): static
     {
         $this->employee = $employee;
+
+        return $this;
     }
 
-    /**
-     * @return Employee|null
-     */
-    public function getReplacement(): Employee
-    {
-        return $this->replacement;
-    }
-
-    public function setReplacement(Employee $replacement): void
-    {
-        $this->replacement = $replacement;
-    }
-
-    /**
-     * @return VacationType
-     */
-    public function getType(): VacationType
+    public function getType(): ?VacationTypes
     {
         return $this->type;
     }
 
-    /**
-     * @param VacationType $type
-     */
-    public function setType(VacationType $type): void
-
-
+    public function setType(?VacationTypes $type): static
     {
         $this->type = $type;
+
+        return $this;
     }
 
-    /**
-     * @return VacationStatus
-     */
-    public function getStatus(): VacationStatus
+    public function getDateFrom(): ?\DateTimeInterface
+    {
+        return $this->dateFrom;
+    }
+
+    public function setDateFrom(\DateTimeInterface $dateFrom): static
+    {
+        $this->dateFrom = $dateFrom;
+
+        return $this;
+    }
+
+    public function getDateTo(): ?\DateTimeInterface
+    {
+        return $this->dateTo;
+    }
+
+    public function setDateTo(\DateTimeInterface $dateTo): static
+    {
+        $this->dateTo = $dateTo;
+        $this->setSpendVacationDays();
+        return $this;
+    }
+
+    public function getSpendVacationDays(): ?int
+    {
+        return $this->SpendVacationDays;
+    }
+
+    private function setSpendVacationDays(): static
+    {
+        $this->SpendVacationDays = WorkingDaysCounterService::countWorkingDays($this->dateFrom,$this->dateTo);
+
+        return $this;
+    }
+
+    public function getReplacement(): ?Employee
+    {
+        return $this->replacement;
+    }
+
+    public function setReplacement(?Employee $replacement): static
+    {
+        $this->replacement = $replacement;
+
+        return $this;
+    }
+
+    public function getStatus(): ?VacationStatus
     {
         return $this->status;
     }
 
-    /**
-     * @param VacationStatus $status
-     */
-    public function setStatus(VacationStatus $status): void
+    public function setStatus(?VacationStatus $status): static
     {
         $this->status = $status;
+
+        return $this;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId(int $id): void
+    public function getComment(): ?string
     {
-        $this->id = $id;
+        return $this->comment;
     }
 
+    public function setComment(?string $comment): static
+    {
+        $this->comment = $comment;
+
+
+        return $this;
+    }
 }

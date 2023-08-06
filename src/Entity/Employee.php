@@ -2,168 +2,195 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Odm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Repository\EmployeeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Validator\Constraints as Assert;
 
-/** A Employees
- * @ORM\Entity
- */
+#[ORM\Entity(repositoryClass: EmployeeRepository::class)]
 #[ApiResource(
- operations: [
-        new get(),
-        new GetCollection(),
-        new Post(),
-        new Put()
-],
+    normalizationContext: ['groups' => ['employee:read']],
+    denormalizationContext: ['groups' => ['employee:write']]
+)]
+#[ApiResource(
+    operations: [
+        new get(normalizationContext: ['groups' => ['employee:read']]),
+        new GetCollection(normalizationContext: ['groups' => ['employee:read']]),
+        new Post(normalizationContext: ['groups' => ['employee:write']]),
+        new Put(normalizationContext: ['groups' => ['employee:write']])
+    ],
     paginationItemsPerPage: 7
 )]
+
 class Employee
 {
-    /**
-     * Vacation Request Id
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\OneToMany(targetEntity="Vacation",inversedBy="employee")
-     * @ORM\Column(type="integer")
-     */
-    private int     $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    #[Groups(['employee:read'])]
+    private ?int $id = null;
 
-    /**
-     * Employee Name
-     *
-     * @ORM\Column(type="string")
-     */
-    #[Assert\NotBlank]
-    private ?string  $name = '';
+    #[ORM\Column(length: 255)]
+    #[Groups(['employee:read','employee:write','vacationRequest:read'])]
+    private ?string $name = null;
 
-    /**
-     * Employee Surname
-     *
-     * @ORM\Column(type="string")
-     */
-    #[Assert\NotBlank]
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['employee:read','employee:write','vacationRequest:read'])]
+    private ?string $surname = null;
 
-    private ?string  $surname = '';
+    #[ORM\Column(nullable: true)]
+    #[Groups(['employee:read'])]
+    private ?bool $isAdmin = null;
 
-    /**
-     * Employee Department
-     *
-     * @ORM\ManyToOne(targetEntity="Department",inversedBy="id")
-     */
-    #[Assert\NotBlank]
-    private Department  $department;
+    #[ORM\ManyToOne(inversedBy: 'employees')]
+    #[Groups(['employee:read','employee:write'])]
+    private ?Department $department = null;
 
-    /**
-     * User Admin Rights
-     *
-     * @ORM\Column(type="boolean")
-     */
-    private ?bool  $isAdmin = false;
-    /**
-     * Employee Surname
-     *
-     * @ORM\Column(type="integer")
-     */
-    private int $vacation_days_limit = 26;
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['employee:read','employee:write'])]
+    private ?string $email = null;
+
+    #[ORM\OneToMany(mappedBy: 'Employee', targetEntity: EmployeeVactionLimit::class, orphanRemoval: true)]
+    #[Groups(['employee:read'])]
+    private Collection $type;
+
+    #[ORM\OneToMany(mappedBy: 'Employee', targetEntity: Vacation::class)]
+    private Collection $vacations;
+
+    public function __construct()
+    {
+        $this->type = new ArrayCollection();
+        $this->vacations = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string|null $name
-     */
-    public function setName(?string $name): void
+    public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getSurname(): ?string
     {
         return $this->surname;
     }
 
-    /**
-     * @param string|null $surname
-     */
-    public function setSurname(?string $surname): void
+    public function setSurname(?string $surname): static
     {
         $this->surname = $surname;
+
+        return $this;
     }
 
-    /**
-     * @return Department
-     */
-    public function getDepartment(): Department
-    {
-        return $this->department;
-    }
-
-    /**
-     * @param Department $department
-     */
-    public function setDepartment(Department $department): void
-    {
-        $this->department = $department;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return bool|null
-     */
-    public function getIsAdmin(): ?bool
+    public function isIsAdmin(): ?bool
     {
         return $this->isAdmin;
     }
 
-    /**
-     * @param bool|null $isAdmin
-     */
-    public function setIsAdmin(?bool $isAdmin): void
+    public function setIsAdmin(?bool $isAdmin): static
     {
-        $this->isAdmin = true;
+        $this->isAdmin = $isAdmin;
+
+        return $this;
+    }
+
+    public function getDepartment(): ?Department
+    {
+        return $this->department;
+    }
+
+    public function setDepartment(?Department $department): static
+    {
+        $this->department = $department;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
     }
 
     /**
-     * @param int| $vacation_days_limit
+     * @return Collection<int, EmployeeVactionLimit>
      */
-    public function setVacationDaysLimit(int $vacation_days_limit = 26): void
+    public function getType(): Collection
     {
-        $this->vacation_days_limit = $vacation_days_limit;
+        return $this->type;
+    }
+
+    public function addType(EmployeeVactionLimit $type): static
+    {
+        if (!$this->type->contains($type)) {
+            $this->type->add($type);
+            $type->setEmployee($this);
+        }
+
+        return $this;
+    }
+
+    public function removeType(EmployeeVactionLimit $type): static
+    {
+        if ($this->type->removeElement($type)) {
+            // set the owning side to null (unless already changed)
+            if ($type->getEmployee() === $this) {
+                $type->setEmployee(null);
+            }
+        }
+
+        return $this;
     }
 
     /**
-     * @return int
+     * @return Collection<int, Vacation>
      */
-    public function getVacationDaysLimit(): int
+    public function getVacations(): Collection
     {
-        return $this->vacation_days_limit;
+        return $this->vacations;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId(int $id): void
+    public function addVacation(Vacation $vacation): static
     {
-        $this->id = $id;
+        if (!$this->vacations->contains($vacation)) {
+            $this->vacations->add($vacation);
+            $vacation->setEmployee($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVacation(Vacation $vacation): static
+    {
+        if ($this->vacations->removeElement($vacation)) {
+            // set the owning side to null (unless already changed)
+            if ($vacation->getEmployee() === $this) {
+                $vacation->setEmployee(null);
+            }
+        }
+
+        return $this;
     }
 }
