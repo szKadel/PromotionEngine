@@ -12,12 +12,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EmployeeRepository::class)]
-#[ApiResource(
-    normalizationContext: ['groups' => ['employee:read']],
-    denormalizationContext: ['groups' => ['employee:write']]
-)]
 #[ApiResource(
     operations: [
         new get(normalizationContext: ['groups' => ['employee:read']]),
@@ -37,10 +34,12 @@ class Employee
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     #[Groups(['employee:read','employee:write','vacationRequest:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank]
     #[Groups(['employee:read','employee:write','vacationRequest:read'])]
     private ?string $surname = null;
 
@@ -49,6 +48,7 @@ class Employee
     private ?bool $isAdmin = null;
 
     #[ORM\ManyToOne(inversedBy: 'employees')]
+    #[Assert\NotBlank]
     #[Groups(['employee:read','employee:write'])]
     private ?Department $department = null;
 

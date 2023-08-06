@@ -40,15 +40,14 @@ class BitrixController extends AbstractController
             return new JsonResponse(["Instalation Faild"]);
     }
 
-    #[Route('/bitrix/install')]
+    #[Route('/bitrix/department')]
     private function mergeDepartments(): JsonResponse
     {
-        CRest::call('crm.deal.list',[]);
-
-        return new JsonResponse("Instalacja");
+        $result = CRest::call('crm.deal.list',[]);
+        return  new JsonResponse($result);
     }
 
-    #[Route('/bitrix/install')]
+    #[Route('/bitrix/employee')]
     private function mergeEmployee(): JsonResponse
     {
         return new JsonResponse("Instalacja");

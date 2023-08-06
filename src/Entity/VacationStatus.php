@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     operations: [
         new get(normalizationContext: ['groups' => ['requestStatus:read']]),
-        new GetCollection(denormalizationContext: ['groups' => ['requestStatus:read']]),
+        new GetCollection(normalizationContext: ['groups' => ['requestStatus:read']]),
     ],
     paginationItemsPerPage: 7
 )]

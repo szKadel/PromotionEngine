@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
@@ -10,14 +11,16 @@ use ApiPlatform\Metadata\Put;
 use App\Repository\EmployeeVactionLimitRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EmployeeVactionLimitRepository::class)]
 #[ApiResource(
     operations: [
         new get(normalizationContext: ['groups' => ['vacationLimit:read']]),
-        new GetCollection(denormalizationContext: ['groups' => ['vacationLimit:read']]),
-        new Post(normalizationContext: ['groups' => ['vacationLimit:write']]),
-        new Put(normalizationContext: ['groups' => ['vacationLimit:write']])
+        new GetCollection(normalizationContext: ['groups' => ['vacationLimit:read']]),
+        new Post(denormalizationContext: ['groups' => ['vacationLimit:write']]),
+        new Put(denormalizationContext: ['groups' => ['vacationLimit:write']]),
+        new Delete(denormalizationContext: ['groups' => ['vacationLimit:write']])
     ],
     paginationItemsPerPage: 7,
 )]
@@ -32,15 +35,18 @@ class EmployeeVactionLimit
     #[ORM\ManyToOne(inversedBy: 'type')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['vacationLimit:read', 'vacationLimit:write'])]
+    #[Assert\NotBlank]
     private ?Employee $Employee = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['vacationLimit:read', 'vacationLimit:write'])]
+    #[Assert\NotBlank]
     private ?VacationTypes $vacationType = null;
 
     #[ORM\Column]
     #[Groups(['vacationLimit:read', 'vacationLimit:write'])]
+    #[Assert\NotBlank]
     private ?int $daysLimit = null;
 
     public function getId(): ?int

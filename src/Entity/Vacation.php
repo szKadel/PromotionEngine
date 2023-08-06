@@ -5,27 +5,26 @@ namespace App\Entity;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\VacationRepository;
-use App\Repository\VacationStatusRepository;
 use App\Service\WorkingDaysCounterService;
 use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\Context;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: VacationRepository::class)]
 #[ApiResource(
     operations: [
         new get(normalizationContext: ['groups' => ['vacationRequest:read']]),
-        new GetCollection(denormalizationContext: ['groups' => ['vacationRequest:read']]),
-        new Post(normalizationContext: ['groups' => ['vacationRequest:write']]),
-        new Put(normalizationContext: ['groups' => ['vacationRequest:write']])
+        new GetCollection(normalizationContext: ['groups' => ['vacationRequest:read']]),
+        new Post(denormalizationContext: ['groups' => ['vacationRequest:write']]),
+        new Put(denormalizationContext: ['groups' => ['vacationRequest:write']])
     ],
     paginationItemsPerPage: 7,
 )]
@@ -41,20 +40,26 @@ class Vacation
     #[ORM\ManyToOne(inversedBy: 'vacations')]
 
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank]
     #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
     private ?Employee $employee = null;
 
     #[ORM\ManyToOne]
+    #[Assert\NotBlank]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
     private ?VacationTypes $type = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[ApiFilter(DateFilter::class)]
+    #[Assert\NotBlank]
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
     #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
     private ?\DateTimeInterface $dateFrom = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\NotBlank]
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
     #[ApiFilter(DateFilter::class)]
     #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
     private ?\DateTimeInterface $dateTo = null;
@@ -68,6 +73,7 @@ class Vacation
     private ?Employee $replacement = null;
 
     #[ORM\ManyToOne]
+    #[Assert\NotBlank]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
     private ?VacationStatus $status = null;
