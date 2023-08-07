@@ -57,7 +57,7 @@ class Employee
     private ?string $email = null;
 
     #[ORM\OneToMany(mappedBy: 'Employee', targetEntity: EmployeeVactionLimit::class, orphanRemoval: true)]
-    #[Groups(['employee:read','vacationLimit:read'])]
+    #[Groups(['employee:read'])]
     private Collection $type;
 
     #[ORM\OneToMany(mappedBy: 'Employee', targetEntity: Vacation::class)]
