@@ -29,7 +29,7 @@ class EmployeeVactionLimit
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['vacationLimit:read', 'vacationLimit:write'])]
+    #[Groups(['vacationLimit:read', 'vacationLimit:write','employee:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'type')]

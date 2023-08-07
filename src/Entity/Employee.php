@@ -30,17 +30,17 @@ class Employee
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['employee:read'])]
+    #[Groups(['employee:read','vacationLimit:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['employee:read','employee:write','vacationRequest:read'])]
+    #[Groups(['employee:read','employee:write','vacationRequest:read','vacationLimit:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\NotBlank]
-    #[Groups(['employee:read','employee:write','vacationRequest:read'])]
+    #[Groups(['employee:read','employee:write','vacationRequest:read','vacationLimit:read'])]
     private ?string $surname = null;
 
     #[ORM\Column(nullable: true)]
@@ -57,7 +57,7 @@ class Employee
     private ?string $email = null;
 
     #[ORM\OneToMany(mappedBy: 'Employee', targetEntity: EmployeeVactionLimit::class, orphanRemoval: true)]
-    #[Groups(['employee:read'])]
+    #[Groups(['employee:read','vacationLimit:read'])]
     private Collection $type;
 
     #[ORM\OneToMany(mappedBy: 'Employee', targetEntity: Vacation::class)]
