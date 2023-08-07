@@ -43,13 +43,14 @@ class BitrixController extends AbstractController
     #[Route('/bitrix/department')]
     public function mergeDepartments(): JsonResponse
     {
-        $result = CRest::call('crm.deal.list',[]);
+        $result = CRest::call('user.get',[]);
         return  new JsonResponse($result);
     }
 
     #[Route('/bitrix/employee')]
     public function mergeEmployee(): JsonResponse
     {
-        return new JsonResponse("Instalacja");
+        $result = CRest::call('user.get',[]);
+        return  new JsonResponse($result);
     }
 }

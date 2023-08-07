@@ -58,14 +58,14 @@ class Employee
 
     #[ORM\OneToMany(mappedBy: 'Employee', targetEntity: EmployeeVactionLimit::class, orphanRemoval: true)]
     #[Groups(['employee:read'])]
-    private Collection $type;
+    private Collection $vacationLimits;
 
     #[ORM\OneToMany(mappedBy: 'Employee', targetEntity: Vacation::class)]
     private Collection $vacations;
 
     public function __construct()
     {
-        $this->type = new ArrayCollection();
+        $this->vacationLimits = new ArrayCollection();
         $this->vacations = new ArrayCollection();
     }
 
@@ -137,28 +137,16 @@ class Employee
     /**
      * @return Collection<int, EmployeeVactionLimit>
      */
-    public function getType(): Collection
+    public function getVacationLimits(): Collection
     {
-        return $this->type;
+        return $this->vacationLimits;
     }
 
-    public function addType(EmployeeVactionLimit $type): static
+    public function addType(EmployeeVactionLimit $vacationLimit): static
     {
-        if (!$this->type->contains($type)) {
-            $this->type->add($type);
-            $type->setEmployee($this);
-        }
-
-        return $this;
-    }
-
-    public function removeType(EmployeeVactionLimit $type): static
-    {
-        if ($this->type->removeElement($type)) {
-            // set the owning side to null (unless already changed)
-            if ($type->getEmployee() === $this) {
-                $type->setEmployee(null);
-            }
+        if (!$this->vacationLimits->contains($vacationLimit)) {
+            $this->vacationLimits->add($vacationLimit);
+            $vacationLimit->setEmployee($this);
         }
 
         return $this;

@@ -32,7 +32,7 @@ class EmployeeVactionLimit
     #[Groups(['vacationLimit:read', 'vacationLimit:write','employee:read'])]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'type')]
+    #[ORM\ManyToOne(inversedBy: 'vacationLimits')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['vacationLimit:read', 'vacationLimit:write'])]
     #[Assert\NotBlank]
