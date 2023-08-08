@@ -15,6 +15,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new get(normalizationContext: ['groups' => ['vacationType:read']]),
         new GetCollection(normalizationContext: ['groups' => ['vacationType:read']]),
     ],
+    paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7
 )]
 class VacationTypes

@@ -19,6 +19,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new get(normalizationContext: ['groups' => ['department:read']]),
         new GetCollection(normalizationContext: ['groups' => ['department:read']]),
     ],
+    paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7
 )]
 class Department

@@ -15,6 +15,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new get(normalizationContext: ['groups' => ['requestStatus:read']]),
         new GetCollection(normalizationContext: ['groups' => ['requestStatus:read']]),
     ],
+    paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7
 )]
 class VacationStatus

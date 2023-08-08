@@ -26,6 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(denormalizationContext: ['groups' => ['vacationRequest:write']]),
         new Put(denormalizationContext: ['groups' => ['vacationRequest:write']])
     ],
+    paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7,
 )]
 class Vacation

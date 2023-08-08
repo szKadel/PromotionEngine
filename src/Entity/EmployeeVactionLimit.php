@@ -22,6 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Put(denormalizationContext: ['groups' => ['vacationLimit:write']]),
         new Delete(denormalizationContext: ['groups' => ['vacationLimit:write']])
     ],
+    paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7,
 )]
 class EmployeeVactionLimit

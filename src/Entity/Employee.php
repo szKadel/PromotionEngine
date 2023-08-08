@@ -22,6 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(normalizationContext: ['groups' => ['employee:write']]),
         new Put(normalizationContext: ['groups' => ['employee:write']])
     ],
+    paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7
 )]
 
