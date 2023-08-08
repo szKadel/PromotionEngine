@@ -5,8 +5,6 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
 use App\Repository\DepartmentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -32,10 +30,6 @@ class Department
     #[ORM\Column(length: 255)]
     #[Groups(['department:read','department:write','employee:read'])]
     private ?string $name = null;
-
-    #[ORM\OneToMany(mappedBy: 'department', targetEntity: Employee::class)]
-    #[Groups(['department:read'])]
-    private Collection $employees;
 
     public function __construct()
     {
@@ -65,27 +59,5 @@ class Department
     public function getEmployees(): Collection
     {
         return $this->employees;
-    }
-
-    public function addEmployee(Employee $employee): static
-    {
-        if (!$this->employees->contains($employee)) {
-            $this->employees->add($employee);
-            $employee->setDepartment($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEmployee(Employee $employee): static
-    {
-        if ($this->employees->removeElement($employee)) {
-            // set the owning side to null (unless already changed)
-            if ($employee->getDepartment() === $this) {
-                $employee->setDepartment(null);
-            }
-        }
-
-        return $this;
     }
 }
