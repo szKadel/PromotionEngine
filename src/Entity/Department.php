@@ -34,7 +34,7 @@ class Department
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'department', targetEntity: Employee::class)]
-    #[Groups(['department:read'])]
+
     private Collection $employees;
 
     public function __construct()
