@@ -52,12 +52,4 @@ class Department
 
         return $this;
     }
-
-    /**
-     * @return Collection<int, Employee>
-     */
-    public function getEmployees(): Collection
-    {
-        return $this->employees;
-    }
 }
