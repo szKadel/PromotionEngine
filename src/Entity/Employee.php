@@ -46,16 +46,12 @@ class Employee
 
     #[ORM\Column(nullable: true)]
     #[Groups(['employee:read'])]
-    private ?bool $isAdmin = null;
+    private ?bool $isModerator = null;
 
     #[ORM\ManyToOne(inversedBy: 'employees')]
     #[Assert\NotBlank]
-    #[Groups(['employee:read','employee:write'])]
+    #[Groups(['employee:read','employee:write','vacationLimit:read'])]
     private ?Department $department = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['employee:read','employee:write'])]
-    private ?string $email = null;
 
     #[ORM\OneToMany(mappedBy: 'Employee', targetEntity: EmployeeVactionLimit::class, orphanRemoval: true)]
     #[Groups(['employee:read'])]
@@ -63,6 +59,10 @@ class Employee
 
     #[ORM\OneToMany(mappedBy: 'Employee', targetEntity: Vacation::class)]
     private Collection $vacations;
+
+    #[ORM\OneToOne(mappedBy: 'employee', cascade: ['persist', 'remove'])]
+    #[Groups(['employee:read','employee:write'])]
+    private ?User $user = null;
 
     public function __construct()
     {
@@ -99,18 +99,6 @@ class Employee
         return $this;
     }
 
-    public function isIsAdmin(): ?bool
-    {
-        return $this->isAdmin;
-    }
-
-    public function setIsAdmin(?bool $isAdmin): static
-    {
-        $this->isAdmin = $isAdmin;
-
-        return $this;
-    }
-
     public function getDepartment(): ?Department
     {
         return $this->department;
@@ -123,17 +111,6 @@ class Employee
         return $this;
     }
 
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(?string $email): static
-    {
-        $this->email = $email;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, EmployeeVactionLimit>
@@ -181,5 +158,43 @@ class Employee
         }
 
         return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($user === null && $this->user !== null) {
+            $this->user->setEmployee(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($user !== null && $user->getEmployee() !== $this) {
+            $user->setEmployee($this);
+        }
+
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getIsModerator(): ?bool
+    {
+        return $this->isModerator;
+    }
+
+    /**
+     * @param bool|null $isModerator
+     */
+    public function setIsModerator(?bool $isModerator): void
+    {
+        $this->isModerator = $isModerator;
     }
 }

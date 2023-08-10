@@ -10,6 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Exception\LazyResponseException;
 
+// TODO Make BitrixLib as an bundle
 class BitrixController extends AbstractController
 {
     #[Route('/bitrix/handler')]
