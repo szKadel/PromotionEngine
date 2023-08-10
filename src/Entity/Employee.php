@@ -60,9 +60,6 @@ class Employee
     #[ORM\OneToMany(mappedBy: 'Employee', targetEntity: Vacation::class)]
     private Collection $vacations;
 
-    #[ORM\OneToOne(mappedBy: 'employee', cascade: ['persist', 'remove'])]
-    #[Groups(['employee:read','employee:write'])]
-    private ?User $user = null;
 
     public function __construct()
     {
