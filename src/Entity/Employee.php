@@ -46,7 +46,7 @@ class Employee
 
     #[ORM\Column(nullable: true)]
     #[Groups(['employee:read'])]
-    private ?bool $isModerator = null;
+    private ?bool $isAdmin = null;
 
     #[ORM\ManyToOne(inversedBy: 'employees')]
     #[Assert\NotBlank]
