@@ -18,7 +18,6 @@ class ApiToken
     private ?User $user = null;
 
     #[ORM\Column]
-    #[ORM\JoinColumn(nullable: false)]
     private string $token;
 
     public function getId(): ?int
