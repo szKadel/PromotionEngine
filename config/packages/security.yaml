@@ -10,6 +10,7 @@ security:
                 class: App\Entity\User
                 property: email
         # used to reload user from session & other features (e.g. switch_user)
+        # used to reload user from session & other features (e.g. switch_user)
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -21,7 +22,7 @@ security:
                 check_path: app_login,
                 username_path: email
                 password_path: password
-            custom_authenticator: App\Security\ApiTokenAuthenticator
+
 
 
             # activate different ways to authenticate
