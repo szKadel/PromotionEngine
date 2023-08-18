@@ -2,12 +2,12 @@
 
 namespace App\Repository;
 
-use App\Entity\VacationTypes;
+use App\Entity\Vacation\VacationTypes;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<VacationTypes>
+ * @extends ServiceEntityRepository<\App\Entity\Vacation\VacationTypes>
  *
  * @method VacationTypes|null find($id, $lockMode = null, $lockVersion = null)
  * @method VacationTypes|null findOneBy(array $criteria, array $orderBy = null)

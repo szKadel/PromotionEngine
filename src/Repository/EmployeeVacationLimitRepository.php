@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
-use App\Entity\EmployeeVacationLimit;
+use App\Entity\Company\Employee;
+use App\Entity\Vacation\EmployeeVacationLimit;
+use App\Entity\Vacation\VacationTypes;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,6 +21,19 @@ class EmployeeVacationLimitRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, EmployeeVacationLimit::class);
+    }
+
+    public function findLimitByTypes(Employee $employee,VacationTypes $types)
+    {
+        return $this->createQueryBuilder('e')
+            ->select()
+            ->andWhere('e. vacationType = :type')
+            ->andWhere('e. Employee = :employee')
+            ->setParameter('type', $types)
+            ->setParameter('employee', $employee)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
     }
 
 //    /**

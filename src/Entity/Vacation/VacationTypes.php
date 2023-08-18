@@ -1,33 +1,33 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Vacation;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
-use App\Repository\VacationStatusRepository;
+use App\Repository\VacationTypesRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: VacationStatusRepository::class)]
+#[ORM\Entity(repositoryClass: VacationTypesRepository::class)]
 #[ApiResource(
     operations: [
-        new get(normalizationContext: ['groups' => ['requestStatus:read']]),
-        new GetCollection(normalizationContext: ['groups' => ['requestStatus:read']]),
+        new get(normalizationContext: ['groups' => ['vacationType:read']]),
+        new GetCollection(normalizationContext: ['groups' => ['vacationType:read']]),
     ],
     paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7
 )]
-class VacationStatus
+class VacationTypes
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['requestStatus:read','requestStatus:read'])]
+    #[Groups(['vacationType:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['requestStatus:read', 'requestStatus:write','vacationRequest:read'])]
+    #[Groups(['vacationType:read', 'vacationType:write','vacationRequest:read','vacationLimit:read'])]
     private ?string $name = null;
 
     public function getId(): ?int

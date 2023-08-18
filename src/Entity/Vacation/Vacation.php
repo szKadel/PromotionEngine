@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Vacation;
 
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Metadata\ApiFilter;
@@ -9,16 +9,21 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Entity\Company\Employee;
 use App\Repository\VacationRepository;
 use App\Service\WorkingDaysCounterService;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\Serializer\Annotation\Context;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Validator\Constraints as Assert;
 
+
 #[ORM\Entity(repositoryClass: VacationRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     operations: [
         new get(normalizationContext: ['groups' => ['vacationRequest:read']]),
@@ -74,18 +79,46 @@ class Vacation
     private ?Employee $replacement = null;
 
     #[ORM\ManyToOne]
-    #[Assert\NotBlank]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
+    #[Groups(['vacationRequest:read'])]
     private ?VacationStatus $status = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
     private ?string $comment = null;
 
-
-    public function __construct()
+    #[ORM\PrePersist]
+    public function prePersist(PrePersistEventArgs $args):void
     {
+        $entityManager = $args->getObjectManager();
+
+        $vacationRepository = $entityManager->getRepository(Vacation::class);
+        $vacationRepository -> findExistingVacationForUserInDateRange($this->employee, $this->dateFrom, $this->dateTo);
+
+        $vacationStatusRepository = $entityManager->getRepository(VacationStatus::class);
+        $this->status = $vacationStatusRepository -> findByName('Waited');
+
+        $vacationUsedInDays = $vacationRepository->findVacationUsedByUser($this->employee,$this->status,$this->type);
+
+        $vacationLimitsRepository = $entityManager->getRepository(EmployeeVacationLimit::class);
+        $limit = $vacationLimitsRepository ->findLimitByTypes($this->employee,$this->type) ?? throw new BadRequestException('Ten Urlop nie został przypisany dla tego użytkownika.');
+
+        if($limit <= $vacationUsedInDays)
+        {
+            throw new BadRequestException('Nie wystarczy dni dla użytkownika');
+        }
+
+        if ($this->dateTo < $this->dateFrom) {
+            throw new BadRequestException("Data 'dateTo' nie może być wcześniejsza niż 'dateFrom'.",403);
+        }
+
+        if ($this->dateTo->format('Y-m-d') < date('Y-m-d') || $this->dateFrom->format('Y-m-d')  < date('Y-m-d') ) {
+            throw new BadRequestException("Urlop nie może być wcześniej niż data dzisiejsza.",403);
+        }
+
+        if ($this->employee === $this->replacement) {
+            throw new BadRequestException("Użytkownik biorący urlop nie może być na zastępstwie.",403);
+        }
 
     }
 

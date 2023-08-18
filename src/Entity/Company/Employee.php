@@ -1,12 +1,15 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Company;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Entity\User;
+use App\Entity\Vacation\EmployeeVacationLimit;
+use App\Entity\Vacation\Vacation;
 use App\Repository\EmployeeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -28,6 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class Employee
 {
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -53,7 +57,7 @@ class Employee
     #[Groups(['employee:read','employee:write','vacationLimit:read'])]
     private ?Department $department = null;
 
-    #[ORM\OneToMany(mappedBy: 'Employee', targetEntity: EmployeeVactionLimit::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'Employee', targetEntity: EmployeeVacationLimit::class, orphanRemoval: true)]
     #[Groups(['employee:read'])]
     private Collection $vacationLimits;
 
@@ -80,6 +84,7 @@ class Employee
     public function setName(string $name): static
     {
         $this->name = $name;
+
 
         return $this;
     }
@@ -110,14 +115,14 @@ class Employee
 
 
     /**
-     * @return Collection<int, EmployeeVactionLimit>
+     * @return Collection<int, EmployeeVacationLimit>
      */
     public function getVacationLimits(): Collection
     {
         return $this->vacationLimits;
     }
 
-    public function addType(EmployeeVactionLimit $vacationLimit): static
+    public function addType(EmployeeVacationLimit $vacationLimit): static
     {
         if (!$this->vacationLimits->contains($vacationLimit)) {
             $this->vacationLimits->add($vacationLimit);

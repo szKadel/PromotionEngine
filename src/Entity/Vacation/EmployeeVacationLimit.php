@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Vacation;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
@@ -8,12 +8,13 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use App\Repository\EmployeeVactionLimitRepository;
+use App\Entity\Company\Employee;
+use App\Repository\EmployeeVacationLimitRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: EmployeeVactionLimitRepository::class)]
+#[ORM\Entity(repositoryClass: EmployeeVacationLimitRepository::class)]
 #[ApiResource(
     operations: [
         new get(normalizationContext: ['groups' => ['vacationLimit:read']]),
@@ -25,7 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7,
 )]
-class EmployeeVactionLimit
+class EmployeeVacationLimit
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

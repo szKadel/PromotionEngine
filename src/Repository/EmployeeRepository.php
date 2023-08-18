@@ -2,12 +2,12 @@
 
 namespace App\Repository;
 
-use App\Entity\Employee;
+use App\Entity\Company\Employee;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Employee>
+ * @extends ServiceEntityRepository<\App\Entity\Company\Employee>
  *
  * @method Employee|null find($id, $lockMode = null, $lockVersion = null)
  * @method Employee|null findOneBy(array $criteria, array $orderBy = null)
