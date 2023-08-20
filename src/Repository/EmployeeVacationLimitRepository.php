@@ -3,24 +3,24 @@
 namespace App\Repository;
 
 use App\Entity\Company\Employee;
-use App\Entity\Vacation\EmployeeVacationLimit;
+use App\Entity\Vacation\VacationLimits;
 use App\Entity\Vacation\VacationTypes;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<EmployeeVacationLimit>
+ * @extends ServiceEntityRepository<VacationLimits>
  *
- * @method EmployeeVacationLimit|null find($id, $lockMode = null, $lockVersion = null)
- * @method EmployeeVacationLimit|null findOneBy(array $criteria, array $orderBy = null)
- * @method EmployeeVacationLimit[]    findAll()
- * @method EmployeeVacationLimit[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method VacationLimits|null find($id, $lockMode = null, $lockVersion = null)
+ * @method VacationLimits|null findOneBy(array $criteria, array $orderBy = null)
+ * @method VacationLimits[]    findAll()
+ * @method VacationLimits[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class EmployeeVacationLimitRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, EmployeeVacationLimit::class);
+        parent::__construct($registry, VacationLimits::class);
     }
 
     public function findLimitByTypes(Employee $employee,VacationTypes $types)
@@ -37,7 +37,7 @@ class EmployeeVacationLimitRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return EmployeeVacationLimit[] Returns an array of EmployeeVacationLimit objects
+//     * @return VacationLimits[] Returns an array of VacationLimits objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -51,7 +51,7 @@ class EmployeeVacationLimitRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?EmployeeVacationLimit
+//    public function findOneBySomeField($value): ?VacationLimits
 //    {
 //        return $this->createQueryBuilder('e')
 //            ->andWhere('e.exampleField = :val')

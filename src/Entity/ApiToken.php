@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ApiTokenRepository;
+use DateInterval;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ApiTokenRepository::class)]
@@ -40,7 +41,9 @@ class ApiToken
 
     public function __construct(string $tokenType = self::PERSONAL_ACCESS_TOKEN)
     {
-            $this->token = $tokenType . bin2hex(random_bytes(32));
+        $this->token = $tokenType . bin2hex(random_bytes(32));
+        $this->expiresAt = new \DateTimeImmutable();
+        $this->expiresAt =  $this->expiresAt->add(new DateInterval('P10D'));
     }
 
     public function getId(): ?int

@@ -8,7 +8,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Entity\User;
-use App\Entity\Vacation\EmployeeVacationLimit;
+use App\Entity\Vacation\VacationLimits;
 use App\Entity\Vacation\Vacation;
 use App\Repository\EmployeeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -57,7 +57,7 @@ class Employee
     #[Groups(['employee:read','employee:write','vacationLimit:read'])]
     private ?Department $department = null;
 
-    #[ORM\OneToMany(mappedBy: 'Employee', targetEntity: EmployeeVacationLimit::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'Employee', targetEntity: VacationLimits::class, orphanRemoval: true)]
     #[Groups(['employee:read'])]
     private Collection $vacationLimits;
 
@@ -115,14 +115,14 @@ class Employee
 
 
     /**
-     * @return Collection<int, EmployeeVacationLimit>
+     * @return Collection<int, VacationLimits>
      */
     public function getVacationLimits(): Collection
     {
         return $this->vacationLimits;
     }
 
-    public function addType(EmployeeVacationLimit $vacationLimit): static
+    public function addType(VacationLimits $vacationLimit): static
     {
         if (!$this->vacationLimits->contains($vacationLimit)) {
             $this->vacationLimits->add($vacationLimit);

@@ -26,7 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7,
 )]
-class EmployeeVacationLimit
+class VacationLimits
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

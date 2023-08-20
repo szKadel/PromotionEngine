@@ -17,5 +17,13 @@ class AppFixtures extends Fixture
         UserFactory::createMany(10);
         //ApiTokenFactory::createMany(10);
         $manager->flush();
+
+        UserFactory::createMany(10);
+        ApiTokenFactory::createMany(30, function (){
+            return [
+                'ownedBy' => UserFactory::random()
+                ];
+        });
+
     }
 }
