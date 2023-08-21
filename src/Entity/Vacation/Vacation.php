@@ -98,14 +98,14 @@ class Vacation
         $vacationStatusRepository = $entityManager->getRepository(VacationStatus::class);
         $this->status = $vacationStatusRepository -> findByName('Oczekujący');
 
-        $vacationUsedInDays = $vacationRepository->findVacationUsedByUser($this->employee,$this->status,$this->type);
+        $vacationUsedInDays = $vacationRepository->findVacationUsedByUser($this->employee,$this->status,$this->type) ;
 
         $vacationLimitsRepository = $entityManager->getRepository(VacationLimits::class);
         $limit = $vacationLimitsRepository ->findLimitByTypes($this->employee,$this->type) ?? throw new BadRequestException('Ten Urlop nie został przypisany dla tego użytkownika.');
 
-        if($limit[0]->getDaysLimit() <= $vacationUsedInDays)
+        if($limit[0]->getDaysLimit() <= $vacationUsedInDays + $this->getSpendVacationDays())
         {
-            throw new BadRequestException('Nie wystarczy dni dla użytkownika');
+            throw new BadRequestException('Nie wystarczy dni urlopowych dla użytkownika');
         }
 
         if ($this->dateTo < $this->dateFrom) {
