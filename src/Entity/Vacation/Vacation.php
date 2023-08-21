@@ -103,7 +103,7 @@ class Vacation
         $vacationLimitsRepository = $entityManager->getRepository(VacationLimits::class);
         $limit = $vacationLimitsRepository ->findLimitByTypes($this->employee,$this->type) ?? throw new BadRequestException('Ten Urlop nie został przypisany dla tego użytkownika.');
 
-        if($limit <= $vacationUsedInDays)
+        if($limit[0]->getDaysLimit() <= $vacationUsedInDays)
         {
             throw new BadRequestException('Nie wystarczy dni dla użytkownika');
         }
