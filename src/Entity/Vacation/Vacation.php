@@ -29,7 +29,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new get(normalizationContext: ['groups' => ['vacationRequest:read']]),
         new GetCollection(normalizationContext: ['groups' => ['vacationRequest:read']]),
         new Post(denormalizationContext: ['groups' => ['vacationRequest:write']]),
-        new Put(denormalizationContext: ['groups' => ['vacationRequest:write']])
+        new Put(denormalizationContext: ['groups' => ['vacationRequest:update']])
     ],
     paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7,
@@ -53,7 +53,7 @@ class Vacation
     #[ORM\ManyToOne]
     #[Assert\NotBlank]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
+    #[Groups(['vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
     private ?VacationTypes $type = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
@@ -75,16 +75,16 @@ class Vacation
     private ?int $SpendVacationDays = null;
 
     #[ORM\ManyToOne]
-    #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
+    #[Groups(['vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
     private ?Employee $replacement = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['vacationRequest:read'])]
+    #[Groups(['vacationRequest:read','vacationRequest:update'])]
     private ?VacationStatus $status = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
+    #[Groups(['vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
     private ?string $comment = null;
 
     #[ORM\PrePersist]
