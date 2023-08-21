@@ -96,7 +96,7 @@ class Vacation
         $vacationRepository -> findExistingVacationForUserInDateRange($this->employee, $this->dateFrom, $this->dateTo);
 
         $vacationStatusRepository = $entityManager->getRepository(VacationStatus::class);
-        $this->status = $vacationStatusRepository -> findByName('Waited');
+        $this->status = $vacationStatusRepository -> findByName('Oczekujący');
 
         $vacationUsedInDays = $vacationRepository->findVacationUsedByUser($this->employee,$this->status,$this->type);
 
