@@ -33,12 +33,15 @@ class ApiToken
     #[ORM\Column]
     private ?\DateTimeImmutable $expiresAt = null;
 
-    #[ORM\Column()]
+    #[ORM\Column(length: 255)]
     private string $token;
 
     #[ORM\Column]
     private array $scopes = [];
 
+    /**
+     * @throws \Exception
+     */
     public function __construct(string $tokenType = self::PERSONAL_ACCESS_TOKEN)
     {
         $this->token = $tokenType . bin2hex(random_bytes(32));
