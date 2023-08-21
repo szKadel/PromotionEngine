@@ -35,13 +35,13 @@ class SecurityController extends AbstractController
             'token' => $user -> getApiTokens()->get(0)?->getToken() ?? $token->getToken()
         ];
 
-
         return new JsonResponse($response,200);
     }
 
     #[Route('/logout',name: 'app_logout')]
     public function logout():void
     {
+
     }
 
 }
