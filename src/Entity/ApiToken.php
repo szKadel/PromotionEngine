@@ -33,7 +33,7 @@ class ApiToken
     #[ORM\Column]
     private ?\DateTimeImmutable $expiresAt = null;
 
-    #[ORM\Column()]
+    #[ORM\Column(length: 72)]
     private string $token;
 
     #[ORM\Column]
