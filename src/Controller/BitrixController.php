@@ -2,56 +2,97 @@
 
 namespace App\Controller;
 
-use App\Service\Bitrix\CRest;
-use Exception;
+use App\Controller\Presist\DepartmentPresist;
+use App\Controller\Presist\EmployeePresist;
+use App\Entity\Company\Department;
+use App\Entity\Company\Employee;
+use App\Repository\DepartmentRepository;
+use App\Repository\EmployeeRepository;
+use App\Repository\UserRepository;
+use App\Service\BitrixService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Security\Core\Exception\LazyResponseException;
 
 // TODO Make BitrixLib as an bundle
 class BitrixController extends AbstractController
 {
-    #[Route('/bitrix/handler')]
-    public function getHandler(): RedirectResponse | JsonResponse
+    #[Route('/bitrix/migration/users')]
+    public function migrateUsers(
+        BitrixService $bitrixService,
+        EmployeePresist $employeePresist,
+        DepartmentRepository $departmentRepository,
+        EmployeeRepository $userRepository
+    ):JsonResponse
     {
-        try {
-            $domain =    $_REQUEST["DOMAIN"]    ?? throw new Exception('Bad Auth', 403);
-            $member_id = $_REQUEST["member_id"] ?? throw new Exception('Bad Auth', 403);
+        $result = $bitrixService->call('user.get',[]);
 
-            return new RedirectResponse('https://github.beupsoft.pl/BeUpHR/home?domain='. $domain??'undefined' . '&member_id=' . $member_id??'undefined');
-        } catch (Exception $e) {
-            return new JsonResponse([
-                "message" => $e->getMessage()
-            ],
-                $e->getCode());
-        }
-    }
+        $final_result = [];
 
-    #[Route('/bitrix/install')]
-    public function install(): \Symfony\Component\HttpFoundation\Response | JsonResponse
-    {
-            $result = CRest::installApp();
+        $countBatches = ceil($result['total'] / 50);
 
-            if ($result['rest_only'] === false) {
-                return $this->render("install.html.twig",["result"=>$result]);
+        $start = 0;
+        while($countBatches > 0) {
+            $result = $bitrixService->call('user.get?start='.$start, []);
+            $final_result[] = 'user.get?start='.$start;
+            foreach ($result["result"] as $elemnt) {
+
+                if($userRepository->findOneByBitrixId($elemnt["ID"])!== null){
+                    $final_result[] = $elemnt["ID"];
+                }else {
+                    $user = new Employee();
+                    $user->setName($elemnt["NAME"]);
+                    $user->setSurname($elemnt["LAST_NAME"]);
+                    $user->setEmail($elemnt["EMAIL"]);
+                    $user->setBitrixId($elemnt["ID"]);
+                    $user->setDepartment($departmentRepository->findOneByBitrixIdField($elemnt['UF_DEPARTMENT'][0]));
+                    $employeePresist->add($user);
+
+                    $final_result[] = $elemnt["NAME"];
+                }
             }
+            $countBatches--;
+            $start +=50;
+        }
 
-            return new JsonResponse(["Instalation Faild"]);
+
+        return new JsonResponse($final_result);
     }
 
-    #[Route('/bitrix/department')]
-    public function mergeDepartments(): JsonResponse
+    #[Route('/bitrix/migration/departments')]
+    public function migrateDepartments(BitrixService $bitrixService,DepartmentRepository $departmentRepository, DepartmentPresist $departmentPresist):JsonResponse
     {
-        $result = CRest::call('user.get',[]);
-        return  new JsonResponse($result);
+        $result = $bitrixService->call('department.get',[]);
+
+        $final_result = [];
+
+        $countBatches = ceil($result['total'] / 50) + 1;
+
+        $start = 0;
+        while($countBatches > 0) {
+            $result = $bitrixService->call('department.get?start='.$start, []);
+
+            foreach ($result["result"] as $elemnt) {
+                if($departmentRepository->findOneByBitrixIdField($elemnt["ID"])!== null){
+                    $final_result[] = $elemnt["ID"];
+                }else {
+                    $department = new Department();
+                    $department->setName($elemnt["NAME"]);
+                    $department->setBitrixId($elemnt["ID"]);
+                    $departmentPresist->add($department);
+                    $final_result[] =  $elemnt["NAME"];
+
+                }
+            }
+            $countBatches--;
+            $start += 50;
+        }
+
+        return new JsonResponse($final_result);
     }
 
-    #[Route('/bitrix/employee')]
-    public function mergeEmployee(): JsonResponse
+    public function migrate()
     {
-        $result = CRest::call('user.get',[]);
-        return  new JsonResponse($result);
+
     }
 }

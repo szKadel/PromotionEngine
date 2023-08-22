@@ -36,6 +36,9 @@ class Department
 
     private Collection $employees;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $bitrixId = null;
+
     public function __construct()
     {
         $this->employees = new ArrayCollection();
@@ -84,6 +87,18 @@ class Department
                 $employee->setDepartment(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getBitrixId(): ?int
+    {
+        return $this->bitrixId;
+    }
+
+    public function setBitrixId(?int $bitrixId): static
+    {
+        $this->bitrixId = $bitrixId;
 
         return $this;
     }

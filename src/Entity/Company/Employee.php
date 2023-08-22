@@ -64,6 +64,15 @@ class Employee
     #[ORM\OneToMany(mappedBy: 'Employee', targetEntity: Vacation::class)]
     private Collection $vacations;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $email = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $bitrixId = null;
+
+    #[ORM\OneToOne(mappedBy: 'employee', cascade: ['persist', 'remove'])]
+    private ?User $user = null;
+
 
     public function __construct()
     {
@@ -162,6 +171,46 @@ class Employee
         return $this;
     }
 
+    /**
+     * @return bool|null
+     */
+    public function getIsModerator(): ?bool
+    {
+        return $this->isModerator;
+    }
+
+    /**
+     * @param bool|null $isModerator
+     */
+    public function setIsModerator(?bool $isModerator): void
+    {
+        $this->isModerator = $isModerator;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getBitrixId(): ?int
+    {
+        return $this->bitrixId;
+    }
+
+    public function setBitrixId(?int $bitrixId): static
+    {
+        $this->bitrixId = $bitrixId;
+
+        return $this;
+    }
+
     public function getUser(): ?User
     {
         return $this->user;
@@ -182,21 +231,5 @@ class Employee
         $this->user = $user;
 
         return $this;
-    }
-
-    /**
-     * @return bool|null
-     */
-    public function getIsModerator(): ?bool
-    {
-        return $this->isModerator;
-    }
-
-    /**
-     * @param bool|null $isModerator
-     */
-    public function setIsModerator(?bool $isModerator): void
-    {
-        $this->isModerator = $isModerator;
     }
 }

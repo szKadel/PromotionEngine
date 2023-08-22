@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Company\Employee;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -45,4 +46,15 @@ class EmployeeRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+
+    public function findOneByBitrixId(int $birtixId): ?Employee
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.bitrixId = :val')
+            ->setParameter('val', $birtixId)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
 }
