@@ -109,16 +109,16 @@ class Vacation
 
         if($limit[0]->getDaysLimit() <= $vacationUsedInDays + $this->getSpendVacationDays())
         {
-            throw new BadRequestException('Nie wystarczy dni urlopowych dla użytkownika');
+            throw new BadRequestException('Nie wystarczy dni Urlopowych. Pozostało '. $limit[0]->getDaysLimit()-$vacationUsedInDays . ". Wnioskujesz o " .$this->getSpendVacationDays());
         }
 
         if ($this->dateTo < $this->dateFrom) {
-            throw new BadRequestException("Data 'dateTo' nie może być wcześniejsza niż 'dateFrom'.",403);
+            throw new BadRequestException("Data rozpoczęcia urlopu nie może być wcześniejsza niż data jego zakończenia.",403);
         }
 
-        if ($this->dateTo->format('Y-m-d') < date('Y-m-d') || $this->dateFrom->format('Y-m-d')  < date('Y-m-d') ) {
-            throw new BadRequestException("Urlop nie może być wcześniej niż data dzisiejsza.",403);
-        }
+//        if ($this->dateTo->format('Y-m-d') < date('Y-m-d') || $this->dateFrom->format('Y-m-d')  < date('Y-m-d') ) {
+//            throw new BadRequestException("Urlop nie może być wcześniej niż data dzisiejsza.",403);
+//        }
 
         if ($this->employee === $this->replacement) {
             throw new BadRequestException("Użytkownik biorący urlop nie może być na zastępstwie.",403);
