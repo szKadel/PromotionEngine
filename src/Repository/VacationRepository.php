@@ -8,6 +8,7 @@ use App\Entity\Vacation\VacationStatus;
 use App\Entity\Vacation\VacationTypes;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 /**
  * @extends ServiceEntityRepository<\App\Entity\Vacation\Vacation>
@@ -24,9 +25,7 @@ class VacationRepository extends ServiceEntityRepository
         parent::__construct($registry, Vacation::class);
     }
 
-    /**
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
+
     public function findExistingVacationForUserInDateRange(Employee $employee, \DateTimeInterface $startDate, \DateTimeInterface $endDate):void
     {
          $result = $this->createQueryBuilder('v')
@@ -40,7 +39,7 @@ class VacationRepository extends ServiceEntityRepository
 
          if(!empty($result))
          {
-             throw new \Exception("Wniosek dla tego użytkownika w tym terminie został już złożony");
+             throw new BadRequestException("Wniosek dla tego użytkownika w tym terminie został już złożony");
          }
     }
 
