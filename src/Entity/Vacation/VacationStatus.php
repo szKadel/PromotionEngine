@@ -12,8 +12,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: VacationStatusRepository::class)]
 #[ApiResource(
     operations: [
-        new get(normalizationContext: ['groups' => ['requestStatus:read']]),
-        new GetCollection(normalizationContext: ['groups' => ['requestStatus:read']]),
+        new get(normalizationContext: ['groups' => ['requestStatus:read']],security: "is_granted('ROLE_USER')"),
+        new GetCollection(normalizationContext: ['groups' => ['requestStatus:read']],security: "is_granted('ROLE_USER')"),
     ],
     paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7

@@ -26,10 +26,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     operations: [
-        new get(normalizationContext: ['groups' => ['vacationRequest:read']]),
-        new GetCollection(normalizationContext: ['groups' => ['vacationRequest:read']]),
-        new Post(denormalizationContext: ['groups' => ['vacationRequest:write']]),
-        new Put(denormalizationContext: ['groups' => ['vacationRequest:update']])
+        new get(normalizationContext: ['groups' => ['vacationRequest:read']],security: "is_granted('ROLE_USER')"),
+        new GetCollection(normalizationContext: ['groups' => ['vacationRequest:read']],security: "is_granted('ROLE_USER')"),
+        new Post(denormalizationContext: ['groups' => ['vacationRequest:write']],security: "is_granted('ROLE_USER')"),
+        new Put(denormalizationContext: ['groups' => ['vacationRequest:update']],security: "is_granted('ROLE_USER')")
     ],
     paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7,

@@ -17,11 +17,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: EmployeeVacationLimitRepository::class)]
 #[ApiResource(
     operations: [
-        new get(normalizationContext: ['groups' => ['vacationLimit:read']]),
-        new GetCollection(normalizationContext: ['groups' => ['vacationLimit:read']]),
-        new Post(denormalizationContext: ['groups' => ['vacationLimit:write']]),
-        new Put(denormalizationContext: ['groups' => ['vacationLimit:write']]),
-        new Delete(denormalizationContext: ['groups' => ['vacationLimit:write']])
+        new get(normalizationContext: ['groups' => ['vacationLimit:read']],security: "is_granted('ROLE_USER')"),
+        new GetCollection(normalizationContext: ['groups' => ['vacationLimit:read']],security: "is_granted('ROLE_USER')"),
+        new Post(denormalizationContext: ['groups' => ['vacationLimit:write']],security: "is_granted('ROLE_USER')"),
+        new Put(denormalizationContext: ['groups' => ['vacationLimit:write']],security: "is_granted('ROLE_USER')"),
+        new Delete(denormalizationContext: ['groups' => ['vacationLimit:write']],security: "is_granted('ROLE_USER')")
     ],
     paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7,

@@ -20,10 +20,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: EmployeeRepository::class)]
 #[ApiResource(
     operations: [
-        new get(normalizationContext: ['groups' => ['employee:read']]),
-        new GetCollection(normalizationContext: ['groups' => ['employee:read']]),
-        new Post(normalizationContext: ['groups' => ['employee:write']]),
-        new Put(normalizationContext: ['groups' => ['employee:write']])
+        new get(normalizationContext: ['groups' => ['employee:read']],security: "is_granted('ROLE_USER')"),
+        new GetCollection(normalizationContext: ['groups' => ['employee:read']],security: "is_granted('ROLE_USER')"),
+        new Post(normalizationContext: ['groups' => ['employee:write']],security: "is_granted('ROLE_USER')"),
+        new Put(normalizationContext: ['groups' => ['employee:write']],security: "is_granted('ROLE_USER')")
     ],
     paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7

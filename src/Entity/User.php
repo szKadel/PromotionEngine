@@ -24,9 +24,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new get(normalizationContext: ['groups' => ['user:read']]),
-        new GetCollection(normalizationContext: ['groups' => ['user:read']]),
-        new Post(denormalizationContext: ['groups' => ['user:write']]),
-        new Put(denormalizationContext: ['groups' => ['user:write']]),
+        new GetCollection(normalizationContext: ['groups' => ['user:read']],security: "is_granted('ROLE_USER')"),
+        new Post(denormalizationContext: ['groups' => ['user:write']],security: "is_granted('ROLE_USER')"),
+        new Put(denormalizationContext: ['groups' => ['user:write']],security: "is_granted('ROLE_USER')"),
     ]
 )]
 #[UniqueEntity(fields: ['email'],message: 'This email has been allready register.')]
