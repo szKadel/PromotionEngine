@@ -18,6 +18,7 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            stateless: true
             json_login:
                 check_path: app_login
                 username_path: email

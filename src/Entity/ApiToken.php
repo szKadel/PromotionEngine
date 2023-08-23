@@ -46,7 +46,7 @@ class ApiToken
     {
         $this->token = $tokenType . bin2hex(random_bytes(32));
         $this->expiresAt = new \DateTimeImmutable();
-        $this->expiresAt =  $this->expiresAt->add(new DateInterval('P10D'));
+        $this->expiresAt =  $this->expiresAt->add(new DateInterval('P1D'));
     }
 
     public function getId(): ?int

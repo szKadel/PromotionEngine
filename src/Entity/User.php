@@ -16,6 +16,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -48,8 +49,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[ORM\Column]
-    #[Groups(['user:write'])]
-    #[Assert\NotBlank]
     private ?string $password = null;
 
     #[ORM\Column(length: 255,unique: true)]
@@ -62,6 +61,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Employee $employee = null;
+
+    #[Groups(['user:write'])]
+    #[SerializedName('password')]
+    private ?string $plainPassword = null;
 
     public function __construct()
     {
@@ -123,8 +126,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setPassword(string $password): static
     {
-        $this->password = password_hash($password, PASSWORD_BCRYPT); // You can use any hashing algorithm you prefer
-
+        //$this->password = password_hash($password, PASSWORD_BCRYPT); // You can use any hashing algorithm you prefer
+        $this->password = $password;
         return $this;
     }
 
@@ -197,5 +200,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->employee = $employee;
 
         return $this;
+    }
+
+    public function setPlainPassword(?string $plainPassword):User
+    {
+        $this->plainPassword = $plainPassword;
+
+        return $this;
+    }
+
+    public function getPlainPassword():string
+    {
+        return $this->plainPassword;
     }
 }
