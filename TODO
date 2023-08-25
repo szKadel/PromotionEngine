@@ -1,4 +1,2 @@
-- Dodać email do parametrów pracownika.
-- Przetestować dodawanie urlopów.
-- Stworzyć rejestrację
-- Zaciąganie i migracja danych z bitrixa.
+- Rozróżnianie użytkowników -> User -> MODERATOR -> ADMIN
+- Filtracja po dziale w liscie wniosków

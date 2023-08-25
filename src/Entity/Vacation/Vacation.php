@@ -53,6 +53,7 @@ class Vacation
     #[ORM\ManyToOne]
     #[Assert\NotBlank]
     #[ORM\JoinColumn(nullable: false)]
+    #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'exact')]
     #[Groups(['vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
     private ?VacationTypes $type = null;
 
@@ -79,6 +80,7 @@ class Vacation
     private ?Employee $replacement = null;
 
     #[ORM\ManyToOne]
+    #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'exact')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['vacationRequest:read','vacationRequest:update'])]
     private ?VacationStatus $status = null;

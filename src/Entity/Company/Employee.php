@@ -43,13 +43,13 @@ class Employee
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'partial')]
-    #[Groups(['employee:read','employee:write','vacationRequest:read','vacationLimit:read'])]
+    #[Groups(['employee:read','employee:write','vacationRequest:read','vacationLimit:read','user:read','user:write'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\NotBlank]
     #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'partial')]
-    #[Groups(['employee:read','employee:write','vacationRequest:read','vacationLimit:read'])]
+    #[Groups(['employee:read','employee:write','vacationRequest:read','vacationLimit:read','user:read','user:write'])]
     private ?string $surname = null;
 
     #[ORM\Column(nullable: true)]
@@ -58,26 +58,25 @@ class Employee
 
     #[ORM\ManyToOne(inversedBy: 'employees')]
     #[Assert\NotBlank]
-    #[Groups(['employee:read','employee:write','vacationLimit:read'])]
+    #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'exact')]
+    #[Groups(['employee:read','employee:write','vacationLimit:read','user:read','user:write'])]
     private ?Department $department = null;
 
     #[ORM\OneToMany(mappedBy: 'Employee', targetEntity: VacationLimits::class, orphanRemoval: true)]
     #[Groups(['employee:read'])]
     private Collection $vacationLimits;
 
-    #[ORM\OneToMany(mappedBy: 'Employee', targetEntity: Vacation::class)]
-    #[Groups(['employee:read','vacationLimit:read'])]
+    #[ORM\OneToMany(mappedBy: 'employee', targetEntity: Vacation::class)]
     private Collection $vacations;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['employee:read','employee:write'])]
     private ?string $email = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $bitrixId = null;
 
     #[ORM\OneToOne(mappedBy: 'employee', cascade: ['persist', 'remove'])]
-    #[Groups(['employee:read','employee:write'])]
+    #[Groups(['user:read','user:write','employee:read','employee:write'])]
     private ?User $user = null;
 
 
