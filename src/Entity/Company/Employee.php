@@ -2,6 +2,8 @@
 
 namespace App\Entity\Company;
 
+use ApiPlatform\Doctrine\Odm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -40,11 +42,13 @@ class Employee
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'partial')]
     #[Groups(['employee:read','employee:write','vacationRequest:read','vacationLimit:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\NotBlank]
+    #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'partial')]
     #[Groups(['employee:read','employee:write','vacationRequest:read','vacationLimit:read'])]
     private ?string $surname = null;
 
@@ -62,15 +66,18 @@ class Employee
     private Collection $vacationLimits;
 
     #[ORM\OneToMany(mappedBy: 'Employee', targetEntity: Vacation::class)]
+    #[Groups(['employee:read','vacationLimit:read'])]
     private Collection $vacations;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['employee:read','employee:write'])]
     private ?string $email = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $bitrixId = null;
 
     #[ORM\OneToOne(mappedBy: 'employee', cascade: ['persist', 'remove'])]
+    #[Groups(['employee:read','employee:write'])]
     private ?User $user = null;
 
 
@@ -93,7 +100,6 @@ class Employee
     public function setName(string $name): static
     {
         $this->name = $name;
-
 
         return $this;
     }

@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Company\Employee;
 use App\Entity\Vacation\VacationTypes;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -36,11 +37,13 @@ class VacationTypesRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?VacationTypes
+//    public function findTypeForEmployee(Employee $employee, VacationTypes $vacationTypes): ?VacationTypes
 //    {
 //        return $this->createQueryBuilder('v')
-//            ->andWhere('v.exampleField = :val')
-//            ->setParameter('val', $value)
+//            ->andWhere('v.Employee = :emp')
+//            ->andWhere('v.type = :type')
+//            ->setParameter('emp', $employee)
+//            ->setParameter('type', $vacationTypes)
 //            ->getQuery()
 //            ->getOneOrNullResult()
 //        ;

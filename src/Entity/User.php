@@ -39,7 +39,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['user:read', 'user:write','employee:read'])]
     #[Assert\NotBlank]
     #[Assert\Email]
     private ?string $email = null;
@@ -52,7 +52,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255,unique: true)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['user:read', 'user:write','employee:read'])]
     #[Assert\NotBlank]
     private ?string $username = null;
 
@@ -60,6 +60,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $apiTokens;
 
     #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'])]
+    #[Groups(['user:read', 'user:write'])]
     private ?Employee $employee = null;
 
     #[Groups(['user:write'])]

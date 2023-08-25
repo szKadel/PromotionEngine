@@ -8,7 +8,6 @@ use App\Entity\Company\Department;
 use App\Entity\Company\Employee;
 use App\Repository\DepartmentRepository;
 use App\Repository\EmployeeRepository;
-use App\Repository\UserRepository;
 use App\Service\BitrixService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;

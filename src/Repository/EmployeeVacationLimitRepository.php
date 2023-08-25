@@ -35,6 +35,18 @@ class EmployeeVacationLimitRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findTypeForEmployee(Employee $employee, VacationTypes $vacationTypes): ?VacationTypes
+    {
+        return $this->createQueryBuilder('v')
+            ->andWhere('v.Employee = :emp')
+            ->andWhere('v.type = :type')
+            ->setParameter('emp', $employee)
+            ->setParameter('type', $vacationTypes)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
+
 //    /**
 //     * @return VacationLimits[] Returns an array of VacationLimits objects
 //     */

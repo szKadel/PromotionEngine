@@ -10,7 +10,9 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Entity\Company\Employee;
 use App\Repository\EmployeeVacationLimitRepository;
+use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -48,8 +50,23 @@ class VacationLimits
 
     #[ORM\Column]
     #[Groups(['vacationLimit:read', 'vacationLimit:write','employee:read'])]
-    #[Assert\NotBlank]
+    #[Assert\GreaterThanOrEqual(0, message: "Limit nie może być niższy niż 0")]
+    #[Assert\LessThanOrEqual(100, message: "Limit nie może być wyższy niż 100 dni")]
     private ?int $daysLimit = null;
+
+
+    public function prePersist(PrePersistEventArgs $args):void
+    {
+        $entityManager = $args->getObjectManager();
+
+        $vacationRepository = $entityManager->getRepository(VacationLimits::class);
+        $vacationRepository -> findTypeForEmployee($this->Employee,$this->vacationType);
+
+        if($vacationRepository -> findTypeForEmployee($this->Employee,$this->vacationType) !== null)
+        {
+            throw new BadRequestException("Limit tego typu urlopu został już przypisany dla tego użytkownika.");
+        }
+    }
 
     public function getId(): ?int
     {
