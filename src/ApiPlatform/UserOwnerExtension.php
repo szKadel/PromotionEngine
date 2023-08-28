@@ -1,15 +1,16 @@
 <?php
 
 namespace App\ApiPlatform;
-
 use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
+use ApiPlatform\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Metadata\Operation;
 use App\Entity\Company\Employee;
+use App\Entity\Vacation\Vacation;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\SecurityBundle\Security;
 
-class EmployeeIsOwnerExtension implements QueryCollectionExtensionInterface
+final class UserOwnerExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
 
     public function __construct(private readonly Security $security)
@@ -28,12 +29,14 @@ class EmployeeIsOwnerExtension implements QueryCollectionExtensionInterface
 
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass): void
     {
-        if (Employee::class !== $resourceClass || $this->security->isGranted('ROLE_ADMIN') || null === $user = $this->security->getUser()) {
+        if (Vacation::class !== $resourceClass || $this->security->isGranted('ROLE_ADMIN') || null === $user = $this->security->getUser()) {
             return;
         }
 
         $rootAlias = $queryBuilder->getRootAliases()[0];
-        $queryBuilder->andWhere(sprintf('%s.user = :current_user', $rootAlias));
-        $queryBuilder->setParameter('current_user', $user->getId());
+
+        $queryBuilder->join(sprintf('%s.employee', $rootAlias), 'u');
+        $queryBuilder->andWhere('u.id = :current_user_id');
+        $queryBuilder->setParameter('current_user_id', $user->getEmployee()->getId());
     }
 }

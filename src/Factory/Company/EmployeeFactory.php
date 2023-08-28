@@ -49,7 +49,7 @@ final class EmployeeFactory extends ModelFactory
         return [
             'name' => self::faker()->name(255),
             'surname' => self::faker()->lastName(255),
-            'department' => DepartmentFactory::random()
+            'department' => DepartmentFactory::new()
         ];
     }
 

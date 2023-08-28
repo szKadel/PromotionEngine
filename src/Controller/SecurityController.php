@@ -47,6 +47,7 @@ class SecurityController extends AbstractController
 
         $response = [
             'token' => $token->getToken(),
+            'user'=>$user->getId(),
             'expiredAt' => new ($token->getExpiresAt())
         ];
 

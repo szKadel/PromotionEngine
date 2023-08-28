@@ -42,5 +42,4 @@ class EmployeeResourceTest extends KernelTestCase
             ->assertStatus(200)
             ->assertJsonMatches('"hydra:totalItems"',1);
     }
-
 }
