@@ -25,7 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new get(normalizationContext: ['groups' => ['employee:read']],security: "is_granted('ROLE_USER')"),
         new GetCollection(normalizationContext: ['groups' => ['employee:read']],security: "is_granted('ROLE_USER')"),
         new Post(normalizationContext: ['groups' => ['employee:write']],security: "is_granted('ROLE_USER')"),
-        new Put(normalizationContext: ['groups' => ['employee:write']],security: "is_granted('ROLE_USER')")
+        new Put(normalizationContext: ['groups' => ['employee:write']],security: "is_granted('ROLE_USER') and object.getUser() == user")
     ],
     paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7

@@ -2,6 +2,7 @@
 
 namespace App\Factory;
 use App\Entity\User;
+use App\Factory\Company\EmployeeFactory;
 use App\Repository\UserRepository;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Zenstruck\Foundry\ModelFactory;
@@ -43,6 +44,7 @@ final class UserFactory extends ModelFactory
             'email' => self::faker()->email(),
             'password' => 'password',
             'username' => self::faker()->randomElement(self::USERNAMES) . self::faker()->randomNumber(3),
+            'employee' => EmployeeFactory::random()
         ];
     }
     /**
