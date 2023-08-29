@@ -23,11 +23,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
     operations: [
-        new get(normalizationContext: ['groups' => ['user:read']]),
-        new GetCollection(normalizationContext: ['groups' => ['user:read']],security: "is_granted('ROLE_USER')"),
-        new Post(denormalizationContext: ['groups' => ['user:write']],security: "is_granted('ROLE_USER')"),
-        new Put(denormalizationContext: ['groups' => ['user:write']],security: "is_granted('ROLE_USER')"),
-    ]
+        new get(normalizationContext: ['groups' => ['user:read']],security: "is_granted('ROLE_ADMIN')"),
+        new GetCollection(normalizationContext: ['groups' => ['user:read']],security: "is_granted('ROLE_ADMIN')"),
+        new Post(denormalizationContext: ['groups' => ['user:write']],security: "is_granted('ROLE_ADMIN')"),
+        new Put(denormalizationContext: ['groups' => ['user:write']],security: "is_granted('ROLE_ADMIN')"),
+    ],
+    paginationClientItemsPerPage: true,
+    paginationItemsPerPage: 7
 )]
 #[UniqueEntity(fields: ['email'],message: 'This email has been allready register.')]
 #[UniqueEntity(fields: ['username'],message: 'This username has been allready register.')]
