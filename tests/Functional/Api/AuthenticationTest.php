@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace App\Tests\Functional\Api;
 
 use App\Factory\ApiTokenFactory;
 use App\Factory\Company\DepartmentFactory;

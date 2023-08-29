@@ -24,8 +24,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new get(normalizationContext: ['groups' => ['employee:read']],security: "is_granted('ROLE_USER')"),
         new GetCollection(normalizationContext: ['groups' => ['employee:read']],security: "is_granted('ROLE_USER')"),
-        new Post(normalizationContext: ['groups' => ['employee:write']],security: "is_granted('ROLE_USER')"),
-        new Put(normalizationContext: ['groups' => ['employee:write']],security: "is_granted('ROLE_USER') and object.getUser() == user")
+        new Post(normalizationContext: ['groups' => ['employee:write']],security: "is_granted('ROLE_ADMIN')"),
+        new Put(normalizationContext: ['groups' => ['employee:write']],security: "is_granted('ROLE_ADMIN')")
     ],
     paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7
@@ -37,19 +37,19 @@ class Employee
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['employee:read','vacationLimit:read'])]
+    #[Groups(['employee:read','vacationLimit:read','user:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'partial')]
-    #[Groups(['employee:read','employee:write','vacationRequest:read','vacationLimit:read','user:read','user:write'])]
+    #[Groups(['employee:read','employee:write','vacationRequest:read','vacationLimit:read','user:read','user:write','user:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\NotBlank]
     #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'partial')]
-    #[Groups(['employee:read','employee:write','vacationRequest:read','vacationLimit:read','user:read','user:write'])]
+    #[Groups(['employee:read','employee:write','vacationRequest:read','vacationLimit:read','user:read','user:write','user:read'])]
     private ?string $surname = null;
 
     #[ORM\Column(nullable: true)]
@@ -59,7 +59,7 @@ class Employee
     #[ORM\ManyToOne(inversedBy: 'employees')]
     #[Assert\NotBlank]
     #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'exact')]
-    #[Groups(['employee:read','employee:write','vacationLimit:read','user:read','user:write'])]
+    #[Groups(['employee:read','employee:write','vacationLimit:read','user:read','user:write','user:read'])]
     private ?Department $department = null;
 
     #[ORM\OneToMany(mappedBy: 'Employee', targetEntity: VacationLimits::class, orphanRemoval: true)]

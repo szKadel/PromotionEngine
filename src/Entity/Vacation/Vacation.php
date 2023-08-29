@@ -5,6 +5,7 @@ namespace App\Entity\Vacation;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
@@ -29,7 +30,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         new get(normalizationContext: ['groups' => ['vacationRequest:read']],security: "is_granted('ROLE_USER')"),
         new GetCollection(normalizationContext: ['groups' => ['vacationRequest:read']],security: "is_granted('ROLE_USER')"),
         new Post(denormalizationContext: ['groups' => ['vacationRequest:write']],security: "is_granted('ROLE_USER')"),
-        new Put(denormalizationContext: ['groups' => ['vacationRequest:update']],security: "is_granted('ROLE_USER')")
+        new Put(denormalizationContext: ['groups' => ['vacationRequest:update']],security: "is_granted('ROLE_USER')"),
+        new Delete(security: "is_granted('ROLE_USER')")
     ],
     paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7,
@@ -109,7 +111,7 @@ class Vacation
             throw new BadRequestException('Ten Urlop nie został przypisany dla tego użytkownika.');
         }
 
-        if($limit[0]->getDaysLimit() <= $vacationUsedInDays + $this->getSpendVacationDays())
+        if($limit[0]->getDaysLimit() < $vacationUsedInDays + $this->getSpendVacationDays())
         {
             throw new BadRequestException('Nie wystarczy dni Urlopowych. Pozostało '. $limit[0]->getDaysLimit()-$vacationUsedInDays . ". Wnioskujesz o " .$this->getSpendVacationDays());
         }
