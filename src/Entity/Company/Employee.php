@@ -43,13 +43,13 @@ class Employee
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'partial')]
-    #[Groups(['employee:read','employee:write','vacationRequest:read','vacationLimit:read','user:read','user:write','user:read'])]
+    #[Groups(['employee:read','employee:write','vacationRequest:read','vacationLimit:read','user:read','user:write','user:read','departmentOne:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\NotBlank]
     #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'partial')]
-    #[Groups(['employee:read','employee:write','vacationRequest:read','vacationLimit:read','user:read','user:write','user:read'])]
+    #[Groups(['employee:read','employee:write','vacationRequest:read','vacationLimit:read','user:read','user:write','user:read','departmentOne:read'])]
     private ?string $surname = null;
 
     #[ORM\Column(nullable: true)]
@@ -70,6 +70,7 @@ class Employee
     private Collection $vacations;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['employee:read'])]
     private ?string $email = null;
 
     #[ORM\Column(nullable: true)]

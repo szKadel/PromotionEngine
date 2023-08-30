@@ -14,7 +14,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: DepartmentRepository::class)]
 #[ApiResource(
     operations: [
-        new get(normalizationContext: ['groups' => ['department:read']],security: "is_granted('ROLE_USER')"),
+        new get(normalizationContext: ['groups' => ['departmentOne:read']],security: "is_granted('ROLE_USER')"),
         new GetCollection(normalizationContext: ['groups' => ['department:read']],security: "is_granted('ROLE_USER')"),
     ],
     paginationClientItemsPerPage: true,
@@ -29,11 +29,11 @@ class Department
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['department:read','department:write','employee:read'])]
+    #[Groups(['department:read','department:write','employee:read','departmentOne:read'])]
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'department', targetEntity: Employee::class)]
-
+    #[Groups(['departmentOne:read'])]
     private Collection $employees;
 
     #[ORM\Column(nullable: true)]
