@@ -9,6 +9,7 @@ use App\Entity\Company\Employee;
 use App\Entity\Vacation\Vacation;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusException;
 
 final class UserOwnerExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
@@ -31,6 +32,10 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
     {
         if (Vacation::class !== $resourceClass || $this->security->isGranted('ROLE_ADMIN') || null === $user = $this->security->getUser()) {
             return;
+        }
+
+        if(empty($user->getEmployee()->getId())){
+            throw new CustomUserMessageAccountStatusException("Konto pracownicze nie zostało jeszcze przypisane do tego użytkownika.");
         }
 
         $rootAlias = $queryBuilder->getRootAliases()[0];
