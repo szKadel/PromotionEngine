@@ -60,7 +60,7 @@ class SecurityController extends AbstractController
 
     }
 
-    #[Route('/api/getCurrentUser/', name: 'app_check_user', methods: ['POST'])]
+    #[Route('/api/getCurrentUser/', name: 'app_check_user', methods: ['GET'])]
     public function getCurrentUser(#[CurrentUser] User $user ):Response
     {
         if(empty($user->getId()) || $user === null)
