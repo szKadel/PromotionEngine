@@ -22,7 +22,7 @@ class ApiTokenHandler implements AccessTokenHandlerInterface
         $token = $this->apiTokenRepository->findOneBy(['token'=>$accessToken]);
 
         if(!$token){
-            throw new BadCredentialsException();
+            throw new BadCredentialsException("Bad Credentials");
         }
 
         if(!$token->isValid()){
