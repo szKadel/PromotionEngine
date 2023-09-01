@@ -61,7 +61,7 @@ class VacationLimits
 
         $vacationRepository = $entityManager->getRepository(VacationLimits::class);
         $vacationRepository -> findTypeForEmployee($this->Employee,$this->vacationType);
-
+        throw new BadRequestException("Limit tego typu urlopu został już przypisany dla tego użytkownika.");
         if($vacationRepository -> findTypeForEmployee($this->Employee,$this->vacationType) !== null)
         {
             throw new BadRequestException("Limit tego typu urlopu został już przypisany dla tego użytkownika.");
