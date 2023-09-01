@@ -74,7 +74,8 @@ class SecurityController extends AbstractController
                 'id' =>$user->getId(),
                 'email'=>$user->getEmail(),
                 'roles'=>$user->getRoles(),
-                'userName' => $user->getUsername()
+                'userName' => $user->getUsername(),
+                'employee' => $user->getEmployee()->getId??null
             ]
         );
     }
