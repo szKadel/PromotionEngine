@@ -26,6 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: VacationRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+
 #[ApiResource(
     operations: [
         new get(normalizationContext: ['groups' => ['vacationRequest:read']],security: "is_granted('ROLE_USER')"),
@@ -37,6 +38,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7,
 )]
+#[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,properties: ['employee.department'=>'exact'])]
 class Vacation
 {
     #[ORM\Id]
