@@ -59,7 +59,7 @@ class Employee
     #[ORM\ManyToOne(inversedBy: 'employees')]
     #[Assert\NotBlank]
     #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'exact')]
-    #[Groups(['employee:read','employee:write','vacationLimit:read','user:read','user:write','user:read'])]
+    #[Groups(['employee:read','employee:write','vacationLimit:read','user:read','user:write','user:read','vacationRequest:read'])]
     private ?Department $department = null;
 
     #[ORM\OneToMany(mappedBy: 'Employee', targetEntity: VacationLimits::class, orphanRemoval: true)]
