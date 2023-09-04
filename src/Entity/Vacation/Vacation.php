@@ -51,6 +51,7 @@ class Vacation
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank]
     #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
+    #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'exact')]
     private ?Employee $employee = null;
 
     #[ORM\ManyToOne]
