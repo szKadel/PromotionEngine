@@ -120,11 +120,13 @@ class Vacation
                 throw new BadRequestException('Ten Urlop nie został przypisany dla tego użytkownika.');
             }
 
-            if ($limit[0]->getDaysLimit() < $vacationUsedInDays + $this->getSpendVacationDays()) {
-                throw new BadRequestException(
-                    'Nie wystarczy dni Urlopowych. Pozostało ' . $limit[0]->getDaysLimit(
-                    ) - $vacationUsedInDays . ". Wnioskujesz o " . $this->getSpendVacationDays()
-                );
+            if($limit[0]->getDaysLimit() != 0){
+                if ($limit[0]->getDaysLimit() < $vacationUsedInDays + $this->getSpendVacationDays()) {
+                    throw new BadRequestException(
+                        'Nie wystarczy dni Urlopowych. Pozostało ' . $limit[0]->getDaysLimit(
+                        ) - $vacationUsedInDays . ". Wnioskujesz o " . $this->getSpendVacationDays()
+                    );
+                }
             }
         }
 

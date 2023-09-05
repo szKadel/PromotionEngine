@@ -12,11 +12,13 @@ use App\Service\BitrixService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 // TODO Make BitrixLib as an bundle
 class BitrixController extends AbstractController
 {
     #[Route('/bitrix/migration/users')]
+    #[IsGranted('ROLE_ADMIN')]
     public function migrateUsers(
         BitrixService $bitrixService,
         EmployeePresist $employeePresist,
@@ -26,11 +28,15 @@ class BitrixController extends AbstractController
     {
         $result = $bitrixService->call('user.get',[]);
 
-        $final_result = [];
+        $final_result = [
+            'result' => false,
+            'elements'=> 0
+        ];
 
         $countBatches = ceil($result['total'] / 50);
 
         $start = 0;
+        $i = 0;
         while($countBatches > 0) {
             $result = $bitrixService->call('user.get?start='.$start, []);
             $final_result[] = 'user.get?start='.$start;
@@ -47,26 +53,31 @@ class BitrixController extends AbstractController
                     $user->setDepartment($departmentRepository->findOneByBitrixIdField($elemnt['UF_DEPARTMENT'][0]));
                     $employeePresist->add($user);
 
-                    $final_result[] = $elemnt["NAME"];
+                    $final_result[] = $i++;
                 }
             }
             $countBatches--;
             $start +=50;
-        }
 
+            $final_result['result'] = true;
+        }
 
         return new JsonResponse($final_result);
     }
 
     #[Route('/bitrix/migration/departments')]
+    #[IsGranted('ROLE_ADMIN')]
     public function migrateDepartments(BitrixService $bitrixService,DepartmentRepository $departmentRepository, DepartmentPresist $departmentPresist):JsonResponse
     {
         $result = $bitrixService->call('department.get',[]);
 
-        $final_result = [];
+        $final_result = [
+            'result' => false,
+            'elements'=> 0
+        ];
 
         $countBatches = ceil($result['total'] / 50) + 1;
-
+        $i = 0;
         $start = 0;
         while($countBatches > 0) {
             $result = $bitrixService->call('department.get?start='.$start, []);
@@ -79,12 +90,12 @@ class BitrixController extends AbstractController
                     $department->setName($elemnt["NAME"]);
                     $department->setBitrixId($elemnt["ID"]);
                     $departmentPresist->add($department);
-                    $final_result[] =  $elemnt["NAME"];
-
+                    $final_result[] = $i++;
                 }
             }
             $countBatches--;
             $start += 50;
+            $final_result['result'] = true;
         }
 
         return new JsonResponse($final_result);
