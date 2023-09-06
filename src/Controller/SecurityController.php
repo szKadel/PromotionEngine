@@ -75,7 +75,16 @@ class SecurityController extends AbstractController
                 'email'=>$user->getEmail(),
                 'roles'=>$user->getRoles(),
                 'userName' => $user->getUsername(),
-                'employee' => json_encode($user->getEmployee())?? null
+                'employee' => [
+                        'id' => $user->getEmployee()->getId()??"",
+                        'name' => $user->getEmployee()->getName()??"",
+                        'surname' => $user->getEmployee()->getSurname()??"",
+                        'email' => $user->getEmployee()->getEmail()??"",
+                        'department' => [
+                            'id'=>$user->getEmployee()->getDepartment()->getId()??"",
+                            'name'=>$user->getEmployee()->getDepartment()->getName()??""
+                        ]
+                    ] ?? null
             ]
         );
     }
