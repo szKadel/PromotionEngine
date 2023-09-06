@@ -76,6 +76,7 @@ class SecurityController extends AbstractController
                 'roles'=>$user->getRoles(),
                 'userName' => $user->getUsername(),
                 'employee' => [
+                        '@id' => $iriConverter->getIriFromResource($user->getEmployee()),
                         'id' => $user->getEmployee()->getId()??"",
                         'name' => $user->getEmployee()->getName()??"",
                         'surname' => $user->getEmployee()->getSurname()??"",
