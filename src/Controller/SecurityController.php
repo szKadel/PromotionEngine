@@ -61,7 +61,7 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/api/getCurrentUser/', name: 'app_check_user', methods: ['GET'])]
-    public function getCurrentUser(#[CurrentUser] User $user ):Response
+    public function getCurrentUser(IriConverterInterface $iriConverter, #[CurrentUser] User $user ):Response
     {
         if(empty($user->getId()) || $user === null)
         {
@@ -80,6 +80,7 @@ class SecurityController extends AbstractController
                         'name' => $user->getEmployee()->getName()??"",
                         'surname' => $user->getEmployee()->getSurname()??"",
                         'department' => [
+                            '@id' => $iriConverter->getIriFromResource($user->getEmployee()->getDepartment()),
                             'id'=>$user->getEmployee()->getDepartment()->getId()??"",
                             'name'=>$user->getEmployee()->getDepartment()->getName()??""
                         ]
