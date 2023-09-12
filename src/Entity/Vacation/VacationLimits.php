@@ -44,7 +44,7 @@ class VacationLimits
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['vacationLimit:read', 'vacationLimit:write','employee:read'])]
+    #[Groups(['vacationLimit:read', 'vacationLimit:write','employee:read', 'vacationRequest:read'])]
     #[Assert\NotBlank]
     private ?VacationTypes $vacationType = null;
 
