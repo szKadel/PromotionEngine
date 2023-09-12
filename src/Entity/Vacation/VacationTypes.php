@@ -27,7 +27,7 @@ class VacationTypes
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['vacationType:read', 'vacationType:write','vacationRequest:read','vacationLimit:read'])]
+    #[Groups(['vacationType:read', 'vacationType:write','vacationRequest:read','vacationLimit:read','employee:read'])]
     private ?string $name = null;
 
     public function getId(): ?int
