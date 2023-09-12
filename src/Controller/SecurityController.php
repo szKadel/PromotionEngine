@@ -6,14 +6,10 @@ use ApiPlatform\Api\IriConverterInterface;
 use App\Controller\Authorisation\ApiTokenController;
 use App\Entity\ApiToken;
 use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
@@ -70,24 +66,27 @@ class SecurityController extends AbstractController
             ]);
         }
 
+        if(!empty($user->getEmployee())) {
+            $employee = [
+                    '@id' => $iriConverter->getIriFromResource($user->getEmployee()) ?? "",
+                    'id' => $user->getEmployee()?->getId(),
+                    'name' => $user->getEmployee()->getName()??"",
+                    'surname' => $user->getEmployee()->getSurname() ?? "",
+                    'department' => [
+                        '@id' => $iriConverter->getIriFromResource($user->getEmployee()->getDepartment()) ?? "",
+                        'id' => $user->getEmployee()->getDepartment()->getId() ?? "",
+                        'name' => $user->getEmployee()->getDepartment()->getName() ?? ""
+                    ]
+                ] ?? null;
+        }
+
         return new JsonResponse([
                 'id' =>$user->getId(),
                 'email'=>$user->getEmail(),
                 'roles'=>$user->getRoles(),
                 'userName' => $user->getUsername(),
-                'employee' => [
-                        '@id' => $iriConverter->getIriFromResource($user->getEmployee()),
-                        'id' => $user->getEmployee()->getId()??"",
-                        'name' => $user->getEmployee()->getName()??"",
-                        'surname' => $user->getEmployee()->getSurname()??"",
-                        'department' => [
-                            '@id' => $iriConverter->getIriFromResource($user->getEmployee()->getDepartment()),
-                            'id'=>$user->getEmployee()->getDepartment()->getId()??"",
-                            'name'=>$user->getEmployee()->getDepartment()->getName()??""
-                        ]
-                    ] ?? null
-            ]
-        );
+                'employee' => $employee ?? null
+            ]);
     }
 
 

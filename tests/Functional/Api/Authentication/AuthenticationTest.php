@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Functional\Api;
+namespace App\Tests\Functional\Api\Authentication;
 
 use App\Factory\ApiTokenFactory;
 use App\Factory\Company\DepartmentFactory;
@@ -41,22 +41,21 @@ class AuthenticationTest extends KernelTestCase
         $department = DepartmentFactory::createMany(5);
         $employee = EmployeeFactory::createOne();
         $token = ApiTokenFactory::createOne();
+
+        $user = UserFactory::createOne(['password'=>'pass', 'roles'=>['ROLE_ADMIN'], 'employee' => null]);
+
         $this->browser()
+            ->actingAs($user)
             ->post(
                 '/api/users',
                 [
                     'json'=>[
-                        'email'=>'test@test.pl',
+                        'email'=>'test5@test.pl',
                         'password'=>'test',
-                        'username'=>'test'
-                    ],
-                    'headers'=>[
-                        'Authorization'=>'Bearer '. $token->getToken()
+                        'username'=>'test5'
                     ]
                 ]
             )->assertStatus(201);
-
-        //LogIn
 
         $this->browser()
             ->post(
@@ -72,9 +71,38 @@ class AuthenticationTest extends KernelTestCase
 
         $this->browser()
             ->post('/login',['json'=>[
-                'email'=>'test@test.pl',
+                'email'=>'test5@test.pl',
                 'password'=>'test'
             ]
             ])->assertStatus(200);
+    }
+
+    public function testCheckUser()
+    {
+        $department = DepartmentFactory::createMany(5);
+        $employee = EmployeeFactory::createOne();
+        $user = UserFactory::createOne(['password'=>'pass','employee' => null]);
+
+        //check user with employee
+
+        $this->browser()
+            ->actingAs($user)
+            ->get('/api/getCurrentUser/',[
+            ]
+            )->assertStatus(200);
+
+        $user = UserFactory::createOne(['password'=>'pass']);
+
+        //check user whit employee
+        $this->browser()
+            ->actingAs($user)
+            ->get('/api/getCurrentUser/',[]
+            )->assertStatus(200);
+
+        //check authentication
+        $this->browser()
+            ->get('/api/getCurrentUser/',[
+                ]
+            )->assertStatus(401);
     }
 }
