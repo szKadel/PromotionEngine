@@ -49,7 +49,7 @@ class VacationLimits
     private ?VacationTypes $vacationType = null;
 
     #[ORM\Column]
-    #[Groups(['vacationLimit:read', 'vacationLimit:write','employee:read'])]
+    #[Groups(['vacationLimit:read', 'vacationLimit:write','employee:read','vacationRequest:read'])]
     #[Assert\GreaterThanOrEqual(0, message: "Limit nie może być niższy niż 0")]
     #[Assert\LessThanOrEqual(100, message: "Limit nie może być wyższy niż 100 dni")]
     private ?int $daysLimit = null;
