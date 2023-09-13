@@ -15,7 +15,10 @@ class EmployeeResourceTest extends KernelTestCase
     use HasBrowser;
     use ResetDatabase;
 
-
+    protected static function getKernelClass(): string
+    {
+        return \App\Kernel::class;
+    }
 
     public function testGetCollectionOfEmployees()
     {

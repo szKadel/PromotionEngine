@@ -1,0 +1,257 @@
+{
+  "repeatedWords": {
+    "from": "from",
+    "to": "to",
+    "choose": "Choose",
+    "year": "Year",
+    "days": "Days",
+    "employee": "Employee",
+    "replacement": "Replacement",
+    "date": "Date",
+    "department": "Department",
+    "number": "Number",
+    "daysOrHours": "d/h",
+    "all": "All",
+    "update": "Update",
+    "export": "Export",
+    "organization": "Organization",
+    "general": "General",
+    "add": "Add",
+    "list": "List",
+    "name": "Name",
+    "surname": "Surname",
+    "enter": "Enter",
+    "error": "Error",
+    "warning": "Warning",
+    "logOut": "Log Out",
+    "success": "Success",
+    "users": "Users",
+    "employees": "Employees",
+    "table": "Table",
+    "user": "User",
+    "roles": "Roles",
+    "more":"More",
+    "selected":"Selected"
+  },
+
+  "repeatedSentences": {
+    "inFormat": "in format",
+    "userName": "User Name",
+    "placeholder":{
+      "employee":"Choose employee"
+    }
+  },
+
+  "auth": {
+    "roles": {
+      "ROLE_ADMIN": "Administrator",
+      "ROLE_USER": "User"
+    }
+  },
+
+  "menu": {
+    "subMenuVacations": {
+      "title": "Vacations",
+      "menuItemCreateRequest": "Create a request",
+      "menuItemCalendar": "Calendar",
+      "menuItemRequestsList": "List of requests",
+      "menuItemReports": "Reports"
+    },
+    "subMenuDelegations": {
+      "title": "Delegations",
+      "menuItemCreateBusinessTrip": "Create business trip",
+      "menuItemTripsHistory": "History of trips",
+      "menuItemAddBilling": "Add Billing",
+      "menuItemReports": "Reports",
+      "menuItemDelegationSettlements": "Delegation settlements"
+    }
+  },
+  "pages": {
+    "logIn": {
+      "header": { "title": "Log in" },
+      "form": {
+        "fields": {
+          "password": {
+            "label": "Password"
+          }
+        }
+      }
+    },
+    "home": {
+      "sectionNews": {
+        "title": "News"
+      },
+      "sectionBasicData": {
+        "title": "Basic data",
+        "NumberDescriptionCardComponent": {
+          "description": "Number of active employees"
+        },
+        "AbsentNext7DaysComponent": {
+          "title": "Next 7 days",
+          "subTitle": "in the days",
+          "sectionAbsent": {
+            "title": "Absent"
+          }
+        }
+      }
+    },
+    "vacations": {
+      "createRequest": {
+        "NewVacationRequestForm": {
+          "title": "New vacation request",
+          "updateTitle": "Update vacation request",
+          "fields": {
+            "nameAndSurname": { "label": "Name and surname" },
+            "positionDepartment": { "label": "Position/Department" },
+            "typeOfRequest": { "label": "Type of request" },
+            "plannedVacation": {
+              "label": "Planned vacation",
+              "placeholder": "Select a date range from and to"
+            },
+            "vacationDaysNumber": { "label": "Number of vacation days" },
+            "replacement": {
+              "label": "Replacement",
+              "placeholder": "an employee"
+            },
+            "comment": { "label": "Comment", "placeholder": "Your comment" }
+          },
+          "submitButton": "Create"
+        },
+        "UseOfVacationsTable": {
+          "title": "Use of vacations",
+          "table": {
+            "columns": { "forUse": "For use", "onDemand": "Including: dm" },
+            "footer": { "title": "Total" }
+          }
+        }
+      },
+      "listOfRequests": {
+        "addNewRequestButton": "Add a vacation request",
+        "editRequestDialog": {
+          "title": "Edit request"
+        }
+      },
+      "calendar": {
+        "actionButtonsContainer": {
+          "addPlanRequestButton": "Add a vacation plan"
+        }
+      }
+    },
+    "settings": {
+      "organization": {
+        "contentCards": {
+          "general": {
+            "items": {
+              "addEmployee": "Add Employee/User"
+            }
+          },
+          "vacations": {
+            "items": {
+              "limits": "Limits"
+            }
+          }
+        },
+        "pages": {
+          "addEmployee": {
+            "form": {
+              "addEmployee": {
+                "fields": {
+                  "user": { "placeholder": "Choose a user" }
+                }
+              }
+            },
+            "addedEmployeesListTable": {
+              "title": "List of added users",
+              "dialog": {
+                "addEmployee": { "header": "Add an employee" }
+              },
+              "columns": {
+                "basicLimit": {
+                  "title": "Basic Limit"
+                },
+                "additionalLimit": {
+                  "title": "Additional Limit"
+                }
+              }
+            },
+            "listOfUsersTable": {
+              "dialog": {
+                "addUser": { "header": "Add user" },
+                "editUser": { "header": "Edit user" }
+              }
+            }
+          },
+          "vacations": {
+            "limits": {
+              "header": {
+                "title": "Limity Urlopów"
+              },
+              "dialog": { "title": "Add limit" }
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "message": {
+    "licenseInfo": {
+      "endDate": "License end date:",
+      "type": "License type:"
+    },
+    "successfulOperation": {
+      "message": "The operation was successful"
+    }
+  },
+
+  "error": {
+    "request": {
+      "unexpectedAnswer": {
+        "title": "Unexpected answer",
+        "message": "Try again or later."
+      },
+      "delayedAuthorizationError": {
+        "title": "Authorization error",
+        "message": "The payment system authorization data submitted to the application is incorrect"
+      }
+    },
+    "user": {
+      "pattern": {
+        "message": "Invalid format"
+      },
+      "passwordOrLogin": {
+        "message": "Invalid password or login"
+      },
+      "appConfig": {
+        "title": "The application was compiled incorrectly",
+        "message": "Please change the viewing mode of your browser or disable the third-party cookies block option in the settings."
+      },
+      "pageNotFound": {
+        "title": "Page not found",
+        "message": "Check that the address is correct"
+      },
+      "table": {
+        "row": {
+          "update": {
+            "noChanges": {
+              "message": "To update employee details, you must change at least one field."
+            },
+            "emptyFields": {
+              "message": "All fields must be filled in to update employee data."
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "fieldsValidation": {
+    "required": "The field is required",
+    "minLength": "The minimum number of characters is"
+  },
+  "employeeDropdown":{
+    "filter":{
+      "helpText":"Search only by last name"
+    }
+  }
+}
