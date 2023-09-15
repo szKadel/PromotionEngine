@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
  */
 class VacationRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry,private VacationStatusRepository $vacationStatusRepository)
     {
         parent::__construct($registry, Vacation::class);
     }
@@ -28,9 +28,15 @@ class VacationRepository extends ServiceEntityRepository
 
     public function findExistingVacationForUserInDateRange(Employee $employee, \DateTimeInterface $startDate, \DateTimeInterface $endDate):void
     {
+        $statusAccepted = $this->vacationStatusRepository->findByName("Potwierdzony");
+        $statusWaiting = $this->vacationStatusRepository->findByName("Oczekujący");
+
         $result = $this->createQueryBuilder('v')
             ->andWhere('v.employee = :employee')
-            ->andWhere('((:dateFrom BETWEEN v.dateFrom AND v.dateTo) OR (:dateTo BETWEEN v.dateFrom AND v.dateTo) OR :dateFrom = v.dateTo OR v.dateTo = :dateFrom OR v.dateFrom = :dateTo)')
+            ->andWhere('(v.status = :status or v.status = :status2)')
+            ->andWhere('(:dateFrom BETWEEN v.dateFrom AND v.dateTo OR :dateTo BETWEEN v.dateFrom AND v.dateTo OR :dateFrom = v.dateTo OR v.dateTo = :dateFrom OR v.dateFrom = :dateTo)')
+            ->setParameter('status', $statusAccepted)
+            ->setParameter('status2', $statusWaiting)
             ->setParameter('employee', $employee)
             ->setParameter('dateFrom', $startDate->format('Y-m-d'))
             ->setParameter('dateTo', $endDate->format('Y-m-d'))

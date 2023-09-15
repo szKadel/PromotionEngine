@@ -77,6 +77,7 @@ class VacationRequestResourceTest extends KernelTestCase
 
         $user = UserFactory::createOne(['employee' => $employee, 'roles'=>['ROLE_USER']]);
 
+         VacationTypesFactory::createOne();
         $vacationType = VacationTypesFactory::createOne();
 
         VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>500]);
