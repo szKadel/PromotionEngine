@@ -53,10 +53,7 @@ class VacationStateProcessor implements ProcessorInterface
 
         if($data instanceof VacationLimits)
         {
-
-            $vacationRepository = $this -> employeeVacationLimitRepository;
-
-            if($vacationRepository -> findTypeForEmployee($data->getEmployee(),$data->getVacationType()) !== null)
+            if($this -> employeeVacationLimitRepository -> findTypeForEmployee($data->getEmployee(),$data->getVacationType()) !== null)
             {
                 throw new BadRequestException("Limit został już dodany!",400);
             }
@@ -92,6 +89,7 @@ class VacationStateProcessor implements ProcessorInterface
             }
         }
     }
+
 
     private function setVacationStatus(Vacation $vacation)
     {

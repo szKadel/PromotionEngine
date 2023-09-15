@@ -37,7 +37,7 @@ class VacationRequestResourceTest extends KernelTestCase
         $vacationType = VacationTypesFactory::createOne();
 
         VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>500]);
-        VacationLimitsFactory::createOne(["employee"=>$employeeMod,'vacationType'=>$vacationType, 'daysLimit'=>500]);
+        VacationLimitsFactory::createOne(["employee"=>$employeeMod,'vacationType'=>$vacationType, 'daysLimit'=>20]);
 
         VacationFactory::createOne(['employee' => $employee, 'type'=>$vacationType]);
         VacationFactory::createMany(5,['employee' => $employee3, 'type'=>$vacationType]);
@@ -59,6 +59,65 @@ class VacationRequestResourceTest extends KernelTestCase
         $this->browser()
             ->get('/api/vacations')
             ->assertStatus(401);
+    }
+
+    public function testVacationAdd()
+    {
+        VacationStatusFactory::createOne(['name'=>'Oczekujący']);
+        VacationStatusFactory::createOne(['name'=>'Zaplanowany']);
+
+        $department = DepartmentFactory::createOne();
+        $department2 = DepartmentFactory::createOne();
+
+        $employee = EmployeeFactory::createOne(['department'=>$department]);
+        $employee3 = EmployeeFactory::createOne(['department'=>$department2]);
+        $employeeMod = EmployeeFactory::createOne(['department'=>$department]);
+
+        $mod = UserFactory::createOne(['employee' => $employeeMod, 'roles'=>['ROLE_MOD']]);
+
+        $user = UserFactory::createOne(['employee' => $employee, 'roles'=>['ROLE_USER']]);
+
+        $vacationType = VacationTypesFactory::createOne();
+
+        VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>500]);
+        VacationLimitsFactory::createOne(["employee"=>$employeeMod,'vacationType'=>$vacationType, 'daysLimit'=>20]);
+
+        $this->browser()
+            ->actingAs($user)
+            ->post('/api/vacations',[
+                'json'=>[
+                    'employee'=>'api/employees/'.$employee->getId(),
+                    'type'=> 'api/vacation_types/'.$vacationType->getId(),
+                    'dateFrom'=> '2023-09-15',
+                    'dateTo'=>'2023-09-21'
+                ]
+            ])
+            ->assertStatus(201);
+
+        $this->browser()
+            ->actingAs($user)
+            ->post('/api/vacations',[
+                'json'=>[
+                    'employee'=>'api/employees/'.$employee->getId(),
+                    'type'=> 'api/vacation_types/'.$vacationType->getId(),
+                    'dateFrom'=> '2023-09-10',
+                    'dateTo'=>'2023-09-15'
+                ]
+            ])
+            ->assertStatus(400);
+
+        $this->browser()
+            ->actingAs($user)
+            ->post('/api/vacations',[
+                'json'=>[
+                    'employee'=>'api/employees/'.$employee->getId(),
+                    'type'=> 'api/vacation_types/'.$vacationType->getId(),
+                    'dateFrom'=> '2023-09-11',
+                    'dateTo'=>'2023-09-11'
+                ]
+            ])
+            ->assertStatus(400);
+
     }
 
 

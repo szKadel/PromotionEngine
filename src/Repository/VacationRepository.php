@@ -28,19 +28,21 @@ class VacationRepository extends ServiceEntityRepository
 
     public function findExistingVacationForUserInDateRange(Employee $employee, \DateTimeInterface $startDate, \DateTimeInterface $endDate):void
     {
-         $result = $this->createQueryBuilder('v')
+        $result = $this->createQueryBuilder('v')
             ->andWhere('v.employee = :employee')
-            ->andWhere('(v.dateFrom BETWEEN :dateFrom AND :dateTo OR v.dateTo BETWEEN :dateFrom AND :dateTo) OR v.dateTo = :dateFrom')
+            ->andWhere('(v.dateFrom BETWEEN :dateFrom AND :dateTo) OR (v.dateTo BETWEEN :dateFrom AND :dateTo)')
+            ->orWhere('v.dateTo = :dateFrom OR v.dateFrom = :dateTo')
             ->setParameter('employee', $employee)
             ->setParameter('dateFrom', $startDate)
             ->setParameter('dateTo', $endDate)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getResult();
 
          if(!empty($result))
          {
              throw new BadRequestException("Wniosek dla tego użytkownika w tym terminie został już złożony");
          }
+
     }
 
     public function findVacationUsedByUser(Employee $employee, VacationStatus $vacationStatus, VacationTypes $vacationTypes):int

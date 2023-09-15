@@ -12,7 +12,7 @@ class BitrixService
     public function __construct(HttpClientInterface $httpClient)
     {
         $this->httpClient = $httpClient;
-        $this->bitrixWebhookUrl = "";
+        $this->bitrixWebhookUrl = "https://properties.bitrix24.pl/rest/9/9ez62r0fjz5if0jf";
     }
 
     public function call(string $method,array $data):array
