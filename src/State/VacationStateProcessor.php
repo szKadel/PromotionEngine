@@ -53,7 +53,9 @@ class VacationStateProcessor implements ProcessorInterface
                     }
                 }
             } elseif ($operation instanceof Put) {
-
+                if ($data->getType()->getId() != 1 && $data->getType()->getId() != 11) {
+                    $this->checkVacationLimits($data);
+                }
             }
         }
 

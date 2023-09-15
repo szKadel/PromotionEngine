@@ -47,12 +47,6 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
         $queryBuilder->setParameter('current_user_id', $user->getEmployee()->getId());
     }
 
-    //  Nadawać limity - dla wszystkich
-    //  Dodać pracownika / użytkownika
-    // Może akceptowac Wnioski/ Edytować / Odrzucać  Swojej grupy
-
-    //Admin -> update user Mod nie
-
     public function groupModerator(QueryBuilder $queryBuilder, string $resourceClass)
     {
         if (Vacation::class !== $resourceClass || $this->security->isGranted('ROLE_ADMIN') || null === $user = $this->security->getUser()) {
@@ -65,8 +59,6 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
             $queryBuilder->join(sprintf('%s.employee', $rootAlias), 'u');
             $queryBuilder->andWhere('u.department = :department');
             $queryBuilder->setParameter('department', $user->getEmployee()->getDepartment());
-
-            return;
         }
     }
 }
