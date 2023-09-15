@@ -98,49 +98,7 @@ class Vacation
     #[ORM\PrePersist]
     public function prePersist(PrePersistEventArgs $args):void
     {
-        $entityManager = $args->getObjectManager();
 
-        $vacationRepository = $entityManager->getRepository(Vacation::class);
-        $vacationRepository -> findExistingVacationForUserInDateRange($this->employee, $this->dateFrom, $this->dateTo);
-
-            $vacationStatusRepository = $entityManager->getRepository(VacationStatus::class);
-            $this->status = $this->type->getId() == 1 ? $vacationStatusRepository -> findByName('Zaplanowany') : $vacationStatusRepository -> findByName('Oczekujący');
-
-        if($this->type->getId() != 1 && $this->type->getId() != 11) {
-            $vacationUsedInDays = $vacationRepository->findVacationUsedByUser(
-                $this->employee,
-                $this->status,
-                $this->type
-            );
-
-            $vacationLimitsRepository = $entityManager->getRepository(VacationLimits::class);
-            $limit = $vacationLimitsRepository->findLimitByTypes($this->employee, $this->type);
-
-            if (empty($limit[0])) {
-                throw new BadRequestException('Ten Urlop nie został przypisany dla tego użytkownika.');
-            }
-
-            if($limit[0]->getDaysLimit() != 0){
-                if ($limit[0]->getDaysLimit() < $vacationUsedInDays + $this->getSpendVacationDays()) {
-                    throw new BadRequestException(
-                        'Nie wystarczy dni Urlopowych. Pozostało ' . $limit[0]->getDaysLimit(
-                        ) - $vacationUsedInDays . ". Wnioskujesz o " . $this->getSpendVacationDays()
-                    );
-                }
-            }
-        }
-
-        if ($this->dateTo < $this->dateFrom) {
-            throw new BadRequestException("Data rozpoczęcia urlopu nie może być wcześniejsza niż data jego zakończenia.",403);
-        }
-
-//        if ($this->dateTo->format('Y-m-d') < date('Y-m-d') || $this->dateFrom->format('Y-m-d')  < date('Y-m-d') ) {
-//            throw new BadRequestException("Urlop nie może być wcześniej niż data dzisiejsza.",403);
-//        }
-
-        if ($this->employee === $this->replacement) {
-            throw new BadRequestException("Użytkownik biorący urlop nie może być na zastępstwie.",403);
-        }
 
     }
 

@@ -24,8 +24,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new get(normalizationContext: ['groups' => ['employee:read']],security: "is_granted('ROLE_USER')"),
         new GetCollection(normalizationContext: ['groups' => ['employee:read']],security: "is_granted('ROLE_USER')"),
-        new Post(normalizationContext: ['groups' => ['employee:write']],security: "is_granted('ROLE_ADMIN')"),
-        new Put(normalizationContext: ['groups' => ['employee:write']],security: "is_granted('ROLE_ADMIN')")
+        new Post(normalizationContext: ['groups' => ['employee:write']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD')"),
+        new Put(normalizationContext: ['groups' => ['employee:write']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD')")
     ],
     paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7

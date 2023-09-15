@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Functional\Api;
+namespace App\Tests\Functional\Api\Company;
 
 use App\Factory\Company\EmployeeFactory;
 use App\Factory\UserFactory;

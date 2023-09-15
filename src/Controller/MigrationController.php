@@ -11,8 +11,6 @@ class MigrationController
     public function migrateUsers(BitrixService $bitrixService)
     {
         $result = $bitrixService->call('method.get',[]);
-        var_dump($result);
-
     }
 
     public function migrateDepartments()

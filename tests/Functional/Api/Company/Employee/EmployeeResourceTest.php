@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Tests\Functional\Api;
+namespace App\Tests\Functional\Api\Company\Employee;
 
-use ApiPlatform\Api\IriConverterInterface;
 use App\Factory\Company\DepartmentFactory;
 use App\Factory\Company\EmployeeFactory;
 use App\Factory\UserFactory;
@@ -70,7 +69,6 @@ class EmployeeResourceTest extends KernelTestCase
             ])
             ->assertStatus(200);
     }
-
 
 
 }

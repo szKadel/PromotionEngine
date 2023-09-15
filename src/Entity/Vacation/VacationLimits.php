@@ -17,13 +17,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EmployeeVacationLimitRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     operations: [
         new get(normalizationContext: ['groups' => ['vacationLimit:read']],security: "is_granted('ROLE_USER')"),
         new GetCollection(normalizationContext: ['groups' => ['vacationLimit:read']],security: "is_granted('ROLE_USER')"),
-        new Post(denormalizationContext: ['groups' => ['vacationLimit:write']],security: "is_granted('ROLE_ADMIN')"),
-        new Put(denormalizationContext: ['groups' => ['vacationLimit:write']],security: "is_granted('ROLE_ADMIN')"),
-        new Delete(denormalizationContext: ['groups' => ['vacationLimit:write']],security: "is_granted('ROLE_ADMIN')")
+        new Post(denormalizationContext: ['groups' => ['vacationLimit:write']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD')"),
+        new Put(denormalizationContext: ['groups' => ['vacationLimit:write']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD')"),
+        new Delete(denormalizationContext: ['groups' => ['vacationLimit:write']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD')")
     ],
     paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7,
@@ -54,17 +55,15 @@ class VacationLimits
     #[Assert\LessThanOrEqual(100, message: "Limit nie może być wyższy niż 100 dni")]
     private ?int $daysLimit = null;
 
-
+    #[ORM\PrePersist]
     public function prePersist(PrePersistEventArgs $args):void
     {
         $entityManager = $args->getObjectManager();
-
         $vacationRepository = $entityManager->getRepository(VacationLimits::class);
-        $vacationRepository -> findTypeForEmployee($this->Employee,$this->vacationType);
-        throw new BadRequestException("Limit tego typu urlopu został już przypisany dla tego użytkownika.");
+
         if($vacationRepository -> findTypeForEmployee($this->Employee,$this->vacationType) !== null)
         {
-            throw new BadRequestException("Limit tego typu urlopu został już przypisany dla tego użytkownika.");
+            throw new BadRequestException("Limit tego typu urlopu został już przypisany dla tego użytkownika.",403);
         }
     }
 

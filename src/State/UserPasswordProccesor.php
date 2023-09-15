@@ -18,7 +18,6 @@ class UserPasswordProccesor implements ProcessorInterface
         private UserPasswordHasherInterface $userPasswordHasher
     )
     {
-
     }
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): void

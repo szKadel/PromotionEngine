@@ -135,7 +135,7 @@
   <component name="PhpRuntimeConfiguration" document_root_path="." />
   <component name="PhpUnit">
     <phpunit_settings>
-      <PhpUnitSettings custom_loader_path="$PROJECT_DIR$/vendor/autoload.php" phpunit_phar_path="$PROJECT_DIR$/../tasks/phpunit.phar" />
+      <PhpUnitSettings configuration_file_path="$PROJECT_DIR$/phpunit.xml.dist" custom_loader_path="$PROJECT_DIR$/vendor/autoload.php" phpunit_phar_path="$PROJECT_DIR$/vendor/phpunit.phar" use_configuration_file="true" />
     </phpunit_settings>
   </component>
 </project>

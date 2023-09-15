@@ -21,16 +21,18 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
     public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []): void
     {
         $this->addWhere($queryBuilder, $resourceClass);
+        $this->groupModerator($queryBuilder, $resourceClass);
     }
 
     public function applyToItem(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, array $identifiers, Operation $operation = null, array $context = []): void
     {
         $this->addWhere($queryBuilder, $resourceClass);
+        $this->groupModerator($queryBuilder, $resourceClass);
     }
 
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass): void
     {
-        if (Vacation::class !== $resourceClass || $this->security->isGranted('ROLE_ADMIN') || null === $user = $this->security->getUser()) {
+        if (Vacation::class !== $resourceClass || $this->security->isGranted('ROLE_ADMIN') || $this->security->isGranted('ROLE_MOD') || null === $user = $this->security->getUser()) {
             return;
         }
 
@@ -43,5 +45,28 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
         $queryBuilder->join(sprintf('%s.employee', $rootAlias), 'u');
         $queryBuilder->andWhere('u.id = :current_user_id');
         $queryBuilder->setParameter('current_user_id', $user->getEmployee()->getId());
+    }
+
+    //  Nadawać limity - dla wszystkich
+    //  Dodać pracownika / użytkownika
+    // Może akceptowac Wnioski/ Edytować / Odrzucać  Swojej grupy
+
+    //Admin -> update user Mod nie
+
+    public function groupModerator(QueryBuilder $queryBuilder, string $resourceClass)
+    {
+        if (Vacation::class !== $resourceClass || $this->security->isGranted('ROLE_ADMIN') || null === $user = $this->security->getUser()) {
+            return;
+        }
+
+        if($this->security->isGranted('ROLE_MOD')){
+            $rootAlias = $queryBuilder->getRootAliases()[0];
+
+            $queryBuilder->join(sprintf('%s.employee', $rootAlias), 'u');
+            $queryBuilder->andWhere('u.department = :department');
+            $queryBuilder->setParameter('department', $user->getEmployee()->getDepartment());
+
+            return;
+        }
     }
 }

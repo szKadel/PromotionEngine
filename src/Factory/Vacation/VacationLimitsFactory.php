@@ -3,9 +3,11 @@
 namespace App\Factory\Vacation;
 
 use App\Entity\Vacation\VacationLimits;
+use App\Entity\Vacation\VacationStatus;
 use App\Factory\Company\EmployeeFactory;
 use App\Factory\VacationTypesFactory;
 use App\Repository\EmployeeVacationLimitRepository;
+use App\Repository\VacationStatusRepository;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
@@ -51,7 +53,7 @@ final class VacationLimitsFactory extends ModelFactory
         return [
             'daysLimit' => self::faker()->randomNumber(),
             'employee' => EmployeeFactory::new(),
-            'vacationType' => VacationTypesFactory::new(),
+            'vacationType' => VacationTypesFactory::new()
         ];
     }
 
