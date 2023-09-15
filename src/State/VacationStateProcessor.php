@@ -3,6 +3,8 @@
 namespace App\State;
 
 use ApiPlatform\Metadata\Operation;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\Vacation\Vacation;
 use App\Entity\Vacation\VacationLimits;
@@ -36,18 +38,22 @@ class VacationStateProcessor implements ProcessorInterface
     ): void
     {
         if($data instanceof Vacation) {
-            if ($this->security->getUser()) {
-                $this->vacationRepository->findExistingVacationForUserInDateRange(
-                    $data->getEmployee(),
-                    $data->getDateFrom(),
-                    $data->getDateTo()
-                );
+            if($operation instanceof Post) {
+                if ($this->security->getUser()) {
+                    $this->vacationRepository->findExistingVacationForUserInDateRange(
+                        $data->getEmployee(),
+                        $data->getDateFrom(),
+                        $data->getDateTo()
+                    );
 
-                $this->setVacationStatus($data);
+                    $this->setVacationStatus($data);
 
-                if ($data->getType()->getId() != 1 && $data->getType()->getId() != 11) {
-                    $this-> checkVacationLimits($data);
+                    if ($data->getType()->getId() != 1 && $data->getType()->getId() != 11) {
+                        $this->checkVacationLimits($data);
+                    }
                 }
+            } elseif ($operation instanceof Put) {
+                
             }
         }
 

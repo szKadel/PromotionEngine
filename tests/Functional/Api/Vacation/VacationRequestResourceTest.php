@@ -100,8 +100,8 @@ class VacationRequestResourceTest extends KernelTestCase
                 'json'=>[
                     'employee'=>'api/employees/'.$employee->getId(),
                     'type'=> 'api/vacation_types/'.$vacationType->getId(),
-                    'dateFrom'=> '2023-09-10',
-                    'dateTo'=>'2023-09-15'
+                    'dateFrom'=> '2023-09-21',
+                    'dateTo'=>'2023-09-22'
                 ]
             ])
             ->assertStatus(400);
@@ -112,12 +112,11 @@ class VacationRequestResourceTest extends KernelTestCase
                 'json'=>[
                     'employee'=>'api/employees/'.$employee->getId(),
                     'type'=> 'api/vacation_types/'.$vacationType->getId(),
-                    'dateFrom'=> '2023-09-11',
-                    'dateTo'=>'2023-09-11'
+                    'dateFrom'=> '2023-09-21',
+                    'dateTo'=>'2023-09-22'
                 ]
             ])
             ->assertStatus(400);
-
     }
 
 
