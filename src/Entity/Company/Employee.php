@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Entity\Company;
 use App\Entity\User;
 use App\Entity\Vacation\VacationLimits;
 use App\Entity\Vacation\Vacation;
@@ -79,6 +80,10 @@ class Employee
     #[ORM\OneToOne(mappedBy: 'employee', cascade: ['persist', 'remove'])]
     #[Groups(['user:read','user:write','employee:read','employee:write'])]
     private ?User $user = null;
+
+    #[ORM\ManyToOne(inversedBy: 'employees')]
+    #[Groups(['user:read','user:write','employee:read','employee:write'])]
+    private ?Company $company = null;
 
 
     public function __construct()
@@ -235,6 +240,18 @@ class Employee
         }
 
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getCompany(): ?Company
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?Company $company): static
+    {
+        $this->company = $company;
 
         return $this;
     }

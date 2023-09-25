@@ -32,6 +32,7 @@ class SecurityController extends AbstractController
             if(!empty($user -> getApiTokens()->get(0))) {
                 $apiTokenController->delete($user->getApiTokens()->get(0));
             }
+
             $token = new ApiToken();
             $token ->setOwnedBy($user);
             $apiTokenController -> add($token);
