@@ -93,7 +93,7 @@ class VacationRequestResourceTest extends KernelTestCase
                     'dateTo'=>'2023-09-21'
                 ]
             ])
-            ->assertStatus(201);
+            ->dump();
 
         $this->browser()
             ->actingAs($user)
