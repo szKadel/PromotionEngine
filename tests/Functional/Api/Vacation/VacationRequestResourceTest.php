@@ -212,8 +212,8 @@ class VacationRequestResourceTest extends KernelTestCase
                 'json'=>[
                     'employee'=>'api/employees/'.$employee2->getId(),
                     'type'=> 'api/vacation_types/'.$vacationType->getId(),
-                    'dateFrom'=> '2023-09-15',
-                    'dateTo'=>'2023-09-21',
+                    'dateFrom'=> '2023-09-14',
+                    'dateTo'=>'2023-09-22',
                     'replacement' => 'api/employees/'.$employee->getId(),
                 ]
             ])
