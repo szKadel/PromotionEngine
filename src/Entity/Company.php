@@ -32,11 +32,11 @@ class Company
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups('company:read')]
+    #[Groups(['company:read','employee:read'])]
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Employee::class)]
-    #[Groups('company:read')]
+    #[Groups(['company:read'])]
     private Collection $employees;
 
     public function __construct()
