@@ -52,6 +52,10 @@ class VacationStateProcessor implements ProcessorInterface
                         $this->checkVacationLimits($data);
                     }
 
+                    if($data->getEmployee()->getId() == $data->getReplacement()->getId() ){
+                        throw new BadRequestException("Osoba tworząca urlop nie może być jednocześnie osobą zastępującą.", 400);
+                    }
+
                     if(!empty($data->getReplacement())) {
                         $this->vacationRepository->findExistingVacationForUserInDateRange(
                             $data->getReplacement(),
