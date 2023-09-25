@@ -82,6 +82,7 @@ class Employee
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'employees')]
+    #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'exact')]
     #[Groups(['user:read','user:write','employee:read','employee:write'])]
     private ?Company $company = null;
 

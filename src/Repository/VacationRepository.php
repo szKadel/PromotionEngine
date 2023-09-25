@@ -45,7 +45,7 @@ class VacationRepository extends ServiceEntityRepository
 
          if(!empty($result))
          {
-             throw new BadRequestException("Wniosek dla tego użytkownika w tym terminie został już złożony");
+             throw new BadRequestException("Wniosek dla ".$employee->getName()." ".$employee->getSurname()." w tym terminie został już złożony");
          }
 
     }

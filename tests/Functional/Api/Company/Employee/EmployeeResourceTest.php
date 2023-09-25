@@ -69,6 +69,4 @@ class EmployeeResourceTest extends KernelTestCase
             ])
             ->assertStatus(200);
     }
-
-
 }
