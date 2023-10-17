@@ -86,7 +86,7 @@ class VacationStateProcessor implements ProcessorInterface
                 {
                     if($data->getStatus()->getName() == "Potwierdzony") {
 
-                        $data->setAcceptedAt(new DateTime());
+                        $data->setAcceptedAt(new \DateTimeImmutable());
 
                         $user = $this->security->getUser();
 
@@ -113,7 +113,7 @@ class VacationStateProcessor implements ProcessorInterface
                     if($this->security->getUser()->getId() == $data->getEmployee()->getUser()->getId() ??"" && $date <= $data->getDateFrom()) {
                         $user = $this->security->getUser();
 
-                        $data->setAnnulledAt(new DateTime());
+                        $data->setAnnulledAt(new \DateTimeImmutable());
 
 
                         $data->setAnnulledBy($this->userRepository->find($user->getId()));
@@ -123,7 +123,7 @@ class VacationStateProcessor implements ProcessorInterface
                     if($this->security->isGranted("ROLE_ADMIN")&& $date <= $data->getDateTo()) {
                         $user = $this->security->getUser();
 
-                        $data->setAnnulledAt(new DateTime());
+                        $data->setAnnulledAt(new \DateTimeImmutable());
 
                         if ($user instanceof User) {
                             $data->setAnnulledBy($user);

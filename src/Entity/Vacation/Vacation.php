@@ -14,6 +14,7 @@ use App\Entity\Company\Employee;
 use App\Entity\User;
 use App\Repository\VacationRepository;
 use App\Service\WorkingDaysCounterService;
+use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
@@ -116,6 +117,11 @@ class Vacation
 
     #[ORM\ManyToOne(inversedBy: 'AnnulledVacationRequest')]
     private ?User $AnnulledBy = null;
+
+    public function __construct()
+    {
+        $this->setCreatedAt(new DateTime());
+    }
 
     #[ORM\PreUpdate]
     public function preUpdate(PreUpdateEventArgs $eventArgs)
