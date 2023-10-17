@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Entity\Company\Department;
+use App\Entity\Company\Employee;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -11,7 +13,7 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
 /**
  * @extends ServiceEntityRepository<User>
-* @implements PasswordUpgraderInterface<User>
+ * @implements PasswordUpgraderInterface<User>
  *
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
  * @method User|null findOneBy(array $criteria, array $orderBy = null)
@@ -63,4 +65,27 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function getAdmins()
+    {
+        $query = $this->createQueryBuilder('u')
+            ->where('u.roles LIKE :role')
+            ->setParameter('role', '%ROLE_ADMIN%')
+            ->getQuery();
+
+        return $query->getResult();
+    }
+
+    public function getModerators(Department $department)
+    {
+        $query = $this->createQueryBuilder('u')
+            ->leftJoin('u.employee', "e")
+            ->where('u.roles LIKE :role')
+            ->andWhere('e.department = :department' )
+            ->setParameter('role', '%ROLE_MOD%')
+            ->setParameter('department', $department -> getId())
+            ->getQuery();
+
+        return $query->getResult();
+    }
 }
