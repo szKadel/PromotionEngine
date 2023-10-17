@@ -1,6 +1,7 @@
 api_platform:
   formats:
     jsonld: ['application/ld+json']
+    json: ['application/json']
 
   swagger:
     api_keys:
