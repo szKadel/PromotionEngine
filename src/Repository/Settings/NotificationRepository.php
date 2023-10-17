@@ -22,7 +22,7 @@ class NotificationRepository extends ServiceEntityRepository
     }
 
 
-    public function getNotificationsSettings()
+    public function getNotificationsSettings() : Notification
     {
         return $this->createQueryBuilder('d')
             ->andWhere('d.id = :val')

@@ -72,7 +72,7 @@ class VacationStateProcessor implements ProcessorInterface
 
                     }
 
-                    if($this->notificationRepository -> getNotificationsSettings() ?->getNotificateAdminOnVacationRequest()) {
+                    if($this->notificationRepository -> getNotificationsSettings() ?->isNotificateAdminOnVacationRequest()) {
                         $this->emailService -> sendNotificationEmailToAllAdmin($data->getEmployee());
                     }
 
