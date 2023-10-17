@@ -42,7 +42,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     paginationItemsPerPage: 7,
 )]
 #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,properties: ['employee.department'=>'exact'])]
-#[ApiFilter(OrderFilter::class, properties: ['id','createdAt','createdAt'])]
+#[ApiFilter(OrderFilter::class, properties: ['id','createdAt','acceptedAt','dateFrom','dateTo'])]
 class Vacation
 {
     #[ORM\Id]
