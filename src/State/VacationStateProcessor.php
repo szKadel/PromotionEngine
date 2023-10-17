@@ -2,16 +2,21 @@
 
 namespace App\State;
 
+use ApiPlatform\Api\IriConverterInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\State\ProcessorInterface;
+use App\Entity\User;
 use App\Entity\Vacation\Vacation;
 use App\Entity\Vacation\VacationLimits;
-use App\Entity\Vacation\VacationStatus;
 use App\Repository\EmployeeVacationLimitRepository;
+use App\Repository\Settings\NotificationRepository;
+use App\Repository\UserRepository;
 use App\Repository\VacationRepository;
 use App\Repository\VacationStatusRepository;
+use App\Service\EmailService;
+use DateTime;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -24,7 +29,10 @@ class VacationStateProcessor implements ProcessorInterface
         private Security $security,
         private VacationRepository $vacationRepository,
         private VacationStatusRepository $vacationStatusRepository,
-        private EmployeeVacationLimitRepository $employeeVacationLimitRepository
+        private EmployeeVacationLimitRepository $employeeVacationLimitRepository,
+        private EmailService $emailService,
+        private UserRepository $userRepository,
+        private NotificationRepository $notificationRepository
     )
     {
 
@@ -45,7 +53,6 @@ class VacationStateProcessor implements ProcessorInterface
                         $data->getDateFrom(),
                         $data->getDateTo()
                     );
-
                     $this->setVacationStatus($data);
 
                     if ($data->getType()->getId() != 1 && $data->getType()->getId() != 11) {
@@ -62,12 +69,69 @@ class VacationStateProcessor implements ProcessorInterface
                             $data->getDateFrom(),
                             $data->getDateTo()
                         );
+
+                    }
+
+                    if($this->notificationRepository->getNotificationsSettings()?->getNotificateDepartmentModOnCreatedVacation())
+                    {
+                        $this->emailService->sendNotificationToModofDepartment($data->getEmployee());
                     }
                 }
             } elseif ($operation instanceof Put) {
                 if ($data->getType()->getId() != 1 && $data->getType()->getId() != 11) {
                     $this->checkVacationLimits($data);
                 }
+
+                if($data->getStatus() != $context["previous_data"]->getStatus())
+                {
+                    if($data->getStatus()->getName() == "Potwierdzony") {
+
+                        $data->setAcceptedAt(new DateTime());
+
+                        $user = $this->security->getUser();
+
+                        $data->setAcceptedBy($this->userRepository->find($user->getId()));
+
+
+                        if($this->notificationRepository -> getNotificationsSettings() ?->getNotificateAdminOnAcceptVacation()) {
+                            $this->emailService -> sendNotificationEmailToAllAdmin($data->getEmployee());
+                        }
+
+                        if ($this->notificationRepository -> getNotificationsSettings() ?->getNotificateReplacementUser() && !empty($data->getReplacement())) {
+                            $this->emailService -> sendReplacementEmployeeNotification($data->getEmployee(),$data->getReplacement());
+                        }
+
+                        if ($this->notificationRepository -> getNotificationsSettings() ?-> getNotificateUserOnVacationRequestAccept()) {
+                            $this->emailService -> sendNotificationToOwnerOnAccept($data->getEmployee());
+                        }
+                    }
+                }
+
+                if ($context["previous_data"]->getStatus()->getName() == "Potwierdzony" && $data->getStatus()->getName() == "Anulowany")
+                {
+                    $date = date('Y-m-d');
+                    if($this->security->getUser()->getId() == $data->getEmployee()->getUser()->getId() ??"" && $date <= $data->getDateFrom()) {
+                        $user = $this->security->getUser();
+
+                        $data->setAnnulledAt(new DateTime());
+
+
+                        $data->setAnnulledBy($this->userRepository->find($user->getId()));
+
+                    }
+
+                    if($this->security->isGranted("ROLE_ADMIN")&& $date <= $data->getDateTo()) {
+                        $user = $this->security->getUser();
+
+                        $data->setAnnulledAt(new DateTime());
+
+                        if ($user instanceof User) {
+                            $data->setAnnulledBy($user);
+                        }
+                    }
+                }
+
+
             }
         }
 
@@ -84,7 +148,6 @@ class VacationStateProcessor implements ProcessorInterface
         }
 
         $this->innerProcessor->process($data, $operation, $uriVariables, $context);
-
     }
 
     private function checkVacationLimits(Vacation $vacation)

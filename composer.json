@@ -22,6 +22,7 @@
         "symfony/flex": "^2",
         "symfony/framework-bundle": "6.3.*",
         "symfony/http-client": "6.3.*",
+        "symfony/mailer": "6.3.*",
         "symfony/monolog-bundle": "^3.0",
         "symfony/property-access": "6.3.*",
         "symfony/property-info": "6.3.*",
@@ -78,7 +79,8 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "6.3.*"
+            "require": "6.3.*",
+            "docker": false
         }
     },
     "require-dev": {

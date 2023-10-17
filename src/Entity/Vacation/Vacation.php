@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Entity\Company\Employee;
+use App\Entity\User;
 use App\Repository\VacationRepository;
 use App\Service\WorkingDaysCounterService;
 use Doctrine\DBAL\Types\Types;
@@ -95,12 +96,33 @@ class Vacation
     #[Groups(['vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
     private ?string $comment = null;
 
-    #[ORM\PrePersist]
-    public function prePersist(PrePersistEventArgs $args):void
-    {
+    #[ORM\Column(type: "datetime",nullable: true)]
+    #[Groups(['vacationRequest:read'])]
+    private mixed $createdAt = null;
 
+    #[ORM\Column(type: "datetime",nullable: true)]
+    #[Groups(['vacationRequest:read'])]
+    private mixed $updatedAt = null;
 
-    }
+    #[ORM\Column(type: "datetime",nullable: true)]
+    #[Groups(['vacationRequest:read'])]
+    private mixed $acceptedAt = null;
+
+    #[ORM\Column(type: "datetime",nullable: true)]
+    #[Groups(['vacationRequest:read'])]
+    private mixed $annulledAt = null;
+
+    #[ORM\ManyToOne(inversedBy: 'VacationCreated')]
+    #[Groups(['vacationRequest:read'])]
+    private ?User $createdBy = null;
+
+    #[ORM\ManyToOne]
+    #[Groups(['vacationRequest:read'])]
+    private ?User $acceptedBy = null;
+
+    #[ORM\ManyToOne]
+    #[Groups(['vacationRequest:read'])]
+    private ?User $annulledBy = null;
 
     #[ORM\PreUpdate]
     public function preUpdate(PreUpdateEventArgs $eventArgs)
@@ -215,5 +237,81 @@ class Vacation
 
 
         return $this;
+    }
+
+    public function getAnnulledAt(): mixed
+    {
+        return $this->annulledAt;
+    }
+
+    public function setAnnulledAt(mixed $annulledAt): void
+    {
+        $this->annulledAt = $annulledAt;
+    }
+
+    public function getCreatedBy(): ?User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?User $createdBy): void
+    {
+        $this->createdBy = $createdBy;
+    }
+
+    public function getAcceptedBy(): ?User
+    {
+        return $this->acceptedBy;
+    }
+
+    public function setAcceptedBy(?User $acceptedBy): void
+    {
+        $this->acceptedBy = $acceptedBy;
+    }
+
+    public function getAnnulledBy(): ?User
+    {
+        return $this->annulledBy;
+    }
+
+    public function setAnnulledBy(?User $annulledBy): void
+    {
+        $this->annulledBy = $annulledBy;
+    }
+
+    public function getAcceptedAt(): mixed
+    {
+        return $this->acceptedAt;
+    }
+
+    public function setAcceptedAt(mixed $acceptedAt): void
+    {
+        $this->acceptedAt = $acceptedAt;
+    }
+
+    public function getCreatedAt(): mixed
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(mixed $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function getUpdatedAt(): mixed
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param mixed|null $updatedAt
+     */
+    public function setUpdatedAt(mixed $updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
     }
 }

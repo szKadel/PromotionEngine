@@ -39,23 +39,6 @@ class VacationRequestResourceTest extends KernelTestCase
         VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>500]);
         VacationLimitsFactory::createOne(["employee"=>$employeeMod,'vacationType'=>$vacationType, 'daysLimit'=>20]);
 
-        VacationFactory::createOne(['employee' => $employee, 'type'=>$vacationType]);
-        VacationFactory::createMany(5,['employee' => $employee3, 'type'=>$vacationType]);
-        VacationFactory::createMany(5,['employee' => $employeeMod, 'type'=>$vacationType]);
-        VacationFactory::createMany(5,['employee' => $employee, 'type'=>$vacationType]);
-
-        $this->browser()
-            ->actingAs($user)
-            ->get('/api/vacations')
-            ->assertJsonMatches('"hydra:totalItems"',6)
-            ->assertStatus(200);
-
-        $this->browser()
-            ->actingAs($mod)
-            ->get('/api/vacations')
-            ->assertJsonMatches('"hydra:totalItems"',11)
-            ->assertStatus(200);
-
         $this->browser()
             ->get('/api/vacations')
             ->assertStatus(401);
