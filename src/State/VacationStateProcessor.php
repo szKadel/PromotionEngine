@@ -72,7 +72,7 @@ class VacationStateProcessor implements ProcessorInterface
 
                     }
 
-                    if($this->notificationRepository->getNotificationsSettings()->getNotificateDepartmentModOnCreatedVacation())
+                    if($this->notificationRepository->getNotificationsSettings()->isNotificateDepartmentModOnCreatedVacation())
                     {
                         $this->emailService->sendNotificationToModofDepartment($data->getEmployee());
                     }
@@ -93,15 +93,15 @@ class VacationStateProcessor implements ProcessorInterface
                         $data->setAcceptedBy($this->userRepository->find($user->getId()));
 
 
-                        if($this->notificationRepository -> getNotificationsSettings() ?->getNotificateAdminOnAcceptVacation()) {
+                        if($this->notificationRepository -> getNotificationsSettings() ->isNotificateAdminOnAcceptVacation()) {
                             $this->emailService -> sendNotificationEmailToAllAdmin($data->getEmployee());
                         }
 
-                        if ($this->notificationRepository -> getNotificationsSettings() ?->getNotificateReplacementUser() && !empty($data->getReplacement())) {
+                        if ($this->notificationRepository -> getNotificationsSettings() ->isNotificateReplacementUser() && !empty($data->getReplacement())) {
                             $this->emailService -> sendReplacementEmployeeNotification($data->getEmployee(),$data->getReplacement());
                         }
 
-                        if ($this->notificationRepository -> getNotificationsSettings() ?-> getNotificateUserOnVacationRequestAccept()) {
+                        if ($this->notificationRepository -> getNotificationsSettings() -> isNotificateUserOnVacationRequestAccept()) {
                             $this->emailService -> sendNotificationToOwnerOnAccept($data->getEmployee());
                         }
                     }
