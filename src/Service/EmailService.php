@@ -38,22 +38,22 @@ class EmailService
         foreach ($admins as $admin) {
             if(!empty($admin->getEmail())) {
                 $this->sendEmail(
-                    "Bestcs Hr - powiadomienie",
+                    "HHG - powiadomienie",
                     $admin->getEmail(),
-                    "Wniosek użytkownika " . $employee->getName() . " " . $employee->getSurname(
-                    ) . " został zaakceptowany."
+                    "Użytkownik " . $employee->getName() . " " . $employee->getSurname(
+                    ) . " utworzył wniosek urlopowy, który oczekuje na Twoją akceptację."
                 );
             }
         }
     }
 
-    public function sendReplacementEmployeeNotification(Employee $employee, Employee $replacementUser):void
+    public function sendReplacementEmployeeNotification(Employee $employee, Employee $replacementUser, $dateFrom, $dateTo):void
     {
         if (!empty($replacementUser->getUser()?->getEmail())) {
             $this->sendEmail(
-                "Bestcs Hr - powiadomienie",
+                "HHG - powiadomienie",
                 $replacementUser->getUser()->getEmail(),
-                "Zostałeś przypisany jako zastępstwo za użytkownika " . $employee->getName() . " " . $employee->getSurname() ??""
+                "Zostałeś przypisany jako zastępstwo za użytkownika " . $employee->getName() . " " . $employee->getSurname()." w terminie od ".$dateFrom." do ".$dateTo
             );
         }
     }
@@ -64,7 +64,7 @@ class EmailService
         foreach ($mods as $mod){
             if(!empty($mod->getEmail())) {
                 $this->sendEmail(
-                    "Bestcs Hr - powiadomienie",
+                    "HHG - powiadomienie",
                     $mod->getEmail(),
                     "Użytkownik " . $employee->getName() . " " . $employee->getSurname(
                     ) . " utworzył wniosek urlopowy, który oczekuje na Twoją akceptację."
@@ -76,9 +76,9 @@ class EmailService
     public function sendNotificationToOwnerOnAccept(Employee $employee):void
     {
         $this->sendEmail(
-            "Bestcs Hr - powiadomienie",
+            "HHG - powiadomienie",
             $employee->getUser()->getEmail(),
-            "Użytkownik ".$employee->getName()." ".$employee->getSurname()." utworzył wniosek urlopowy, który oczekuje na Twoją akceptację."
+            "Twój wniosek urlopowy został zaakceptowany."
         );
     }
 }

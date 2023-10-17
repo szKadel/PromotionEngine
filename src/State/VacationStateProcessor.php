@@ -72,7 +72,11 @@ class VacationStateProcessor implements ProcessorInterface
 
                     }
 
-                    if($this->notificationRepository->getNotificationsSettings()->isNotificateDepartmentModOnCreatedVacation())
+                    if($this->notificationRepository -> getNotificationsSettings() ?->isNotificateAdminOnVacationRequest()) {
+                        $this->emailService -> sendNotificationEmailToAllAdmin($data->getEmployee());
+                    }
+
+                    if($this->notificationRepository->getNotificationsSettings()?->isNotificateDepartmentModOnCreatedVacation())
                     {
                         $this->emailService->sendNotificationToModofDepartment($data->getEmployee());
                     }
@@ -92,16 +96,11 @@ class VacationStateProcessor implements ProcessorInterface
 
                         $data->setAcceptedBy($this->userRepository->find($user->getId()));
 
-
-                        if($this->notificationRepository -> getNotificationsSettings() ->isNotificateAdminOnAcceptVacation()) {
-                            $this->emailService -> sendNotificationEmailToAllAdmin($data->getEmployee());
+                        if ($this->notificationRepository -> getNotificationsSettings() ?->isNotificateReplacementUser() && !empty($data->getReplacement())) {
+                            $this->emailService -> sendReplacementEmployeeNotification($data->getEmployee(),$data->getReplacement(),$data->getDateFrom()->format('Y-m-d'),$data->getDateFrom()->format('Y-m-d'));
                         }
 
-                        if ($this->notificationRepository -> getNotificationsSettings() ->isNotificateReplacementUser() && !empty($data->getReplacement())) {
-                            $this->emailService -> sendReplacementEmployeeNotification($data->getEmployee(),$data->getReplacement());
-                        }
-
-                        if ($this->notificationRepository -> getNotificationsSettings() -> isNotificateUserOnVacationRequestAccept()) {
+                        if ($this->notificationRepository -> getNotificationsSettings() ?-> isNotificateUserOnVacationRequestAccept()) {
                             $this->emailService -> sendNotificationToOwnerOnAccept($data->getEmployee());
                         }
                     }
