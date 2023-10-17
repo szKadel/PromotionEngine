@@ -3,6 +3,7 @@
 namespace App\Entity\Vacation;
 
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
@@ -41,6 +42,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     paginationItemsPerPage: 7,
 )]
 #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,properties: ['employee.department'=>'exact'])]
+#[ApiFilter(OrderFilter::class, properties: ['vacation.id','vacation.createdAt','vacation.createdAt'])]
 class Vacation
 {
     #[ORM\Id]

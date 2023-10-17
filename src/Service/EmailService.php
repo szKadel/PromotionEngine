@@ -75,10 +75,12 @@ class EmailService
 
     public function sendNotificationToOwnerOnAccept(Employee $employee):void
     {
-        $this->sendEmail(
-            "HHG - powiadomienie",
-            $employee->getUser()->getEmail(),
-            "Twój wniosek urlopowy został zaakceptowany."
-        );
+        if(!empty($employee->getUser()->getEmail())) {
+            $this->sendEmail(
+                "HHG - powiadomienie",
+                $employee->getUser()->getEmail(),
+                "Twój wniosek urlopowy został zaakceptowany."
+            );
+        }
     }
 }
