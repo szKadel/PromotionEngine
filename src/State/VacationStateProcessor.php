@@ -72,7 +72,7 @@ class VacationStateProcessor implements ProcessorInterface
 
                     }
 
-                    if($this->notificationRepository->getNotificationsSettings()?->getNotificateDepartmentModOnCreatedVacation())
+                    if($this->notificationRepository->getNotificationsSettings()->getNotificateDepartmentModOnCreatedVacation())
                     {
                         $this->emailService->sendNotificationToModofDepartment($data->getEmployee());
                     }
