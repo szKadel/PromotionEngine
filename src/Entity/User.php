@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Entity\Company\Employee;
+use App\Entity\Vacation\Vacation;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -72,9 +73,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[SerializedName('password')]
     private ?string $plainPassword = null;
 
+    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Vacation::class)]
+    private Collection $createdVacationRequest;
+
+    #[ORM\OneToMany(mappedBy: 'acceptedBy', targetEntity: Vacation::class)]
+    private Collection $AcceptedVacations;
+
+    #[ORM\OneToMany(mappedBy: 'AnnulledBy', targetEntity: Vacation::class)]
+    private Collection $AnnulledVacationRequest;
+
     public function __construct()
     {
         $this->apiTokens = new ArrayCollection();
+        $this->createdVacationRequest = new ArrayCollection();
+        $this->AcceptedVacations = new ArrayCollection();
+        $this->AnnulledVacationRequest = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -218,5 +231,95 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getPlainPassword():?string
     {
         return $this->plainPassword??null;
+    }
+
+    /**
+     * @return Collection<int, Vacation>
+     */
+    public function getCreatedVacationRequest(): Collection
+    {
+        return $this->createdVacationRequest;
+    }
+
+    public function addCreatedVacationRequest(Vacation $createdVacationRequest): static
+    {
+        if (!$this->createdVacationRequest->contains($createdVacationRequest)) {
+            $this->createdVacationRequest->add($createdVacationRequest);
+            $createdVacationRequest->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCreatedVacationRequest(Vacation $createdVacationRequest): static
+    {
+        if ($this->createdVacationRequest->removeElement($createdVacationRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($createdVacationRequest->getCreatedBy() === $this) {
+                $createdVacationRequest->setCreatedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Vacation>
+     */
+    public function getAcceptedVacations(): Collection
+    {
+        return $this->AcceptedVacations;
+    }
+
+    public function addAcceptedVacation(Vacation $acceptedVacation): static
+    {
+        if (!$this->AcceptedVacations->contains($acceptedVacation)) {
+            $this->AcceptedVacations->add($acceptedVacation);
+            $acceptedVacation->setAcceptedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAcceptedVacation(Vacation $acceptedVacation): static
+    {
+        if ($this->AcceptedVacations->removeElement($acceptedVacation)) {
+            // set the owning side to null (unless already changed)
+            if ($acceptedVacation->getAcceptedBy() === $this) {
+                $acceptedVacation->setAcceptedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Vacation>
+     */
+    public function getAnnulledVacationRequest(): Collection
+    {
+        return $this->AnnulledVacationRequest;
+    }
+
+    public function addAnnulledVacationRequest(Vacation $annulledVacationRequest): static
+    {
+        if (!$this->AnnulledVacationRequest->contains($annulledVacationRequest)) {
+            $this->AnnulledVacationRequest->add($annulledVacationRequest);
+            $annulledVacationRequest->setAnnulledBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnnulledVacationRequest(Vacation $annulledVacationRequest): static
+    {
+        if ($this->AnnulledVacationRequest->removeElement($annulledVacationRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($annulledVacationRequest->getAnnulledBy() === $this) {
+                $annulledVacationRequest->setAnnulledBy(null);
+            }
+        }
+
+        return $this;
     }
 }

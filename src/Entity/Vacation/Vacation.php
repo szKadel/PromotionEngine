@@ -96,33 +96,26 @@ class Vacation
     #[Groups(['vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
     private ?string $comment = null;
 
-    #[ORM\Column(type: "datetime",nullable: true)]
-    #[Groups(['vacationRequest:read'])]
-    private mixed $createdAt = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: "datetime",nullable: true)]
-    #[Groups(['vacationRequest:read'])]
-    private mixed $updatedAt = null;
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\Column(type: "datetime",nullable: true)]
-    #[Groups(['vacationRequest:read'])]
-    private mixed $acceptedAt = null;
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $acceptedAt = null;
 
-    #[ORM\Column(type: "datetime",nullable: true)]
-    #[Groups(['vacationRequest:read'])]
-    private mixed $annulledAt = null;
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $annulledAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'VacationCreated')]
-    #[Groups(['vacationRequest:read'])]
+    #[ORM\ManyToOne(inversedBy: 'createdVacationRequest')]
     private ?User $createdBy = null;
 
-    #[ORM\ManyToOne]
-    #[Groups(['vacationRequest:read'])]
+    #[ORM\ManyToOne(inversedBy: 'AcceptedVacations')]
     private ?User $acceptedBy = null;
 
-    #[ORM\ManyToOne]
-    #[Groups(['vacationRequest:read'])]
-    private ?User $annulledBy = null;
+    #[ORM\ManyToOne(inversedBy: 'AnnulledVacationRequest')]
+    private ?User $AnnulledBy = null;
 
     #[ORM\PreUpdate]
     public function preUpdate(PreUpdateEventArgs $eventArgs)
@@ -239,14 +232,52 @@ class Vacation
         return $this;
     }
 
-    public function getAnnulledAt(): mixed
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeInterface $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getAcceptedAt(): ?\DateTimeImmutable
+    {
+        return $this->acceptedAt;
+    }
+
+    public function setAcceptedAt(?\DateTimeImmutable $acceptedAt): static
+    {
+        $this->acceptedAt = $acceptedAt;
+
+        return $this;
+    }
+
+    public function getAnnulledAt(): ?\DateTimeImmutable
     {
         return $this->annulledAt;
     }
 
-    public function setAnnulledAt(mixed $annulledAt): void
+    public function setAnnulledAt(?\DateTimeImmutable $annulledAt): static
     {
         $this->annulledAt = $annulledAt;
+
+        return $this;
     }
 
     public function getCreatedBy(): ?User
@@ -254,9 +285,11 @@ class Vacation
         return $this->createdBy;
     }
 
-    public function setCreatedBy(?User $createdBy): void
+    public function setCreatedBy(?User $createdBy): static
     {
         $this->createdBy = $createdBy;
+
+        return $this;
     }
 
     public function getAcceptedBy(): ?User
@@ -264,54 +297,23 @@ class Vacation
         return $this->acceptedBy;
     }
 
-    public function setAcceptedBy(?User $acceptedBy): void
+    public function setAcceptedBy(?User $acceptedBy): static
     {
         $this->acceptedBy = $acceptedBy;
+
+        return $this;
     }
 
     public function getAnnulledBy(): ?User
     {
-        return $this->annulledBy;
+        return $this->AnnulledBy;
     }
 
-    public function setAnnulledBy(?User $annulledBy): void
+    public function setAnnulledBy(?User $AnnulledBy): static
     {
-        $this->annulledBy = $annulledBy;
+        $this->AnnulledBy = $AnnulledBy;
+
+        return $this;
     }
 
-    public function getAcceptedAt(): mixed
-    {
-        return $this->acceptedAt;
-    }
-
-    public function setAcceptedAt(mixed $acceptedAt): void
-    {
-        $this->acceptedAt = $acceptedAt;
-    }
-
-    public function getCreatedAt(): mixed
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(mixed $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    /**
-     * @return mixed|null
-     */
-    public function getUpdatedAt(): mixed
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * @param mixed|null $updatedAt
-     */
-    public function setUpdatedAt(mixed $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
 }
