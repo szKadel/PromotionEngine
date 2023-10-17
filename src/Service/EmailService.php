@@ -49,7 +49,7 @@ class EmailService
 
     public function sendReplacementEmployeeNotification(Employee $employee, Employee $replacementUser):void
     {
-        if (!empty($replacementUser->getUser()->getEmail())) {
+        if (!empty($replacementUser->getUser()?->getEmail())) {
             $this->sendEmail(
                 "Bestcs Hr - powiadomienie",
                 $replacementUser->getUser()->getEmail(),
