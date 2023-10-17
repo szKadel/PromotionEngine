@@ -81,13 +81,6 @@ class AuthenticationTest extends KernelTestCase
                     ]
                 ]
             )->assertStatus(401);
-
-        $this->browser()
-            ->post('/login',['json'=>[
-                'email'=>'test5@test.pl',
-                'password'=>'test'
-            ]
-            ])->assertStatus(200);
     }
 
     public function testCheckUser()

@@ -83,7 +83,7 @@ class Notification
         return $this;
     }
 
-    public function getNotificateAdminOnVacationRequest(): ?bool
+    public function isNotificateAdminOnVacationRequest(): ?bool
     {
         return $this->NotificateAdminOnVacationRequest;
     }
