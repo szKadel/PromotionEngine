@@ -36,7 +36,7 @@ class EmailService
     {
         $admins = $this->userRepository->getAdmins();
         foreach ($admins as $admin) {
-            if(!empty($admin->getEmail())) {
+            if(!empty($admin?->getEmail())) {
                 $this->sendEmail(
                     "HHG - powiadomienie",
                     $admin->getEmail(),
@@ -62,7 +62,7 @@ class EmailService
     {
         $mods = $this->userRepository->getModerators($employee->getDepartment());
         foreach ($mods as $mod){
-            if(!empty($mod->getEmail())) {
+            if(!empty($mod?->getEmail())) {
                 $this->sendEmail(
                     "HHG - powiadomienie",
                     $mod->getEmail(),
@@ -75,7 +75,7 @@ class EmailService
 
     public function sendNotificationToOwnerOnAccept(Employee $employee):void
     {
-        if(!empty($employee->getUser()->getEmail())) {
+        if(!empty($employee->getUser()?->getEmail())) {
             $this->sendEmail(
                 "HHG - powiadomienie",
                 $employee->getUser()->getEmail(),
