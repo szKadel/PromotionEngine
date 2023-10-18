@@ -88,6 +88,11 @@ class VacationStateProcessor implements ProcessorInterface
 
                 if($data->getStatus() != $context["previous_data"]->getStatus())
                 {
+
+                    if ($this->notificationRepository -> getNotificationsSettings() ?->isNotificateReplacementUser() && !empty($data->getReplacement())) {
+                        $this->emailService -> sendReplacementEmployeeNotification($data->getEmployee(),$data->getReplacement(),$data->getDateFrom()->format('Y-m-d'),$data->getDateFrom()->format('Y-m-d'));
+                    }
+
                     if($data->getStatus()->getName() == "Potwierdzony") {
 
                         $data->setAcceptedAt(new \DateTimeImmutable());
@@ -95,10 +100,6 @@ class VacationStateProcessor implements ProcessorInterface
                         $user = $this->security->getUser();
 
                         $data->setAcceptedBy($this->userRepository->find($user->getId()));
-
-                        if ($this->notificationRepository -> getNotificationsSettings() ?->isNotificateReplacementUser() && !empty($data->getReplacement())) {
-                            $this->emailService -> sendReplacementEmployeeNotification($data->getEmployee(),$data->getReplacement(),$data->getDateFrom()->format('Y-m-d'),$data->getDateFrom()->format('Y-m-d'));
-                        }
 
                         if ($this->notificationRepository -> getNotificationsSettings() ?-> isNotificateUserOnVacationRequestAccept()) {
                             $this->emailService -> sendNotificationToOwnerOnAccept($data->getEmployee());
