@@ -32,10 +32,11 @@ class VacationController extends AbstractController
             $result[] = [
                 'vacation_id'=>$vacation ->getId(),
                 'employee_id'=>$vacation ->getEmployee()->getId(),
-                'employee' => $vacation -> getEmployee()->getName()." ". $vacation -> getEmployee()->getSurname()??"" ,
+                'employee' => $vacation -> getEmployee()->getSurname()." ". $vacation -> getEmployee()->getName()??"" ,
                 'dataFrom' => $vacation -> getDateFrom(),
                 'dataTo' => $vacation -> getDateTo(),
-                'replacement' => $vacation -> getReplacement()
+                'replacement_name' => $vacation ?-> getReplacement() ?-> getName() ??"",
+                'replacement_surname' => $vacation ?-> getReplacement() ?-> getSurname()??"",
             ];
         }
 
