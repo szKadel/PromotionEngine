@@ -100,24 +100,31 @@ class Vacation
     private ?string $comment = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['vacationRequest:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['vacationRequest:read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['vacationRequest:read'])]
     private ?\DateTimeImmutable $acceptedAt = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['vacationRequest:read'])]
     private ?\DateTimeImmutable $annulledAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'createdVacationRequest')]
+    #[Groups(['vacationRequest:read'])]
     private ?User $createdBy = null;
 
     #[ORM\ManyToOne(inversedBy: 'AcceptedVacations')]
+    #[Groups(['vacationRequest:read'])]
     private ?User $acceptedBy = null;
 
     #[ORM\ManyToOne(inversedBy: 'AnnulledVacationRequest')]
+    #[Groups(['vacationRequest:read'])]
     private ?User $AnnulledBy = null;
 
     public function __construct()
