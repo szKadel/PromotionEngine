@@ -8,6 +8,7 @@ use App\Entity\Vacation\VacationStatus;
 use App\Entity\Vacation\VacationTypes;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 /**
@@ -20,9 +21,12 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
  */
 class VacationRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry,private VacationStatusRepository $vacationStatusRepository)
+    private Security $security;
+
+    public function __construct(ManagerRegistry $registry,private VacationStatusRepository $vacationStatusRepository,Security $security)
     {
         parent::__construct($registry, Vacation::class);
+        $this->security = $security;
     }
 
 
@@ -77,9 +81,12 @@ class VacationRepository extends ServiceEntityRepository
         $statusAccepted = $this->vacationStatusRepository->findByName("Potwierdzony");
 
         return $this->createQueryBuilder('v')
+            ->leftJoin('v.employee', "e")
+            ->andWhere('e.department = :department')
             ->andWhere('(:dateFrom BETWEEN v.dateFrom AND v.dateTo OR :dateTo BETWEEN v.dateFrom AND v.dateTo OR v.dateFrom BETWEEN :dateFrom AND :dateFrom OR v.dateFrom BETWEEN :dateFrom AND :dateTo OR :dateFrom = v.dateTo OR v.dateTo = :dateFrom OR v.dateFrom = :dateTo)')
             ->andWhere('v.status = :status')
             ->setParameter('status', $statusAccepted)
+            ->setParameter('department', $this->security->getUser()->getEmployee()->getDepartment())
             ->setParameter('dateFrom', $dateFrom->format('Y-m-d'))
             ->setParameter('dateTo', $dateTo->format('Y-m-d'))
             ->getQuery()
