@@ -35,8 +35,8 @@ class VacationController extends AbstractController
                 'employee_name' => $vacation -> getEmployee()->getName()??"",
                 'employee_surname' => $vacation -> getEmployee()->getSurname()??"",
                 'department' => $vacation ->getEmployee() -> getDepartment() ?->getName() ??"",
-                'dataFrom' => $vacation -> getDateFrom() ->format('Y-m-d'),
-                'dataTo' => $vacation -> getDateTo()->format('Y-m-d'),
+                'dateFrom' => $vacation -> getDateFrom() ->format('Y-m-d'),
+                'dateTo' => $vacation -> getDateTo()->format('Y-m-d'),
                 'replacement_name' => $vacation ?-> getReplacement() ?-> getName() ??"",
                 'replacement_surname' => $vacation ?-> getReplacement() ?-> getSurname()??"",
             ];
