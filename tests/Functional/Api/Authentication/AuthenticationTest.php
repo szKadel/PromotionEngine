@@ -5,6 +5,7 @@ namespace App\Tests\Functional\Api\Authentication;
 use App\Factory\ApiTokenFactory;
 use App\Factory\Company\DepartmentFactory;
 use App\Factory\Company\EmployeeFactory;
+use App\Factory\Settings\NotificationFactory;
 use App\Factory\UserFactory;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Browser\Test\HasBrowser;
@@ -41,7 +42,7 @@ class AuthenticationTest extends KernelTestCase
         $department = DepartmentFactory::createMany(5);
         $employee = EmployeeFactory::createOne();
         $token = ApiTokenFactory::createOne();
-
+        NotificationFactory::createOne();
         $user = UserFactory::createOne(['password'=>'pass', 'roles'=>['ROLE_ADMIN'], 'employee' => null]);
 
         $this->browser()

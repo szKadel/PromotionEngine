@@ -29,6 +29,7 @@ class NotificationRepository extends ServiceEntityRepository
             ->setParameter('val', 1)
             ->getQuery()
             ->getOneOrNullResult();
+
     }
 //    /**
 //     * @return Notification[] Returns an array of Notification objects

@@ -3,23 +3,33 @@
 namespace App\Service;
 
 use App\Entity\Company\Employee;
+use App\Entity\Vacation\Vacation;
 use App\Repository\UserRepository;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Twig\Environment;
 
 class EmailService
 {
 
     public function __construct(
         private MailerInterface $mailer,
-        private UserRepository $userRepository)
+        private UserRepository $userRepository,
+        private Environment $twig)
     {
 
     }
 
-    public function sendEmail(string $subject, string $to, string $body): void
+    /**
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \Twig\Error\LoaderError
+     */
+    public function sendEmail(string $subject, string $to, string $templateName, Vacation $vacationRequest): void
     {
+        $body = $this->twig->render("email/notifications/".$templateName, ['vacation'=>$vacationRequest]);
+
         $email = (new Email())
             ->from('beuphr@beupsoft.pl')
             ->to($to)
@@ -32,7 +42,7 @@ class EmailService
         }
     }
 
-    public function sendNotificationEmailToAllAdmin(Employee $employee): void
+    public function sendNotificationEmailToAllAdmin(Vacation $vacation): void
     {
         $admins = $this->userRepository->getAdmins();
         foreach ($admins as $admin) {
@@ -40,47 +50,53 @@ class EmailService
                 $this->sendEmail(
                     "HHG - powiadomienie",
                     $admin->getEmail(),
-                    "Użytkownik " . $employee->getName() . " " . $employee->getSurname(
-                    ) . " utworzył wniosek urlopowy, który oczekuje na Twoją akceptację."
+                    "adminNewVacation.html.twig",
+                    $vacation
                 );
             }
         }
     }
 
-    public function sendReplacementEmployeeNotification(Employee $employee, Employee $replacementUser, $dateFrom, $dateTo):void
+    public function sendReplacementEmployeeNotification(Vacation $vacation):void
     {
-        if (!empty($replacementUser->getUser()?->getEmail())) {
+        if (!empty($vacation->getReplacement()->getUser()?->getEmail())) {
             $this->sendEmail(
                 "HHG - powiadomienie",
-                $replacementUser->getUser()->getEmail(),
-                "Zostałeś przypisany jako zastępstwo za użytkownika " . $employee->getName() . " " . $employee->getSurname()." w terminie od ".$dateFrom." do ".$dateTo
-            );
+                $vacation->getReplacement()->getUser()->getEmail(),
+                "replacementNewVacation.html.twig",$vacation);
         }
     }
 
-    public function sendNotificationToModofDepartment(Employee $employee):void
+    public function sendNotificationToModofDepartment(Vacation $vacation):void
     {
-        $mods = $this->userRepository->getModerators($employee->getDepartment());
+        $mods = $this->userRepository->getModerators($vacation->getEmployee()->getDepartment());
         foreach ($mods as $mod){
             if(!empty($mod?->getEmail())) {
                 $this->sendEmail(
                     "HHG - powiadomienie",
-                    $mod->getEmail(),
-                    "Użytkownik " . $employee->getName() . " " . $employee->getSurname(
-                    ) . " utworzył wniosek urlopowy, który oczekuje na Twoją akceptację."
-                );
+                    $vacation->getReplacement()->getUser()->getEmail(),
+                    "modNewVacation.html.twig",$vacation);
             }
         }
     }
 
-    public function sendNotificationToOwnerOnAccept(Employee $employee):void
+    public function sendNotificationToOwnerOnChangeStatus(Vacation $vacation):void
     {
-        if(!empty($employee->getUser()?->getEmail())) {
+        if(!empty($vacation->getEmployee()->getUser()?->getEmail())) {
             $this->sendEmail(
                 "HHG - powiadomienie",
-                $employee->getUser()->getEmail(),
-                "Twój wniosek urlopowy został zaakceptowany."
-            );
+                $vacation->getReplacement()->getUser()->getEmail(),
+                "employeeStatusChange.html.twig",$vacation);
+        }
+    }
+
+    public function sendNotificationToOwnerOnCreate(Vacation $vacation):void
+    {
+        if(!empty($vacation->getEmployee()->getUser()?->getEmail())) {
+            $this->sendEmail(
+                "HHG - powiadomienie",
+                $vacation->getEmployee()->getUser()->getEmail(),
+                "employeeNewRequest.html.twig",$vacation);
         }
     }
 }

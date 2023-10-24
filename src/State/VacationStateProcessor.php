@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\State\ProcessorInterface;
+use App\Controller\Vacation\VacationRequestController;
 use App\Entity\User;
 use App\Entity\Vacation\Vacation;
 use App\Entity\Vacation\VacationLimits;
@@ -25,10 +26,10 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 class VacationStateProcessor implements ProcessorInterface
 {
     public function __construct(
+        private VacationRequestController $vacationRequestController,
         private ProcessorInterface $innerProcessor,
         private Security $security,
         private VacationRepository $vacationRepository,
-        private VacationStatusRepository $vacationStatusRepository,
         private EmployeeVacationLimitRepository $employeeVacationLimitRepository,
         private EmailService $emailService,
         private UserRepository $userRepository,
@@ -47,40 +48,9 @@ class VacationStateProcessor implements ProcessorInterface
     {
         if($data instanceof Vacation) {
             if($operation instanceof Post) {
-                if ($this->security->getUser()) {
-                    $this->vacationRepository->findExistingVacationForUserInDateRange(
-                        $data->getEmployee(),
-                        $data->getDateFrom(),
-                        $data->getDateTo()
-                    );
-                    $this->setVacationStatus($data);
 
-                    if ($data->getType()->getId() != 1 && $data->getType()->getId() != 11) {
-                        $this->checkVacationLimits($data);
-                    }
+                $this->vacationRequestController->onVacationRequestPost($data);
 
-                    if($data->getEmployee()->getId() == $data->getReplacement()?->getId() ){
-                        throw new BadRequestException("Osoba tworząca urlop nie może być jednocześnie osobą zastępującą.", 400);
-                    }
-
-                    if(!empty($data->getReplacement())) {
-                        $this->vacationRepository->findExistingVacationForUserInDateRange(
-                            $data->getReplacement(),
-                            $data->getDateFrom(),
-                            $data->getDateTo()
-                        );
-
-                    }
-
-                    if($this->notificationRepository -> getNotificationsSettings() ?->isNotificateAdminOnVacationRequest()) {
-                        $this->emailService -> sendNotificationEmailToAllAdmin($data->getEmployee());
-                    }
-
-                    if($this->notificationRepository->getNotificationsSettings()?->isNotificateDepartmentModOnCreatedVacation())
-                    {
-                        $this->emailService->sendNotificationToModofDepartment($data->getEmployee());
-                    }
-                }
             } elseif ($operation instanceof Put) {
                 if ($data->getType()->getId() != 1 && $data->getType()->getId() != 11) {
                     $this->checkVacationLimits($data);
@@ -88,11 +58,6 @@ class VacationStateProcessor implements ProcessorInterface
 
                 if($data->getStatus() != $context["previous_data"]->getStatus())
                 {
-
-                    if ($this->notificationRepository -> getNotificationsSettings() ?->isNotificateReplacementUser() && !empty($data->getReplacement())) {
-                        $this->emailService -> sendReplacementEmployeeNotification($data->getEmployee(),$data->getReplacement(),$data->getDateFrom()->format('Y-m-d'),$data->getDateFrom()->format('Y-m-d'));
-                    }
-
                     if($data->getStatus()->getName() == "Potwierdzony") {
 
                         $data->setAcceptedAt(new \DateTimeImmutable());
@@ -101,8 +66,12 @@ class VacationStateProcessor implements ProcessorInterface
 
                         $data->setAcceptedBy($this->userRepository->find($user->getId()));
 
+                        if ($this->notificationRepository -> getNotificationsSettings() ?->isNotificateReplacementUser() && !empty($data->getReplacement())) {
+                            $this->emailService -> sendReplacementEmployeeNotification($data);
+                        }
+
                         if ($this->notificationRepository -> getNotificationsSettings() ?-> isNotificateUserOnVacationRequestAccept()) {
-                            $this->emailService -> sendNotificationToOwnerOnAccept($data->getEmployee());
+                            $this->emailService -> sendNotificationToOwnerOnChangeStatus($data);
                         }
                     }
                 }
@@ -156,7 +125,7 @@ class VacationStateProcessor implements ProcessorInterface
         $vacationUsedInDays = $this->vacationRepository->findVacationUsedByUser(
             $vacation->getEmployee(),
             $vacation->getStatus(),
-            $vacation->getType(),
+            $vacation->getType()
         );
 
         $limit = $this->employeeVacationLimitRepository->findLimitByTypes(
@@ -176,15 +145,5 @@ class VacationStateProcessor implements ProcessorInterface
                 );
             }
         }
-    }
-
-
-    private function setVacationStatus(Vacation $vacation)
-    {
-        $vacation->setStatus(
-            $vacation->getType()->getId() == 1 ? $this->vacationStatusRepository->findByName(
-                'Zaplanowany'
-            ) : $this->vacationStatusRepository->findByName('Oczekujący')
-        );
     }
 }

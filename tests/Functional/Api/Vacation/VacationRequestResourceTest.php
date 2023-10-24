@@ -4,6 +4,7 @@ namespace App\Tests\Functional\Api\Vacation;
 
 use App\Factory\Company\DepartmentFactory;
 use App\Factory\Company\EmployeeFactory;
+use App\Factory\Settings\NotificationFactory;
 use App\Factory\UserFactory;
 use App\Factory\Vacation\VacationFactory;
 use App\Factory\Vacation\VacationLimitsFactory;
@@ -83,6 +84,7 @@ class VacationRequestResourceTest extends KernelTestCase
         VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>500]);
         VacationLimitsFactory::createOne(["employee"=>$employeeMod,'vacationType'=>$vacationType, 'daysLimit'=>20]);
 
+        NotificationFactory::createOne();
         $this->browser()
             ->actingAs($user)
             ->post('/api/vacations',[
@@ -94,7 +96,7 @@ class VacationRequestResourceTest extends KernelTestCase
                 ]
             ])
             ->dump();
-
+        NotificationFactory::createOne();
         $this->browser()
             ->actingAs($user)
             ->post('/api/vacations',[
@@ -106,7 +108,7 @@ class VacationRequestResourceTest extends KernelTestCase
                 ]
             ])
             ->assertStatus(400);
-
+        NotificationFactory::createOne();
         $this->browser()
             ->actingAs($user)
             ->post('/api/vacations',[
@@ -144,7 +146,7 @@ class VacationRequestResourceTest extends KernelTestCase
 
         VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>500]);
         VacationLimitsFactory::createOne(["employee"=>$employeeMod,'vacationType'=>$vacationType, 'daysLimit'=>20]);
-
+        NotificationFactory::createOne();
         $this->browser()
             ->actingAs($user)
             ->post('/api/vacations',[
@@ -193,7 +195,7 @@ class VacationRequestResourceTest extends KernelTestCase
         VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>500]);
         VacationLimitsFactory::createOne(["employee"=>$employeeMod,'vacationType'=>$vacationType, 'daysLimit'=>20]);
         VacationLimitsFactory::createOne(["employee"=>$employee2,'vacationType'=>$vacationType, 'daysLimit'=>20]);
-
+        NotificationFactory::createOne();
         $this->browser()
             ->actingAs($user)
             ->post('/api/vacations',[

@@ -4,6 +4,7 @@ namespace App\Tests\Functional\Api\Vacation\Limits;
 
 use App\Factory\Company\DepartmentFactory;
 use App\Factory\Company\EmployeeFactory;
+use App\Factory\Settings\NotificationFactory;
 use App\Factory\UserFactory;
 use App\Factory\Vacation\VacationLimitsFactory;
 use App\Factory\VacationTypesFactory;
@@ -27,7 +28,7 @@ class LimitsRequestResourceTest extends KernelTestCase
         $user2 = UserFactory::createOne(['employee' => $employee3, 'roles'=>['ROLE_MOD']]);
 
         $user = UserFactory::createOne(['employee' => $employee, 'roles'=>['ROLE_MOD']]);
-
+        NotificationFactory::createOne();
         $vacationType = VacationTypesFactory::createOne();
 
         $this->browser()

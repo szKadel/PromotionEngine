@@ -4,6 +4,7 @@ namespace App\Tests\Functional\Api\Company\Employee;
 
 use App\Factory\Company\DepartmentFactory;
 use App\Factory\Company\EmployeeFactory;
+use App\Factory\Settings\NotificationFactory;
 use App\Factory\UserFactory;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Browser\Test\HasBrowser;
@@ -38,7 +39,7 @@ class EmployeeResourceTest extends KernelTestCase
     public function testPostToAddEmployee()
     {
         $department = DepartmentFactory::createOne();
-
+        NotificationFactory::createOne();
         $employee = EmployeeFactory::createOne(['department'=>$department]);
         $user = UserFactory::createOne(['roles'=>['ROLE_ADMIN'],'employee' => $employee]);
 
@@ -56,7 +57,7 @@ class EmployeeResourceTest extends KernelTestCase
     public function testPutToUpdateEmployee()
     {
         $department = DepartmentFactory::createOne();
-
+        NotificationFactory::createOne();
         $employee = EmployeeFactory::createOne(['department'=>$department]);
         $user = UserFactory::createOne(['roles'=>["ROLE_ADMIN"],'employee' => $employee]);
 
