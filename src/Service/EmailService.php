@@ -28,7 +28,7 @@ class EmailService
      */
     public function sendEmail(string $subject, string $to, string $templateName, Vacation $vacationRequest): void
     {
-        $body = $this->twig->render("email/notifications/".$templateName, ['vacation'=>$vacationRequest]);
+        $body = $this->twig->render("email/notification/".$templateName, ['vacation'=>$vacationRequest]);
 
         $email = (new Email())
             ->from('beuphr@beupsoft.pl')
