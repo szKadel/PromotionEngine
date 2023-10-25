@@ -98,7 +98,6 @@ class VacationRequestController
 
         $spendDays = $this->counterVacationDays->getVacationDaysSpend($this->vacation->getEmployee(),$this->vacation->getType(),$this->vacation->getStatus());
 
-        throw new BadRequestException('Wykorzystano '.$spendDays + $this->vacation->getSpendVacationDays(). 'LIMIT '. $limitDays);
 
         if ($limitDays == 0) {
             return;
