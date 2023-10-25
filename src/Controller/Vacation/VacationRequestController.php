@@ -90,7 +90,7 @@ class VacationRequestController
 
     private function checkVacationDaysLimit(): void
     {
-        if ($this->vacation->getType()->getId() != 1 && $this->vacation->getType()->getId() != 11) {
+        if ($this->vacation->getType()->getId() == 1 || $this->vacation->getType()->getId() == 11) {
             return;
         }
 
