@@ -18,28 +18,28 @@
     <tbody>
     <tr>
         <!-- Your text -->
-        <b style="font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol; font-size: 21px">Drogi Kierowniku!</b><br />
+        <b style="font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol; font-size: 20px">Drogi Kierowniku!</b><br />
         <br />
         <span style="font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;color: #4b4d4c; font-size: 15px;">
-            Użytkownik <b>(imię i nazwisko użytkownika)</b> utworzył wniosek, który oczekuje na Twoją akceptację.
+            Użytkownik <b>{{vacation.getEmployee().getName() ??"" }} {{vacation.getEmployee().getSurname() ??"" }}</b> utworzył wniosek, który oczekuje na Twoją akceptację.
           </span><br />
         <br />
-        <b style="font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol; font-size: 20px">Szczegóły</b><br />
+        <b style="font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol; font-size: 20px">Szczegóły:</b><br />
         <br />
         <span style="font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;color: #4b4d4c; font-size: 15px;">
-            Dział:
+            Dział: {{vacation.getEmployee().getdepartment.getName() ?? ""}}
           </span><br />
         <span style="font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;color: #4b4d4c; font-size: 15px;">
-            Rodzaj wniosku:
+            Rodzaj wniosku: {{vacation.getType().getName() ?? ""}}
           </span><br />
         <span style="font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;color: #4b4d4c; font-size: 15px;">
-            Termin:
+            Termin: {{ vacation.getDateFrom | date("Y-m-d") }} do {{ vacation.getDateTo | date("Y-m-d") }}
           </span><br />
         <span style="font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;color: #4b4d4c; font-size: 15px;">
-            Zastępstwo:
+            Zastępstwo: {{vacation.getReplacement().getSurname ?? ""}}
           </span><br />
         <span style="font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;color: #4b4d4c; font-size: 15px;">
-            Komentarz:
+            Komentarz: {{vacation.getComment() ?? ""}}
           </span><br />
         <br />
         <b style="font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;font-size: 15px;">
