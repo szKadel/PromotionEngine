@@ -44,7 +44,7 @@ class ExtractController extends AbstractController
         $row = 2;
         foreach ($result as $vacation) {
             if($vacation instanceof Vacation){
-                $sheet->setCellValue('A' . $row, $vacation['Kod']);
+                $sheet->setCellValue('A' . $row, $vacation->getEmployee()->getSurname()."_".$vacation->getEmployee()->getName());
                 $sheet->setCellValue('B' . $row, $vacation->getEmployee()->getSurname());
                 $sheet->setCellValue('C' . $row, $vacation->getEmployee()->getName());
                 $sheet->setCellValue('D' . $row, $vacation->getType());
