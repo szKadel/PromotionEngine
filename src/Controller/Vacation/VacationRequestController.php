@@ -98,7 +98,7 @@ class VacationRequestController
 
         $spendDays = $this->counterVacationDays->getVacationDaysSpend($this->vacation->getEmployee(),$this->vacation->getType(),$this->vacation->getStatus());
 
-        if ($limitDays != 0) {
+        if ($limitDays == 0) {
             return;
         }
 
