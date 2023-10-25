@@ -44,13 +44,13 @@ class ExtractController extends AbstractController
         $row = 2;
         foreach ($result as $vacation) {
             if($vacation instanceof Vacation){
-                $sheet->setCellValue('A' . $row, $vacation->getEmployee()->getSurname()."_".$vacation->getEmployee()->getName());
+                $sheet->setCellValue('A' . $row, strtoupper($vacation->getEmployee()->getSurname()."_".$vacation->getEmployee()->getName()));
                 $sheet->setCellValue('B' . $row, $vacation->getEmployee()->getSurname());
                 $sheet->setCellValue('C' . $row, $vacation->getEmployee()->getName());
                 $sheet->setCellValue('D' . $row, $vacation->getType()->getName());
                 $sheet->setCellValue('E' . $row, $vacation->getType()->getName());
                 $sheet->setCellValue('F' . $row, $vacation->getDateFrom()->format('Y-m-d'));
-                $sheet->setCellValue('F' . $row, $vacation->getDateTo()->format('Y-m-d'));
+                $sheet->setCellValue('G' . $row, $vacation->getDateTo()->format('Y-m-d'));
                 $sheet->setCellValue('H' . $row, "Nie dotyczyy");
                 $sheet->setCellValue('I' . $row, "");
                 $sheet->setCellValue('J' . $row, 0);
