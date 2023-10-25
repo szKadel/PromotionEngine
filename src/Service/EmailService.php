@@ -74,7 +74,7 @@ class EmailService
             if(!empty($mod?->getEmail())) {
                 $this->sendEmail(
                     "HHG - powiadomienie",
-                    $vacation->getReplacement()->getUser()->getEmail(),
+                    $mod->getEmail(),
                     "modNewVacation.html.twig",$vacation);
             }
         }
