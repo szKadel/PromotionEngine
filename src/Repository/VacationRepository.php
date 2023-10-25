@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Company;
 use App\Entity\Company\Employee;
 use App\Entity\Vacation\Vacation;
 use App\Entity\Vacation\VacationStatus;
@@ -52,6 +53,31 @@ class VacationRepository extends ServiceEntityRepository
              throw new BadRequestException("Wniosek dla ".$employee->getName()." ".$employee->getSurname()." w tym terminie został już złożony");
          }
 
+    }
+
+    public function findVacationsToExtract(Company $company, \DateTime $dateFrom, \DateTime $dateTo)
+    {
+        $statusAccepted = $this->vacationStatusRepository->findByName("Potwierdzony");
+
+        return $this->createQueryBuilder('v')
+            ->leftJoin('v.employee', "e")
+            ->andWhere('e.company = :company')
+            ->andWhere('(v.dateTo BETWEEN :dateFrom AND :dateTo OR
+             v.dateFrom BETWEEN :dateFrom AND :dateTo OR 
+             :dateFrom BETWEEN v.dateFrom AND v.dateTo OR 
+             :dateTo BETWEEN v.dateFrom AND v.dateTo OR 
+             v.dateFrom BETWEEN :dateFrom AND :dateFrom OR 
+             v.dateFrom BETWEEN :dateFrom AND :dateTo OR
+             :dateFrom = v.dateTo OR
+              v.dateTo = :dateFrom OR
+              v.dateFrom = :dateTo)')
+            ->andWhere('v.status = :status')
+            ->setParameter('status', $statusAccepted)
+            ->setParameter('company', $company)
+            ->setParameter('dateFrom', $dateFrom->format('Y-m-d'))
+            ->setParameter('dateTo', $dateTo->format('Y-m-d'))
+            ->getQuery()
+            ->getResult();
     }
 
     public function findVacationUsedByUser(Employee $employee, VacationStatus $vacationStatus, VacationTypes $vacationTypes):int

@@ -3,10 +3,14 @@
 namespace App\Controller\ExtractData;
 
 use App\Entity\Vacation\Vacation;
+use App\Repository\CompanyRepository;
 use App\Repository\VacationRepository;
+use DateTime;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -14,18 +18,33 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ExtractController extends AbstractController
 {
 
-    public function __construct(private VacationRepository $vacationRepository)
+    public function __construct(private VacationRepository $vacationRepository,
+        private CompanyRepository$companyRepository
+    )
     {
     }
 
-    #[Route('/vacations/extract/')]
-    public function generateExcel()
+    #[Route('/vacations/extract/{company}')]
+    public function generateExcel(Request $request,int $company)
     {
-        // Stwórz nowy arkusz Excel
+
+        if( $request->query->has('dateFrom')){
+            $dateFrom = DateTime::createFromFormat("Y-m-d", $request->query->get('dateFrom'));
+        }else{
+            throw new BadRequestException("DateFrom is required");
+        }
+
+        if( $request->query->has('dateTo')){
+            $dateTo = DateTime::createFromFormat("Y-m-d", $request->query->get('dateTo'));
+        }else{
+            throw new BadRequestException("DateTo is required");
+        }
+
+        $company = $this->companyRepository->find($company) ?? throw new \Exception("Company is required");
+
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        // Dodaj nagłówki kolumn
         $sheet->setCellValue('A1', 'Kod');
         $sheet->setCellValue('B1', 'Nazwisko');
         $sheet->setCellValue('C1', 'Imie');
@@ -37,9 +56,8 @@ class ExtractController extends AbstractController
         $sheet->setCellValue('I1', 'Nieobecnosc_na_czesc_dnia');
         $sheet->setCellValue('J1', 'Urlop_na_zadanie');
 
-        // Wypełnij arkusz danymi z bazy danych
 
-        $result = $this->vacationRepository->findAll();
+        $result = $this->vacationRepository->findVacationsToExtract($company, $dateFrom, $dateTo);
 
         $row = 2;
         foreach ($result as $vacation) {
@@ -64,7 +82,7 @@ class ExtractController extends AbstractController
         $writer->save('php://output');
         $excelData = ob_get_clean();
         $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        $response->headers->set('Content-Disposition', 'attachment; filename="dane.xlsx"');
+        $response->headers->set('Content-Disposition', 'attachment; filename="Extract_Vacations.xlsx"');
         $response->setContent($excelData);
 
         return $response;

@@ -5,9 +5,11 @@ namespace App\State;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\User;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Serializer\Encoder\EncoderInterface;
 
 
 #[AsDecorator('api_platform.doctrine.orm.state.persist_processor')]
