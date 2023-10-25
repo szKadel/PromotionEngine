@@ -84,7 +84,6 @@ class VacationStateProcessor implements ProcessorInterface
 
                         $data->setAnnulledAt(new \DateTimeImmutable());
 
-
                         $data->setAnnulledBy($this->userRepository->find($user->getId()));
 
                     }
@@ -99,8 +98,6 @@ class VacationStateProcessor implements ProcessorInterface
                         }
                     }
                 }
-
-
             }
         }
 
