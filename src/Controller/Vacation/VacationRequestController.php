@@ -49,7 +49,7 @@ class VacationRequestController
         $this -> checkReplacement();
         $this -> vacation -> setCreatedBy($this->userRepository->find($this->security->getUser()->getId()));
         $this -> vacation -> setCreatedAt(new \DateTime());
-        $this -> emailNotificationController    ->  OnVacationAdd($vacation);
+        //$this -> emailNotificationController    ->  OnVacationAdd($vacation);
     }
 
     public function onVacationUpdate(Vacation $vacation, Vacation $previousVacation)
