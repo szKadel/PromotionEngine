@@ -51,7 +51,7 @@ class ExtractController extends AbstractController
                 $sheet->setCellValue('E' . $row, $vacation->getType()->getName());
                 $sheet->setCellValue('F' . $row, $vacation->getDateFrom()->format('Y-m-d'));
                 $sheet->setCellValue('F' . $row, $vacation->getDateTo()->format('Y-m-d'));
-                $sheet->setCellValue('H' . $row, "Nie dotyczy");
+                $sheet->setCellValue('H' . $row, "Nie dotyczyy");
                 $sheet->setCellValue('I' . $row, "");
                 $sheet->setCellValue('J' . $row, 0);
             }
