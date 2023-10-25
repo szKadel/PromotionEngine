@@ -47,8 +47,8 @@ class ExtractController extends AbstractController
                 $sheet->setCellValue('A' . $row, $vacation->getEmployee()->getSurname()."_".$vacation->getEmployee()->getName());
                 $sheet->setCellValue('B' . $row, $vacation->getEmployee()->getSurname());
                 $sheet->setCellValue('C' . $row, $vacation->getEmployee()->getName());
-                $sheet->setCellValue('D' . $row, $vacation->getType());
-                $sheet->setCellValue('E' . $row, $vacation->getType());
+                $sheet->setCellValue('D' . $row, $vacation->getType()->getName());
+                $sheet->setCellValue('E' . $row, $vacation->getType()->getName());
                 $sheet->setCellValue('F' . $row, $vacation->getDateFrom()->format('Y-m-d'));
                 $sheet->setCellValue('F' . $row, $vacation->getDateTo()->format('Y-m-d'));
                 $sheet->setCellValue('H' . $row, "Nie dotyczy");
