@@ -103,9 +103,7 @@ class VacationRequestController
         }
 
         if ($limitDays < $spendDays + $this->vacation->getSpendVacationDays()) {
-            throw new BadRequestException(
-                'Nie wystarczy dni Urlopowych. Pozostało ' . ($limitDays - $spendDays) . ". Wnioskujesz o " . $this->vacation->getSpendVacationDays()
-            );
+            throw new BadRequestException('Drogi Pracowniku! Wniosek nie może zostać utworzony z powodu przekroczenia limitu dostępnych dni wolnych.');
         }
     }
 

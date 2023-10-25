@@ -136,10 +136,7 @@ class VacationStateProcessor implements ProcessorInterface
 
         if ($limit[0]->getDaysLimit() != 0) {
             if ($limit[0]->getDaysLimit() < $vacationUsedInDays + $vacation->getSpendVacationDays()) {
-                throw new BadRequestException(
-                    'Nie wystarczy dni Urlopowych. Pozostało ' . $limit[0]->getDaysLimit(
-                    ) - $vacationUsedInDays . ". Wnioskujesz o " . $vacation->getSpendVacationDays()
-                );
+                throw new BadRequestException('Uwaga! Nie możesz zaakceptować tego wniosku. Limit na ten rok dla tego użytkownika został wykorzystany.');
             }
         }
     }
