@@ -98,12 +98,9 @@ class VacationRequestController
 
         $spendDays = $this->counterVacationDays->getVacationDaysSpend($this->vacation->getEmployee(),$this->vacation->getType(),$this->vacation->getStatus());
 
-
         if ($limitDays == 0) {
             return;
         }
-
-
 
         if ($limitDays < $spendDays + $this->vacation->getSpendVacationDays()) {
             throw new BadRequestException('Drogi Pracowniku! Wniosek nie może zostać utworzony z powodu przekroczenia limitu dostępnych dni wolnych.');
