@@ -7,7 +7,7 @@ use App\Repository\CompanyRepository;
 use App\Repository\VacationRepository;
 use App\Security\ApiTokenHandler;
 use DateTime;
-use MongoDB\Driver\Exception\AuthenticationException;
+
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ExtractController extends AbstractController
