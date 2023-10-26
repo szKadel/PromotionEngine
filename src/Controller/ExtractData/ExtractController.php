@@ -34,7 +34,7 @@ class ExtractController extends AbstractController
         if($request->query->has("auth"))
         {
             $user = $this->apiTokenHandler->getUserBadgeFrom($request->query->get("auth"));
-            $user->getUser()->getRoles()["ROLE_ADMIN"]?? throw new AuthenticationException("Authorisation Error");
+
         }else{
             throw new AuthenticationException("Authorisation Error");
         }
