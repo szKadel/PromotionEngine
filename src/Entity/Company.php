@@ -30,6 +30,7 @@ class Company
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['company:read','employee:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
