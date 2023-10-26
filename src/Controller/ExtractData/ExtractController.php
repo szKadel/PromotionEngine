@@ -5,7 +5,9 @@ namespace App\Controller\ExtractData;
 use App\Entity\Vacation\Vacation;
 use App\Repository\CompanyRepository;
 use App\Repository\VacationRepository;
+use App\Security\ApiTokenHandler;
 use DateTime;
+use MongoDB\Driver\Exception\AuthenticationException;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,7 +21,8 @@ class ExtractController extends AbstractController
 {
 
     public function __construct(private VacationRepository $vacationRepository,
-        private CompanyRepository$companyRepository
+        private CompanyRepository$companyRepository,
+        private ApiTokenHandler $apiTokenHandler
     )
     {
     }
@@ -27,6 +30,20 @@ class ExtractController extends AbstractController
     #[Route('/vacations/extract/{company}')]
     public function generateExcel(Request $request,int $company)
     {
+        if($request->query->has("auth"))
+        {
+            $user = $this->apiTokenHandler->getUserBadgeFrom($request->query->get("auth"));
+            $user->getUser()->getRoles()["ROLE_ADMIN"]?? throw new AuthenticationException("Authorisation Error");
+        }else{
+            throw new AuthenticationException("Authorisation Error");
+        }
+
+        if( $request->query->has('dateFrom')){
+            $dateFrom = DateTime::createFromFormat("Y-m-d", $request->query->get('dateFrom'));
+        }else{
+            throw new BadRequestException("DateFrom is required");
+        }
+
 
         if( $request->query->has('dateFrom')){
             $dateFrom = DateTime::createFromFormat("Y-m-d", $request->query->get('dateFrom'));
