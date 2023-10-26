@@ -104,7 +104,7 @@ class VacationRepository extends ServiceEntityRepository
         return $days;
     }
 
-    public function findEmployeeOnVacation(\DateTime $dateFrom, \DateTime $dateTo) :mixed
+    public function findEmployeeOnVacation(string $dateFrom, string $dateTo) :mixed
     {
         $statusAccepted = $this->vacationStatusRepository->findByName("Potwierdzony");
 
@@ -123,8 +123,8 @@ class VacationRepository extends ServiceEntityRepository
             ->andWhere('v.status = :status')
             ->setParameter('status', $statusAccepted)
             ->setParameter('department', $this->security->getUser()->getEmployee()->getDepartment())
-            ->setParameter('dateFrom', $dateFrom->format('Y-m-d'))
-            ->setParameter('dateTo', $dateTo->format('Y-m-d'))
+            ->setParameter('dateFrom', $dateFrom)
+            ->setParameter('dateTo', $dateTo)
             ->getQuery()
             ->getResult();
     }

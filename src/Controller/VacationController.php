@@ -20,13 +20,12 @@ class VacationController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function getEmployeeOnVacation() : JsonResponse
     {
-        $now = new \DateTime();
-        $weekStartDate = clone $now;
+        $today = date('Y-m-d');
 
-        $weekStartDate->modify('this week');
-        $weekEndDate = $weekStartDate->modify('+4 days');
+        $monday = date('Y-m-d', strtotime('last Monday', strtotime($today)));
+        $friday = date('Y-m-d', strtotime('this Friday', strtotime($today)));
 
-        $dbResult = $this->vacationRepository->findEmployeeOnVacation($weekStartDate, $weekEndDate);
+        $dbResult = $this->vacationRepository->findEmployeeOnVacation($monday, $friday);
 
         foreach ($dbResult as $vacation){
             $result[] = [
