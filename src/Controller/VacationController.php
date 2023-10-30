@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\VacationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -11,7 +12,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class VacationController extends AbstractController
 {
     public function __construct(
-        private VacationRepository $vacationRepository
+        private VacationRepository $vacationRepository,
+        private Security $security
     )
     {
     }
@@ -25,7 +27,11 @@ class VacationController extends AbstractController
         $monday = date('Y-m-d', strtotime('last Monday', strtotime($today)));
         $friday = date('Y-m-d', strtotime('this Friday', strtotime($today)));
 
-        $dbResult = $this->vacationRepository->findEmployeeOnVacation($monday, $friday);
+        if($this->security->isGranted('ROLE_ADMIN')){
+            $dbResult = $this->vacationRepository->findEmployeeOnVacationForAdmin($monday, $friday);
+        }else {
+            $dbResult = $this->vacationRepository->findEmployeeOnVacation($monday, $friday);
+        }
 
         foreach ($dbResult as $vacation){
             $result[] = [
