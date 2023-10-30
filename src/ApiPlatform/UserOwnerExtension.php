@@ -32,7 +32,7 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
 
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass): void
     {
-        if (Vacation::class !== $resourceClass || $this->security->isGranted('ROLE_ADMIN') || $this->security->isGranted('ROLE_MOD') || null === $user = $this->security->getUser()) {
+        if (Vacation::class !== $resourceClass || $this->security->isGranted('ROLE_ADMIN') ||$this->security->isGranted('ROLE_KADR') || $this->security->isGranted('ROLE_MOD') || null === $user = $this->security->getUser()) {
             return;
         }
 
@@ -49,7 +49,7 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
 
     public function groupModerator(QueryBuilder $queryBuilder, string $resourceClass)
     {
-        if (Vacation::class !== $resourceClass || $this->security->isGranted('ROLE_ADMIN') || null === $user = $this->security->getUser()) {
+        if (Vacation::class !== $resourceClass || $this->security->isGranted('ROLE_ADMIN')||$this->security->isGranted('ROLE_KADR')|| null === $user = $this->security->getUser()) {
             return;
         }
 
