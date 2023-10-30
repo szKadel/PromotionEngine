@@ -25,10 +25,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
     operations: [
-        new get(normalizationContext: ['groups' => ['user:read']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD')"),
-        new GetCollection(normalizationContext: ['groups' => ['user:read']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD')"),
+        new get(normalizationContext: ['groups' => ['user:read']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD') or is_granted('ROLE_KADR')"),
+        new GetCollection(normalizationContext: ['groups' => ['user:read']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD') or is_granted('ROLE_KADR')"),
         new Post(denormalizationContext: ['groups' => ['user:write']],security: "is_granted('ROLE_ADMIN')"),
-        new Put(denormalizationContext: ['groups' => ['user:write']],security: "is_granted('ROLE_ADMIN')"),
+        new Put(denormalizationContext: ['groups' => ['user:write']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_KADR')"),
         new Delete(security: "is_granted('ROLE_ADMIN')")
     ],
     paginationClientItemsPerPage: true,

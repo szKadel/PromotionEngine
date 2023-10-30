@@ -22,9 +22,9 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new get(normalizationContext: ['groups' => ['vacationLimit:read']],security: "is_granted('ROLE_USER')"),
         new GetCollection(normalizationContext: ['groups' => ['vacationLimit:read']],security: "is_granted('ROLE_USER')"),
-        new Post(denormalizationContext: ['groups' => ['vacationLimit:write']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD')"),
-        new Put(denormalizationContext: ['groups' => ['vacationLimit:write']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD')"),
-        new Delete(denormalizationContext: ['groups' => ['vacationLimit:write']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD')")
+        new Post(denormalizationContext: ['groups' => ['vacationLimit:write']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD') or is_granted('ROLE_KADR')"),
+        new Put(denormalizationContext: ['groups' => ['vacationLimit:write']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD') or is_granted('ROLE_KADR')"),
+        new Delete(denormalizationContext: ['groups' => ['vacationLimit:write']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD') or is_granted('ROLE_KADR')")
     ],
     paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7,
