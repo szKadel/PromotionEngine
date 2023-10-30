@@ -56,6 +56,7 @@ class VacationLimits
     private ?int $daysLimit = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['vacationLimit:read', 'vacationLimit:write','employee:read','vacationRequest:read'])]
     private ?int $unusedDaysFromPreviousYear = null;
 
     #[ORM\PrePersist]
