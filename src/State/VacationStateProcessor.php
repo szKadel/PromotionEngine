@@ -77,6 +77,10 @@ class VacationStateProcessor implements ProcessorInterface
 
                 if ($context["previous_data"]->getStatus()->getName() == "Potwierdzony" && $data->getStatus()->getName() == "Anulowany")
                 {
+                    if($this -> security -> isGranted('ROLE_KADR')){
+                        throw new BadRequestException('Brak Uprawnień');
+                    }
+
                     $date = date('Y-m-d');
                     if($this->security->getUser()->getId() == $data->getEmployee()->getUser()->getId() ??"" && $date <= $data->getDateFrom()) {
                         $user = $this->security->getUser();
@@ -84,7 +88,6 @@ class VacationStateProcessor implements ProcessorInterface
                         $data->setAnnulledAt(new \DateTimeImmutable());
 
                         $data->setAnnulledBy($this->userRepository->find($user->getId()));
-
                     }
 
                     if($this->security->isGranted("ROLE_ADMIN")&& $date <= $data->getDateTo()) {
