@@ -20,7 +20,27 @@ class UserTest extends KernelTestCase
     {
         $department = DepartmentFactory::createMany(5);
         $employee = EmployeeFactory::createOne();
-        $user = UserFactory::createOne(['password'=>'pass','employee' => null, 'roles'=>['ROLE_KADR']]);
+        $user = UserFactory::createOne(['password'=>'pass','employee' => null, 'roles'=>[]]);
+        $kadr = UserFactory::createOne(['password'=>'pass','employee' => null, 'roles'=>['ROLE_KADR']]);
+        $admin = UserFactory::createOne(['password'=>'pass','employee' => null, 'roles'=>['ROLE_ADMIN']]);
+
+        $this->browser()
+            ->actingAs($kadr)
+            ->put('/api/users/'.$user->getId(),[
+                    'json'=>[
+                        'userName' => 'test'
+                    ]
+                ]
+            )->assertStatus(200);
+
+        $this->browser()
+            ->actingAs($kadr)
+            ->put('/api/users/'.$kadr->getId(),[
+                    'json'=>[
+                        'userName' => 'test'
+                    ]
+                ]
+            )->assertStatus(400);
 
         $this->browser()
             ->actingAs($user)
@@ -29,7 +49,7 @@ class UserTest extends KernelTestCase
                         'userName' => 'test'
                     ]
                 ]
-            )->dd();
+            )->assertStatus(403);
 
     }
 }
