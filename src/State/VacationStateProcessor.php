@@ -73,6 +73,12 @@ class VacationStateProcessor implements ProcessorInterface
                             $this->emailService -> sendNotificationToOwnerOnChangeStatus($data);
                         }
                     }
+
+                    if($data->getStatus()->getName() == "Odrzucony") {
+                        if($this -> security -> isGranted('ROLE_KADR')){
+                            throw new BadRequestException('Brak Uprawnień');
+                        }
+                    }
                 }
 
                 if ($context["previous_data"]->getStatus()->getName() == "Potwierdzony" && $data->getStatus()->getName() == "Anulowany")
