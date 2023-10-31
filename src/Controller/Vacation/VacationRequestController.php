@@ -58,8 +58,6 @@ class VacationRequestController
         $this   ->setPreaviusVacation($previousVacation);
         $this   ->checkVacationDaysLimit();
         $this   ->checkReplacement();
-
-
     }
 
     public function checkReplacement(): void
