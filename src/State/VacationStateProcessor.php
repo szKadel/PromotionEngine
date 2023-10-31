@@ -48,7 +48,6 @@ class VacationStateProcessor implements ProcessorInterface
     {
         if($data instanceof Vacation) {
             if($operation instanceof Post) {
-
                 $this->vacationRequestController->onVacationRequestPost($data);
 
             } elseif ($operation instanceof Put) {
@@ -112,7 +111,6 @@ class VacationStateProcessor implements ProcessorInterface
                 }
             }
         }
-
         $this->innerProcessor->process($data, $operation, $uriVariables, $context);
     }
 
