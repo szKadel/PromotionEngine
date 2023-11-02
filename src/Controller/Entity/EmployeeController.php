@@ -76,6 +76,8 @@ class EmployeeController extends AbstractController
     #[Route('api/user/custom/{id}', methods: ['DELETE'])]
     public function deleteUser($id)
     {
+        throw new BadRequestException("Ta funkcjonalność zostanie dodana wkrótce");
+
         $user = $this->userRepository->find($id);
 
         if(!$user instanceof User)
