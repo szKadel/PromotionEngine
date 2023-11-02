@@ -5,6 +5,7 @@ namespace App\Tests\Functional\Api\Authentication;
 use App\Factory\Company\DepartmentFactory;
 use App\Factory\Company\EmployeeFactory;
 use App\Factory\UserFactory;
+use App\Factory\Vacation\VacationFactory;
 use App\Factory\Vacation\VacationLimitsFactory;
 use App\Factory\VacationTypesFactory;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -54,5 +55,51 @@ class UserTest extends KernelTestCase
                 ]
             )->assertStatus(403);
 
+    }
+    public function testDeleteUser()
+    {
+        $department = DepartmentFactory::createMany(5);
+        $employee = EmployeeFactory::createOne();
+        $employee2 = EmployeeFactory::createOne();
+        $employee3 = EmployeeFactory::createOne();
+        $employee4 = EmployeeFactory::createOne();
+
+        $vacationType = VacationTypesFactory::createOne();
+        $vacationType2 = VacationTypesFactory::createOne();
+
+        VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>500]);
+        VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType2, 'daysLimit'=>500]);
+
+        $user = UserFactory::createOne(['employee'=>$employee2,'password'=>'pass','roles'=>['ROLE_ADMIN']]);
+        $user2 = UserFactory::createOne(['employee'=>$employee3,'password'=>'pass']);
+        $user3 = UserFactory::createOne(['employee'=>$employee4,'password'=>'pass']);
+        $user3 = UserFactory::createOne(['employee'=>$employee,'password'=>'pass']);
+
+        VacationFactory::createOne(['employee' => $employee, 'type'=>$vacationType]);
+        VacationFactory::createMany(5,['employee' => $employee, 'type'=>$vacationType]);
+
+        $this->browser()
+            ->actingAs($user)
+            ->get("api/users")
+            ->dump('"hydra:totalItems"');
+
+        $this->browser()
+            ->delete('/api/employee/custom/1',[])
+            ->assertStatus(200);
+
+        $this->browser()
+            ->delete('/api/employee/custom/3',[])
+            ->assertStatus(200);
+
+        $this->browser()
+            ->delete('/api/employee/custom/3',[])
+            ->assertStatus(400);
+
+        $this->browser()
+            ->actingAs($user)
+            ->get("api/employees")
+            ->dump('"hydra:totalItems"');
+
+        //$this->browser()->actingAs($user)->delete("/api/users/".$user2->getId())->dump();
     }
 }
