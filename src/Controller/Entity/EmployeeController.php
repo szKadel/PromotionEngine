@@ -63,6 +63,11 @@ class EmployeeController extends AbstractController
             $this->entityManager->flush();
         }
 
+        if(!empty($employee->getUser())) {
+            $employee->getUser()->setEmployee(null);
+            $this->entityManager->flush();
+        }
+
         $this->delete($employee);
 
         return new Response("Employee deleted id ".$id,200);
