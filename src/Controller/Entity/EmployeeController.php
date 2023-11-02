@@ -4,6 +4,7 @@ namespace App\Controller\Entity;
 
 use App\Entity\Company\Employee;
 use App\Entity\User;
+use App\Entity\Vacation\Vacation;
 use App\Entity\Vacation\VacationLimits;
 use App\Repository\EmployeeRepository;
 use App\Repository\EmployeeVacationLimitRepository;
@@ -23,6 +24,7 @@ class EmployeeController extends AbstractController
         private EmployeeVacationLimitRepository $employeeVacationLimitRepository,
         private EmployeeRepository $employeeRepository,
         private UserRepository $userRepository,
+        private VacationRepository $vacationRepository,
         private EntityManagerInterface $entityManager
     )
     {
@@ -49,6 +51,16 @@ class EmployeeController extends AbstractController
 
         foreach ($vacations as $vacation){
             $this->delete($vacation);
+        }
+
+        $replacements =  $this->vacationRepository->findBy(['replacement' => $employee]);
+
+
+        $this->entityManager->getRepository(Vacation::class);
+
+        foreach ($replacements as $replacement){
+            $replacement->setReplacement(null);
+            $this->entityManager->flush();
         }
 
         $this->delete($employee);

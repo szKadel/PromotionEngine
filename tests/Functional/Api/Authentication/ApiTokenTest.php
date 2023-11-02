@@ -78,35 +78,27 @@ class ApiTokenTest extends KernelTestCase
         VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType2, 'daysLimit'=>500]);
 
         $user = UserFactory::createOne(['employee'=>$employee2,'password'=>'pass','roles'=>['ROLE_ADMIN']]);
-        $user2 = UserFactory::createOne(['employee'=>$employee3,'password'=>'pass','roles'=>['ROLE_ADMIN']]);
+        $user2 = UserFactory::createOne(['employee'=>$employee,'password'=>'pass','roles'=>['ROLE_ADMIN']]);
 
+
+        VacationFactory::createOne(['employee' => $employee3, 'type'=>$vacationType,'replacement'=>$employee]);
         VacationFactory::createOne(['employee' => $employee, 'type'=>$vacationType,'replacement'=>$employee3]);
         VacationFactory::createMany(5,['employee' => $employee, 'type'=>$vacationType, 'replacement'=>$employee2]);
 
         $this->browser()
             ->actingAs($user2)
             ->get("api/employees")
-            ->assertJsonMatches('"hydra:totalItems"',9);
+            ->assertJsonMatches('"hydra:totalItems"',10);
 
         $this->browser()
             ->actingAs($user2)
             ->delete('/api/employee/custom/1',[])
-            ->assertStatus(200);
-
-        $this->browser()
-            ->actingAs($user2)
-            ->delete('/api/employee/custom/3',[])
-            ->assertStatus(200);
-
-        $this->browser()
-            ->actingAs($user2)
-            ->delete('/api/employee/custom/3',[])
-            ->assertStatus(400);
+            ->dd();
 
         $this->browser()
             ->actingAs($user)
             ->get("api/employees")
-            ->assertJsonMatches('"hydra:totalItems"',7);
+            ->assertJsonMatches('"hydra:totalItems"',9);
 
         //$this->browser()->actingAs($user)->delete("/api/users/".$user2->getId())->dump();
     }

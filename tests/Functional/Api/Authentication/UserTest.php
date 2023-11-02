@@ -64,7 +64,9 @@ class UserTest extends KernelTestCase
         $employee3 = EmployeeFactory::createOne();
         $employee4 = EmployeeFactory::createOne();
 
-        $vacationType = VacationTypesFactory::createOne();
+        $vacationType = VacationTypesFactory::createOne([
+            'name'=>'Urlop Wypoczynkowy'
+        ]);
         $vacationType2 = VacationTypesFactory::createOne();
 
         VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>500]);
