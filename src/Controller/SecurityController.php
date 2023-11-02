@@ -25,25 +25,26 @@ class SecurityController extends AbstractController
             throw new UnauthorizedHttpException("");
         }
 
-        if($user -> getApiTokens()->get(0) === null)
+        if($user -> getValidApiToken() == null)
         {
-            $token = new ApiToken();
-            $token ->setOwnedBy($user);
-            $apiTokenController -> add($token);
-        }elseif(!$user -> getApiTokens()->get(0)->isValid()){
 
-            if(!empty($user -> getApiTokens()->get(0))) {
-                $apiTokenController->delete($user->getApiTokens()->get(0));
+
+            $token = new ApiToken();
+            $user->addApiToken($token);
+            $apiTokenController -> add($token);
+        }else{
+            $apiTokens = $user->getApiTokens()->toArray();
+            if(count($apiTokens) > 0) {
+                foreach ($apiTokens as $apiToken) {
+                    $user->removeApiToken($apiToken);
+                    if(!$apiToken->isValid()) {
+                        $apiTokenController->delete($apiToken);
+                    }else{
+                        $token = $apiToken;
+                    }
+                }
             }
-
-            $token = new ApiToken();
-            $token ->setOwnedBy($user);
-            $apiTokenController -> add($token);
         }
-
-        $token = new ApiToken();
-        $token ->setOwnedBy($user);
-        $apiTokenController -> add($token);
 
         $response = [
             'token' => $token->getToken(),

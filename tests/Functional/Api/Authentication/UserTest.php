@@ -5,6 +5,8 @@ namespace App\Tests\Functional\Api\Authentication;
 use App\Factory\Company\DepartmentFactory;
 use App\Factory\Company\EmployeeFactory;
 use App\Factory\UserFactory;
+use App\Factory\Vacation\VacationLimitsFactory;
+use App\Factory\VacationTypesFactory;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Browser\Test\HasBrowser;
 use Zenstruck\Foundry\Test\ResetDatabase;
@@ -23,6 +25,7 @@ class UserTest extends KernelTestCase
         $user = UserFactory::createOne(['password'=>'pass','employee' => null, 'roles'=>[]]);
         $kadr = UserFactory::createOne(['password'=>'pass','employee' => null, 'roles'=>['ROLE_KADR']]);
         $admin = UserFactory::createOne(['password'=>'pass','employee' => null, 'roles'=>['ROLE_ADMIN']]);
+
 
         $this->browser()
             ->actingAs($kadr)
