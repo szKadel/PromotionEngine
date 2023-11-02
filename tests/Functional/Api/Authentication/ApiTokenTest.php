@@ -80,23 +80,26 @@ class ApiTokenTest extends KernelTestCase
         $user = UserFactory::createOne(['employee'=>$employee2,'password'=>'pass','roles'=>['ROLE_ADMIN']]);
         $user2 = UserFactory::createOne(['employee'=>$employee3,'password'=>'pass','roles'=>['ROLE_ADMIN']]);
 
-        VacationFactory::createOne(['employee' => $employee, 'type'=>$vacationType]);
-        VacationFactory::createMany(5,['employee' => $employee, 'type'=>$vacationType]);
+        VacationFactory::createOne(['employee' => $employee, 'type'=>$vacationType,'replacement'=>$employee3]);
+        VacationFactory::createMany(5,['employee' => $employee, 'type'=>$vacationType, 'replacement'=>$employee2]);
 
         $this->browser()
-            ->actingAs($user)
+            ->actingAs($user2)
             ->get("api/employees")
             ->assertJsonMatches('"hydra:totalItems"',9);
 
         $this->browser()
+            ->actingAs($user2)
             ->delete('/api/employee/custom/1',[])
             ->assertStatus(200);
 
         $this->browser()
+            ->actingAs($user2)
             ->delete('/api/employee/custom/3',[])
             ->assertStatus(200);
 
         $this->browser()
+            ->actingAs($user2)
             ->delete('/api/employee/custom/3',[])
             ->assertStatus(400);
 

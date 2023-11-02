@@ -81,24 +81,27 @@ class UserTest extends KernelTestCase
         $this->browser()
             ->actingAs($user)
             ->get("api/users")
-            ->dump('"hydra:totalItems"');
+            ->assertJsonMatches('"hydra:totalItems"',4);
 
         $this->browser()
-            ->delete('/api/employee/custom/1',[])
+            ->actingAs($user)
+            ->delete('/api/user/custom/1',[])
             ->assertStatus(200);
 
         $this->browser()
-            ->delete('/api/employee/custom/3',[])
+            ->actingAs($user)
+            ->delete('/api/user/custom/3',[])
             ->assertStatus(200);
 
         $this->browser()
-            ->delete('/api/employee/custom/3',[])
+            ->actingAs($user)
+            ->delete('/api/user/custom/3',[])
             ->assertStatus(400);
 
         $this->browser()
             ->actingAs($user)
-            ->get("api/employees")
-            ->dump('"hydra:totalItems"');
+            ->get("api/users")
+            ->assertJsonMatches('"hydra:totalItems"',2);
 
         //$this->browser()->actingAs($user)->delete("/api/users/".$user2->getId())->dump();
     }
