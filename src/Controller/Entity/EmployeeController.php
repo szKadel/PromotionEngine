@@ -6,6 +6,7 @@ use App\Entity\Company\Employee;
 use App\Entity\User;
 use App\Entity\Vacation\Vacation;
 use App\Entity\Vacation\VacationLimits;
+use App\Repository\ApiTokenRepository;
 use App\Repository\EmployeeRepository;
 use App\Repository\EmployeeVacationLimitRepository;
 use App\Repository\UserRepository;
@@ -24,6 +25,7 @@ class EmployeeController extends AbstractController
         private EmployeeVacationLimitRepository $employeeVacationLimitRepository,
         private EmployeeRepository $employeeRepository,
         private UserRepository $userRepository,
+        private ApiTokenRepository $apiTokenRepository,
         private VacationRepository $vacationRepository,
         private EntityManagerInterface $entityManager
     )
@@ -76,7 +78,6 @@ class EmployeeController extends AbstractController
     #[Route('api/user/custom/{id}', methods: ['DELETE'])]
     public function deleteUser($id)
     {
-        throw new BadRequestException("Ta funkcjonalność zostanie dodana wkrótce");
 
         $user = $this->userRepository->find($id);
 
@@ -89,7 +90,7 @@ class EmployeeController extends AbstractController
             $this->deleteEmployee($user->getEmployee()->getId());
         }
 
-        $apiTokens = $user->getApiTokens();
+        $apiTokens =  $this->apiTokenRepository->findBy(['ownedBy' => $user]);
 
         foreach ($apiTokens as $apiToken)
         {
