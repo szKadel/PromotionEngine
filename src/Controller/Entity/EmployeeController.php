@@ -77,7 +77,7 @@ class EmployeeController extends AbstractController
             $this->delete($apiToken);
         }
 
-        $this->delete($user);
+        $this->delete($user) ;
 
         return new Response("User deleted id ".$id,200);
     }
