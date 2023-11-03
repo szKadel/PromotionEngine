@@ -77,6 +77,20 @@ class UserTest extends KernelTestCase
         $user3 = UserFactory::createOne(['employee'=>$employee4,'password'=>'pass']);
         $user3 = UserFactory::createOne(['employee'=>$employee,'password'=>'pass']);
 
+        $this->browser()
+            ->post('/login',['json'=>[
+                'email'=>$user->getEmail(),
+                'password'=>'pass'
+            ]
+            ])->assertStatus(200)->assertAuthenticated();
+
+        $this->browser()
+            ->post('/login',['json'=>[
+                'email'=>$user->getEmail(),
+                'password'=>'pass'
+            ]
+            ])->assertStatus(200)->assertAuthenticated();
+
         VacationFactory::createOne(['employee' => $employee, 'type'=>$vacationType]);
         VacationFactory::createMany(5,['employee' => $employee, 'type'=>$vacationType]);
 
