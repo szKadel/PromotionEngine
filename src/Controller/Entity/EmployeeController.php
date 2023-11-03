@@ -36,7 +36,7 @@ class EmployeeController extends AbstractController
     #[Route('api/employee/custom/{id}', methods: ['DELETE'])]
     public function deleteEmployee($id)
     {
-        $employee = $this->employeeRepository->find($id);
+        $employee = $this->employeeRepository->find($id) ;
 
         if(!$employee instanceof Employee)
         {
