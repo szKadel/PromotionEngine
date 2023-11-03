@@ -32,8 +32,8 @@ class EmployeeController extends AbstractController
     {
 
     }
-    #[IsGranted('ROLE_ADMIN')]
-    #[Route('api/employee/custom/{id}', methods: ['DELETE'])]
+
+    #[Route('api/employee/custom/{id}', methods: ['GET'])]
     public function deleteEmployee($id)
     {
         $employee = $this->employeeRepository->find($id);
