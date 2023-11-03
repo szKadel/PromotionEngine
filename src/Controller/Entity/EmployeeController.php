@@ -66,7 +66,7 @@ class EmployeeController extends AbstractController
         }
 
         if(!empty($employee->getUser())) {
-            $employee->getUser()->setEmployee(null);
+            $employee->setUser(null);
             $this->entityManager->flush();
         }
 
@@ -86,15 +86,16 @@ class EmployeeController extends AbstractController
             throw new BadRequestException("Nie znaleziono elementu.",404);
         }
 
-        if(!empty($user->getEmployee())){
-            $this->deleteEmployee($user->getEmployee()->getId());
-        }
-
         $apiTokens =  $this->apiTokenRepository->findBy(['ownedBy' => $user]);
 
         foreach ($apiTokens as $apiToken)
         {
             $this->delete($apiToken);
+        }
+
+        if(!empty($user->getEmployee())){
+            $user->setEmployee(null);
+            $this->entityManager->flush();
         }
 
         $this->delete($user) ;

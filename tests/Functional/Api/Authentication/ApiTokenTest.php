@@ -75,7 +75,7 @@ class ApiTokenTest extends KernelTestCase
         $vacationType2 = VacationTypesFactory::createOne();
 
         VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>500]);
-        VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType2, 'daysLimit'=>500]);
+        VacationLimitsFactory::createOne(["employee"=>$employee2,'vacationType'=>$vacationType2, 'daysLimit'=>500]);
 
         $user = UserFactory::createOne(['employee'=>$employee2,'password'=>'pass','roles'=>['ROLE_ADMIN']]);
         $user2 = UserFactory::createOne(['employee'=>$employee,'password'=>'pass','roles'=>['ROLE_ADMIN']]);
@@ -93,7 +93,7 @@ class ApiTokenTest extends KernelTestCase
         $this->browser()
             ->actingAs($user2)
             ->delete('/api/employee/custom/1',[])
-            ->dd();
+            ->assertStatus(200);
 
         $this->browser()
             ->actingAs($user)
