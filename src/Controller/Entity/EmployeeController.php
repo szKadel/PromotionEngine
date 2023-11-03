@@ -119,7 +119,7 @@ class EmployeeController extends AbstractController
 
 
     #[IsGranted('ROLE_ADMIN')]
-    #[Route('api/employee/{id}/department/', methods: ['POST'])]
+    #[Route('api/employee/department/', methods: ['POST'])]
     public function setExternalDepartmentsRight()
     {
         new Response(true,200);
