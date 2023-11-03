@@ -79,17 +79,12 @@ class UserTest extends KernelTestCase
 
         $this->browser()
             ->post('/login',['json'=>[
-                'email'=>$user->getEmail(),
+                'email'=>$user2->getEmail(),
                 'password'=>'pass'
             ]
             ])->assertStatus(200)->assertAuthenticated();
 
-        $this->browser()
-            ->post('/login',['json'=>[
-                'email'=>$user->getEmail(),
-                'password'=>'pass'
-            ]
-            ])->assertStatus(200)->assertAuthenticated();
+
 
         VacationFactory::createOne(['employee' => $employee, 'type'=>$vacationType]);
         VacationFactory::createMany(5,['employee' => $employee, 'type'=>$vacationType]);
