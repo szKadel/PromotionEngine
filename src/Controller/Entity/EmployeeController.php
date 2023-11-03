@@ -94,7 +94,8 @@ class EmployeeController extends AbstractController
         }
 
         if(!empty($user->getEmployee())){
-            $this->deleteEmployee($user->getEmployee());
+            $user->setEmployee(null);
+            $this->entityManager->flush();
         }
 
         $this->entityManager->flush();
