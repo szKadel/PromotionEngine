@@ -59,6 +59,8 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
             $queryBuilder->join(sprintf('%s.employee', $rootAlias), 'u');
             $queryBuilder->andWhere('u.department = :department');
             $queryBuilder->setParameter('department', $user->getEmployee()->getDepartment());
+
+
         }
     }
 }

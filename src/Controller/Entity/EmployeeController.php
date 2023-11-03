@@ -5,14 +5,12 @@ namespace App\Controller\Entity;
 use App\Entity\Company\Employee;
 use App\Entity\User;
 use App\Entity\Vacation\Vacation;
-use App\Entity\Vacation\VacationLimits;
 use App\Repository\ApiTokenRepository;
 use App\Repository\EmployeeRepository;
 use App\Repository\EmployeeVacationLimitRepository;
 use App\Repository\UserRepository;
 use App\Repository\VacationRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use phpDocumentor\Reflection\Types\Collection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Response;
@@ -105,6 +103,7 @@ class EmployeeController extends AbstractController
         return new Response("User deleted id ".$id,200);
     }
 
+
     public function delete(object $object)
     {
         $employee = $this->entityManager->getRepository($object::class)->find($object->getId());
@@ -116,6 +115,14 @@ class EmployeeController extends AbstractController
         $this->entityManager->remove($employee);
         $this->entityManager->flush();
 
+    }
+
+
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('api/employee/{id}/department/', methods: ['POST'])]
+    public function setExternalDepartmentsRight()
+    {
+        new Response(true,200);
     }
 
 

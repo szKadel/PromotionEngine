@@ -2,12 +2,30 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Entity\Company\Department;
 use App\Entity\Company\Employee;
 use App\Repository\EmployeeExtendedAccessesRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EmployeeExtendedAccessesRepository::class)]
+#[ApiResource(
+    operations: [
+        new get(normalizationContext: ['groups' => ['user:read']],security: "is_granted('ROLE_ADMIN')"),
+        new GetCollection(normalizationContext: ['groups' => ['user:read']],security: "is_granted('ROLE_ADMIN')"),
+        new Post(denormalizationContext: ['groups' => ['user:write']],security: "is_granted('ROLE_ADMIN')"),
+        new Put(denormalizationContext: ['groups' => ['user:write']],security: "is_granted('ROLE_ADMIN')"),
+        new Delete(security: "is_granted('ROLE_ADMIN')")
+    ],
+    paginationClientItemsPerPage: true,
+    paginationItemsPerPage: 7
+)]
 class EmployeeExtendedAccesses
 {
     #[ORM\Id]
