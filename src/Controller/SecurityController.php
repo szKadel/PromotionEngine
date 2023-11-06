@@ -77,9 +77,9 @@ class SecurityController extends AbstractController
                 foreach ($extendedAccess as $access) {
                     $extended[] = [
                         'department' => [
-                            '@id' => $iriConverter->getIriFromResource($access->getEmployee()->getDepartment()) ?? "",
-                            'id' => $access->getEmployee()->getDepartment()->getId() ?? "",
-                            'name' => $access->getEmployee()->getDepartment()->getName() ?? ""
+                            '@id' => $iriConverter->getIriFromResource($access->getDepartment()) ?? "",
+                            'id' => $access->getDepartment()->getId() ?? "",
+                            'name' => $access->getDepartment()->getName() ?? ""
                         ]
                     ];
                 }
