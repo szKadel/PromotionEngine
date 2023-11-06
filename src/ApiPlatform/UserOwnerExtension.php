@@ -72,12 +72,9 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
 
         $userEmployee = $this->security->getUser()->getEmployee();
 
-        $accessDepartments = $this->getExtendedAccess($userEmployee);
+        $departmentIds = $this->getExtendedAccess($userEmployee);
 
-        if(!empty($accessDepartments)) {
-            $departmentIds = array_map(function ($departmentAccess) {
-                return $departmentAccess->getDepartment()->getId();
-            }, $accessDepartments);
+        if(!empty($departmentIds)) {
 
             $departmentIds[] = $userEmployee->getDepartment()->getId();
 
@@ -89,6 +86,8 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
 
     private function getExtendedAccess($employee): array
     {
-        return $this->extendedAccessesRepository->findBy(['employee' => $employee]);
+        return array_map(function ($departmentAccess) {
+            return $departmentAccess->getDepartment()->getId() ?? null;
+        }, $this->extendedAccessesRepository->findBy(['employee' => $employee]) ?? []) ?? [];
     }
 }
