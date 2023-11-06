@@ -2,10 +2,13 @@
 
 namespace App\Controller\Entity;
 
+use ApiPlatform\Metadata\IriConverterInterface;
+use App\Entity\Company\Department;
 use App\Entity\Company\Employee;
 use App\Entity\User;
 use App\Entity\Vacation\Vacation;
 use App\Repository\ApiTokenRepository;
+use App\Repository\EmployeeExtendedAccessesRepository;
 use App\Repository\EmployeeRepository;
 use App\Repository\EmployeeVacationLimitRepository;
 use App\Repository\UserRepository;
@@ -13,6 +16,7 @@ use App\Repository\VacationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -25,7 +29,8 @@ class EmployeeController extends AbstractController
         private UserRepository $userRepository,
         private ApiTokenRepository $apiTokenRepository,
         private VacationRepository $vacationRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private IriConverterInterface $iriConverter
     )
     {
 
@@ -120,9 +125,23 @@ class EmployeeController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('api/employee/department/', methods: ['POST'])]
-    public function setExternalDepartmentsRight()
+    public function setExternalDepartmentsRight(Request $request, EmployeeExtendedAccessesRepository $employeeExtendedAccessesRepository)
     {
-        new Response(true,200);
+        $postData = json_decode($request->getContent());
+
+        $employee = $this->iriConverter->getResourceFromIri($postData ?->iri ?? throw new BadRequestException("Bad Exception"))?? throw new BadRequestException("Bad Exception");
+
+        $departments = $postData ?->department ?? throw new BadRequestException("Bad Exception");
+        foreach ($departments as $department)
+        {
+            $department = $this->iriConverter->getResourceFromIri($department);
+            if($department instanceof Department)
+            {
+                $employeeExtendedAccessesRepository->addNew($employee, $department);
+            }
+        }
+
+       return new Response(json_encode($postData),200);
     }
 
 

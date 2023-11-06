@@ -2,8 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\Company\Department;
+use App\Entity\Company\Employee;
 use App\Entity\EmployeeExtendedAccesses;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,10 +19,22 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class EmployeeExtendedAccessesRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry,private EntityManagerInterface $entityManager)
     {
         parent::__construct($registry, EmployeeExtendedAccesses::class);
     }
+
+    public function addNew(Employee $employee, Department $department)
+    {
+        $newData = new EmployeeExtendedAccesses();
+        $newData->setEmployee($employee);
+        $newData->setDepartment($department);
+
+        $this->entityManager->persist($newData);
+        $this->entityManager->flush();
+    }
+
+
 
 //    /**
 //     * @return EmployeeExtendedAccesses[] Returns an array of EmployeeExtendedAccesses objects

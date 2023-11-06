@@ -88,6 +88,7 @@ class Employee
     private ?Company $company = null;
 
     #[ORM\OneToMany(mappedBy: 'employee', targetEntity: EmployeeExtendedAccesses::class, orphanRemoval: true)]
+    #[Groups(['user:read','user:write','employee:read'])]
     private Collection $employeeExtendedAccesses;
 
 

@@ -223,7 +223,7 @@ class VacationRequestResourceTest extends KernelTestCase
 
     }
 
-    public function testVacationModExtensionsRight()
+    public function  testVacationModExtensionsRight()
     {
         VacationStatusFactory::createOne(['name'=>'Oczekujący']);
         VacationStatusFactory::createOne(['name'=>'Zaplanowany']);
@@ -240,7 +240,7 @@ class VacationRequestResourceTest extends KernelTestCase
 
         $mod = UserFactory::createOne(['employee' => $employeeMod, 'roles'=>['ROLE_MOD']]);
 
-        $user = UserFactory::createOne(['employee' => $employee, 'roles'=>['ROLE_USER']]);
+        $user = UserFactory::createOne(['employee' => $employee, 'roles'=>['ROLE_ADMIN']]);
         $user2 = UserFactory::createOne(['employee' => $employee2, 'roles'=>['ROLE_USER']]);
 
         VacationTypesFactory::createOne();
@@ -250,6 +250,22 @@ class VacationRequestResourceTest extends KernelTestCase
         VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>500]);
         VacationLimitsFactory::createOne(["employee"=>$employeeMod,'vacationType'=>$vacationType, 'daysLimit'=>20]);
         VacationLimitsFactory::createOne(["employee"=>$employee2,'vacationType'=>$vacationType, 'daysLimit'=>20]);
+
+        $this->browser()
+            ->actingAs($user)
+            ->post('api/employee/department/',[
+                'json'=>[
+                    'iri'=>'api/employees/'.$employee->getId(),
+                    'department'=> ['api/departments/'.$department2->getId(),'api/departments/'.$department->getId()],
+                ]
+            ])
+            ->assertStatus(200);
+
+        $this->browser()
+            ->actingAs($user)
+            ->get('/api/employees/'.$employee->getId(),[])
+            ->dd();
+
     }
 
 }

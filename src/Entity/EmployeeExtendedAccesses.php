@@ -13,6 +13,7 @@ use App\Entity\Company\Employee;
 use App\Repository\EmployeeExtendedAccessesRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EmployeeExtendedAccessesRepository::class)]
 #[ApiResource(
@@ -39,6 +40,7 @@ class EmployeeExtendedAccesses
 
     #[ORM\ManyToOne(inversedBy: 'employeeExtendedAccesses')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['employee:read'])]
     private ?Department $department = null;
 
     public function getId(): ?int

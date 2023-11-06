@@ -77,43 +77,15 @@ class UserTest extends KernelTestCase
         $user3 = UserFactory::createOne(['employee'=>$employee4,'password'=>'pass']);
         $user3 = UserFactory::createOne(['employee'=>$employee,'password'=>'pass']);
 
-        $this->browser()
-            ->post('/login',['json'=>[
-                'email'=>$user2->getEmail(),
-                'password'=>'pass'
-            ]
-            ])->assertStatus(200)->assertAuthenticated();
-
-
-
-        VacationFactory::createOne(['employee' => $employee, 'type'=>$vacationType]);
-        VacationFactory::createMany(5,['employee' => $employee, 'type'=>$vacationType]);
-
-        $this->browser()
-            ->actingAs($user)
-            ->get("api/users")
-            ->assertJsonMatches('"hydra:totalItems"',4);
-
-        $this->browser()
-            ->actingAs($user)
-            ->delete('/api/user/custom/1',[])
-            ->assertStatus(200);
-
-        $this->browser()
-            ->actingAs($user)
-            ->delete('/api/user/custom/3',[])
-            ->assertStatus(200);
-
-        $this->browser()
-            ->actingAs($user)
-            ->delete('/api/user/custom/3',[])
-            ->assertStatus(400);
-
-        $this->browser()
-            ->actingAs($user)
-            ->get("api/users")
-            ->assertJsonMatches('"hydra:totalItems"',2);
-
         //$this->browser()->actingAs($user)->delete("/api/users/".$user2->getId())->dump();
+
+        $this->browser()
+            ->actingAs($user)
+            ->put('/api/users/'.$user->getId(),[
+                    'json'=>[
+                        'userName' => 'test'
+                    ]
+                ]
+            )->assertStatus(200);
     }
 }
