@@ -74,15 +74,17 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
 
         $accessDepartments = $this->getExtendedAccess($userEmployee);
 
-        $departmentIds = array_map(function ($departmentAccess) {
-            return $departmentAccess->getDepartment()->getId();
-        }, $accessDepartments);
+        if(!empty($accessDepartments)) {
+            $departmentIds = array_map(function ($departmentAccess) {
+                return $departmentAccess->getDepartment()->getId();
+            }, $accessDepartments);
 
-        $departmentIds[] = $userEmployee->getDepartment()->getId();
+            $departmentIds[] = $userEmployee->getDepartment()->getId();
 
-        $queryBuilder
-            ->andWhere('u.department IN (:departmentIds)')
-            ->setParameter('departmentIds', $departmentIds);
+            $queryBuilder
+                ->andWhere('u.department IN (:departmentIds)')
+                ->setParameter('departmentIds', $departmentIds);
+        }
     }
 
     private function getExtendedAccess($employee): array
