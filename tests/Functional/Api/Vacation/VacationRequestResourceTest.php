@@ -256,7 +256,7 @@ class VacationRequestResourceTest extends KernelTestCase
             ->post('api/employee/department/',[
                 'json'=>[
                     'iri'=>'api/employees/'.$employee->getId(),
-                    'department'=> ['api/departments/'.$department2->getId(),'api/departments/'.$department->getId()],
+                    'departments'=> ['api/departments/'.$department2->getId(),'api/departments/'.$department->getId()],
                 ]
             ])
             ->assertStatus(200);
