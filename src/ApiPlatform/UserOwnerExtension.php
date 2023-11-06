@@ -6,11 +6,7 @@ use ApiPlatform\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Metadata\Operation;
 use App\Entity\Company\Employee;
-use App\Entity\EmployeeExtendedAccesses;
 use App\Entity\Vacation\Vacation;
-use App\Repository\EmployeeExtendedAccessesRepository;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusException;
@@ -51,15 +47,18 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
         $queryBuilder->setParameter('current_user_id', $user->getEmployee()->getId());
     }
 
-    public function groupModerator(QueryBuilder $queryBuilder, string $resourceClass) {
-        if (Vacation::class !== $resourceClass || !$this->security->isGranted('ROLE_MOD') || null === $user = $this->security->getUser())
-        {
+    public function groupModerator(QueryBuilder $queryBuilder, string $resourceClass)
+    {
+        if (Vacation::class !== $resourceClass || $this->security->isGranted('ROLE_ADMIN')||$this->security->isGranted('ROLE_KADR')|| null === $user = $this->security->getUser()) {
             return;
         }
+
+        if($this->security->isGranted('ROLE_MOD')){
             $rootAlias = $queryBuilder->getRootAliases()[0];
+
             $queryBuilder->join(sprintf('%s.employee', $rootAlias), 'u');
             $queryBuilder->andWhere('u.department = :department');
             $queryBuilder->setParameter('department', $user->getEmployee()->getDepartment());
+        }
     }
-
 }
