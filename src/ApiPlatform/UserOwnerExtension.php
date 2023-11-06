@@ -77,8 +77,9 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
         $departmentIds = $this->getExtendedAccess($userEmployee);
 
         if (!empty($departmentIds)) {
-            // Skonsolidowane warunki do jednego, aby uniknąć niepotrzebnego dodawania ID własnego działu
-            $departmentIds[] = $userEmployee->getDepartment()->getId();
+            if(!array_search($userEmployee->getDepartment()->getId(), $departmentIds)) {
+                $departmentIds[] = $userEmployee->getDepartment()->getId();
+            }
 
             $queryBuilder
                 ->andWhere('u.department IN (:departmentIds)')
@@ -89,12 +90,13 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
     private function getExtendedAccess($employee): array {
         $departmentAccesses = $this->extendedAccessesRepository->findBy(['employee' => $employee]) ?? [];
 
-        // Optymalizacja pętli - uniknięcie podwójnego nullowania
         $departmentIds = [];
         foreach ($departmentAccesses as $departmentAccess) {
             $department = $departmentAccess->getDepartment();
             if ($department) {
-                $departmentIds[] = $department->getId();
+                if (!array_search($departmentAccess->getDepartment()->getId(), $departmentIds)) {
+                    $departmentIds[] = $department->getId();
+                }
             }
         }
 
