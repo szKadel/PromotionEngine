@@ -68,22 +68,25 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
     private function applyDepartmentFilters(QueryBuilder $queryBuilder) {
         $rootAlias = $queryBuilder->getRootAliases()[0];
         $queryBuilder->join(sprintf('%s.employee', $rootAlias), 'u');
-        $queryBuilder->andWhere('u.department = :department');
 
-        $accessDepartments = $this->getExtendedAccess($this->security->getUser()->getEmployee());
 
-        $departmentParams = [];
-        foreach ($accessDepartments as $index => $departmentAccess) {
-            $key = ":department" . $index;
-            $queryBuilder->orWhere('u.department = ' . $key);
-            $queryBuilder->setParameter($key, $departmentAccess->getDepartment());
-            $departmentParams[] = $departmentAccess->getDepartment();
-        }
+        $userEmployee = $this->security->getUser()->getEmployee();
 
-        $queryBuilder->setParameter('department', $this->security->getUser()->getEmployee()->getDepartment());
+        $accessDepartments = $this->getExtendedAccess($userEmployee);
+
+        $departmentIds = array_map(function ($departmentAccess) {
+            return $departmentAccess->getDepartment()->getId();
+        }, $accessDepartments);
+
+        $departmentIds[] = $userEmployee->getDepartment()->getId();
+
+        $queryBuilder
+            ->andWhere('u.department IN (:departmentIds)')
+            ->setParameter('departmentIds', $departmentIds);
     }
 
-    private function getExtendedAccess($employee) {
+    private function getExtendedAccess($employee): array
+    {
         return $this->extendedAccessesRepository->findBy(['employee' => $employee]);
     }
 }
