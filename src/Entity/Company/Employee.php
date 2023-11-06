@@ -24,8 +24,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: EmployeeRepository::class)]
 #[ApiResource(
     operations: [
-        new get(normalizationContext: ['groups' => ['employee:read']],security: "is_granted('ROLE_USER')"),
-        new GetCollection(normalizationContext: ['groups' => ['employee:read']],security: "is_granted('ROLE_USER')"),
+        new get(normalizationContext: ['groups' => ['employee:read','employeeExtended:read']],security: "is_granted('ROLE_USER')"),
+        new GetCollection(normalizationContext: ['groups' => ['employee:read','employeeExtended:read']],security: "is_granted('ROLE_USER')"),
         new Post(normalizationContext: ['groups' => ['employee:write']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD')"),
         new Put(normalizationContext: ['groups' => ['employee:write']],security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_MOD')")
     ],
@@ -88,7 +88,7 @@ class Employee
     private ?Company $company = null;
 
     #[ORM\OneToMany(mappedBy: 'employee', targetEntity: EmployeeExtendedAccesses::class, orphanRemoval: true)]
-    #[Groups(['user:read','user:write','employee:read'])]
+    #[Groups(['user:read','user:write','employeeExtended:read'])]
     private Collection $employeeExtendedAccesses;
 
 

@@ -18,10 +18,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: EmployeeExtendedAccessesRepository::class)]
 #[ApiResource(
     operations: [
-        new get(normalizationContext: ['groups' => ['user:read']],security: "is_granted('ROLE_ADMIN')"),
-        new GetCollection(normalizationContext: ['groups' => ['user:read']],security: "is_granted('ROLE_ADMIN')"),
-        new Post(denormalizationContext: ['groups' => ['user:write']],security: "is_granted('ROLE_ADMIN')"),
-        new Put(denormalizationContext: ['groups' => ['user:write']],security: "is_granted('ROLE_ADMIN')"),
+        new get(normalizationContext: ['groups' => ['employeeExtendedAccesses:read']],security: "is_granted('ROLE_ADMIN')"),
+        new GetCollection(normalizationContext: ['groups' => ['employeeExtendedAccesses:read']],security: "is_granted('ROLE_ADMIN')"),
+        new Post(denormalizationContext: ['groups' => ['employeeExtendedAccesses:write']],security: "is_granted('ROLE_ADMIN')"),
+        new Put(denormalizationContext: ['groups' => ['employeeExtendedAccesses:write']],security: "is_granted('ROLE_ADMIN')"),
         new Delete(security: "is_granted('ROLE_ADMIN')")
     ],
     paginationClientItemsPerPage: true,
@@ -36,11 +36,12 @@ class EmployeeExtendedAccesses
 
     #[ORM\ManyToOne(inversedBy: 'employeeExtendedAccesses')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['employeeExtendedAccesses:read','employeeExtendedAccesses:read'])]
     private ?Employee $employee = null;
 
     #[ORM\ManyToOne(inversedBy: 'employeeExtendedAccesses')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['employee:read'])]
+    #[Groups(['employeeExtendedAccesses:read','employee:read'])]
     private ?Department $department = null;
 
     public function getId(): ?int
