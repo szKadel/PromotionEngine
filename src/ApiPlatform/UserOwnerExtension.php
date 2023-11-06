@@ -18,7 +18,7 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusExce
 final class UserOwnerExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
 
-    public function __construct(private readonly Security $security, private EmployeeExtendedAccessesRepository $extendedAccessesRepository)
+    public function __construct(private readonly Security $security)
     {
     }
 
@@ -52,39 +52,33 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
     }
 
     public function groupModerator(QueryBuilder $queryBuilder, string $resourceClass) {
-        if ($resourceClass !== Vacation::class || $this->hasSufficientPermissions() || !$user = $this->security->getUser()) {
+        if ($resourceClass !== Vacation::class || !$this->security->isGranted('ROLE_MOD') || !$user = $this->security->getUser()) {
             return;
         }
 
-        if ($this->security->isGranted('ROLE_MOD')) {
-            $this->applyDepartmentFilters($queryBuilder);
-        }
-    }
+        $this->applyDepartmentFilters($queryBuilder);
 
-    private function hasSufficientPermissions() {
-        // Zmniejszenie liczby wywołań isGranted poprzez jedno wywołanie i zapamiętanie wyniku
-        $isAdmin = $this->security->isGranted('ROLE_ADMIN');
-        $isKadr = $this->security->isGranted('ROLE_KADR');
-
-        return $isAdmin || $isKadr;
     }
 
     private function applyDepartmentFilters(QueryBuilder $queryBuilder) {
+
         $rootAlias = $queryBuilder->getRootAliases()[0];
         $queryBuilder->join(sprintf('%s.employee', $rootAlias), 'u');
+        $queryBuilder->where('u.department = :department');
+        $queryBuilder->setParameter(":department",$this->security->getUser()->getEmployee()->getDepartment());
 
-        $userEmployee = $this->security->getUser()->getEmployee();
-        $departmentIds = $this->getExtendedAccess($userEmployee);
+        //$userEmployee = $this->security->getUser()->getEmployee();
+        //$departmentIds = $this->getExtendedAccess($userEmployee);
 
-        if (!empty($departmentIds)) {
-            if(!array_search($userEmployee->getDepartment()->getId(), $departmentIds)) {
-                $departmentIds[] = $userEmployee->getDepartment()->getId();
-            }
-
-            $queryBuilder
-                ->andWhere('u.department IN (:departmentIds)')
-                ->setParameter('departmentIds', $departmentIds);
-        }
+//        if (!empty($departmentIds)) {
+//            if(!array_search($userEmployee->getDepartment()->getId(), $departmentIds)) {
+//                $departmentIds[] = $userEmployee->getDepartment()->getId();
+//            }
+//
+//            $queryBuilder
+//                ->andWhere('u.department IN (:departmentIds)')
+//                ->setParameter('departmentIds', $departmentIds);
+//        }
     }
 
     private function getExtendedAccess($employee): array {
