@@ -90,7 +90,7 @@ class SecurityController extends AbstractController
                     'id' => $user->getEmployee()?->getId(),
                     'name' => $user->getEmployee()->getName()??"",
                     'surname' => $user->getEmployee()->getSurname() ?? "",
-                    'extendedAccess' => $extended ?? [],
+                    'employeeExtendedAccesses' => $extended ?? [],
                     'department' => [
                         '@id' => $iriConverter->getIriFromResource($user->getEmployee()->getDepartment()) ?? "",
                         'id' => $user->getEmployee()->getDepartment()->getId() ?? "",
