@@ -52,48 +52,14 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
     }
 
     public function groupModerator(QueryBuilder $queryBuilder, string $resourceClass) {
-        if ($resourceClass !== Vacation::class || !$this->security->isGranted('ROLE_MOD') || !$user = $this->security->getUser()) {
+        if (Vacation::class !== $resourceClass || !$this->security->isGranted('ROLE_MOD') || null === $user = $this->security->getUser())
+        {
             return;
         }
-
-        $this->applyDepartmentFilters($queryBuilder);
-
+            $rootAlias = $queryBuilder->getRootAliases()[0];
+            $queryBuilder->join(sprintf('%s.employee', $rootAlias), 'u');
+            $queryBuilder->andWhere('u.department = :department');
+            $queryBuilder->setParameter('department', $user->getEmployee()->getDepartment());
     }
 
-    private function applyDepartmentFilters(QueryBuilder $queryBuilder) {
-
-        $rootAlias = $queryBuilder->getRootAliases()[0];
-        $queryBuilder->join(sprintf('%s.employee', $rootAlias), 'u');
-        $queryBuilder->where('u.department = :department');
-        $queryBuilder->setParameter(":department",$this->security->getUser()->getEmployee()->getDepartment());
-
-        //$userEmployee = $this->security->getUser()->getEmployee();
-        //$departmentIds = $this->getExtendedAccess($userEmployee);
-
-//        if (!empty($departmentIds)) {
-//            if(!array_search($userEmployee->getDepartment()->getId(), $departmentIds)) {
-//                $departmentIds[] = $userEmployee->getDepartment()->getId();
-//            }
-//
-//            $queryBuilder
-//                ->andWhere('u.department IN (:departmentIds)')
-//                ->setParameter('departmentIds', $departmentIds);
-//        }
-    }
-
-    private function getExtendedAccess($employee): array {
-        $departmentAccesses = $this->extendedAccessesRepository->findBy(['employee' => $employee]) ?? [];
-
-        $departmentIds = [];
-        foreach ($departmentAccesses as $departmentAccess) {
-            $department = $departmentAccess->getDepartment();
-            if ($department) {
-                if (!array_search($departmentAccess->getDepartment()->getId(), $departmentIds)) {
-                    $departmentIds[] = $department->getId();
-                }
-            }
-        }
-
-        return $departmentIds;
-    }
 }
