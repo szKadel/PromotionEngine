@@ -72,10 +72,23 @@ class SecurityController extends AbstractController
         }
 
         if(!empty($user->getEmployee())) {
+
+            $employee = [
+                    '@id' => $iriConverter->getIriFromResource($user->getEmployee()) ?? "",
+                    'id' => $user->getEmployee()?->getId(),
+                    'name' => $user->getEmployee()->getName()??"",
+                    'surname' => $user->getEmployee()->getSurname() ?? "",
+                    'department' => [
+                        '@id' => $iriConverter->getIriFromResource($user->getEmployee()->getDepartment()) ?? "",
+                        'id' => $user->getEmployee()->getDepartment()->getId() ?? "",
+                        'name' => $user->getEmployee()->getDepartment()->getName() ?? ""
+                    ]
+                ] ?? null;
+
             $extendedAccess = $user->getEmployee()->getEmployeeExtendedAccesses();
             if(!empty($extendedAccess)) {
                 foreach ($extendedAccess as $access) {
-                    $extended[] = [
+                    $employee["employeeExtendedAccesses"] = [
                         'department' => [
                             '@id' => $iriConverter->getIriFromResource($access->getDepartment()) ?? "",
                             'id' => $access->getDepartment()->getId() ?? "",
@@ -84,19 +97,6 @@ class SecurityController extends AbstractController
                     ];
                 }
             }
-
-            $employee = [
-                    '@id' => $iriConverter->getIriFromResource($user->getEmployee()) ?? "",
-                    'id' => $user->getEmployee()?->getId(),
-                    'name' => $user->getEmployee()->getName()??"",
-                    'surname' => $user->getEmployee()->getSurname() ?? "",
-                    'employeeExtendedAccesses' => $extended ?? [],
-                    'department' => [
-                        '@id' => $iriConverter->getIriFromResource($user->getEmployee()->getDepartment()) ?? "",
-                        'id' => $user->getEmployee()->getDepartment()->getId() ?? "",
-                        'name' => $user->getEmployee()->getDepartment()->getName() ?? ""
-                    ]
-                ] ?? null;
         }
 
         return new JsonResponse([
