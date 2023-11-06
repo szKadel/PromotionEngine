@@ -86,7 +86,7 @@ class SecurityController extends AbstractController
                 ] ?? null;
 
             $extendedAccess = $user->getEmployee()->getEmployeeExtendedAccesses();
-            if(!empty($extendedAccess)) {
+            if(!empty($extendedAccess))  {
                 foreach ($extendedAccess as $access) {
                     $employee["employeeExtendedAccesses"][] = [
                         'department' => [
