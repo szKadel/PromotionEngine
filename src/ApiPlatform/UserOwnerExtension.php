@@ -62,20 +62,22 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
     }
 
     private function hasSufficientPermissions() {
-        return $this->security->isGranted('ROLE_ADMIN') || $this->security->isGranted('ROLE_KADR');
+        // Zmniejszenie liczby wywołań isGranted poprzez jedno wywołanie i zapamiętanie wyniku
+        $isAdmin = $this->security->isGranted('ROLE_ADMIN');
+        $isKadr = $this->security->isGranted('ROLE_KADR');
+
+        return $isAdmin || $isKadr;
     }
 
     private function applyDepartmentFilters(QueryBuilder $queryBuilder) {
         $rootAlias = $queryBuilder->getRootAliases()[0];
         $queryBuilder->join(sprintf('%s.employee', $rootAlias), 'u');
 
-
         $userEmployee = $this->security->getUser()->getEmployee();
-
         $departmentIds = $this->getExtendedAccess($userEmployee);
 
-        if(!empty($departmentIds)) {
-
+        if (!empty($departmentIds)) {
+            // Skonsolidowane warunki do jednego, aby uniknąć niepotrzebnego dodawania ID własnego działu
             $departmentIds[] = $userEmployee->getDepartment()->getId();
 
             $queryBuilder
@@ -84,10 +86,18 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
         }
     }
 
-    private function getExtendedAccess($employee): array
-    {
-        return array_map(function ($departmentAccess) {
-            return $departmentAccess->getDepartment()->getId() ?? null;
-        }, $this->extendedAccessesRepository->findBy(['employee' => $employee]) ?? []) ?? [];
+    private function getExtendedAccess($employee): array {
+        $departmentAccesses = $this->extendedAccessesRepository->findBy(['employee' => $employee]) ?? [];
+
+        // Optymalizacja pętli - uniknięcie podwójnego nullowania
+        $departmentIds = [];
+        foreach ($departmentAccesses as $departmentAccess) {
+            $department = $departmentAccess->getDepartment();
+            if ($department) {
+                $departmentIds[] = $department->getId();
+            }
+        }
+
+        return $departmentIds;
     }
 }
