@@ -6,10 +6,12 @@ use ApiPlatform\Api\IriConverterInterface;
 use App\Controller\Authorisation\ApiTokenController;
 use App\Entity\ApiToken;
 use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use MongoDB\Driver\Exception\AuthenticationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -18,6 +20,12 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class SecurityController extends AbstractController
 {
+    public function __construct(private EntityManagerInterface $entityManager)
+    {
+
+    }
+
+
     #[Route('/login', name: 'app_login', methods: ['POST'])]
     public function login(IriConverterInterface $iriConverter,#[CurrentUser] User $user = null, ApiTokenController $apiTokenController) :Response
     {
@@ -25,26 +33,25 @@ class SecurityController extends AbstractController
             throw new UnauthorizedHttpException("");
         }
 
-        if($user -> getValidApiToken() == null)
+        if($user -> getApiTokens()->get(0) === null)
         {
+            $token = new ApiToken();
+            $token ->setOwnedBy($user);
+            $apiTokenController -> add($token);
+        }elseif(!$user -> getApiTokens()->get(0)->isValid()){
 
+            if(!empty($user -> getApiTokens()->get(0))) {
+                $apiTokenController->delete($user->getApiTokens()->get(0));
+            }
 
             $token = new ApiToken();
-            $user->addApiToken($token);
+            $token ->setOwnedBy($user);
             $apiTokenController -> add($token);
-        }else{
-            $apiTokens = $user->getApiTokens()->toArray();
-            if(count($apiTokens) > 0) {
-                foreach ($apiTokens as $apiToken) {
-                    $user->removeApiToken($apiToken);
-                    if(!$apiToken->isValid()) {
-                        $apiTokenController->delete($apiToken);
-                    }else{
-                        $token = $apiToken;
-                    }
-                }
-            }
         }
+
+        $token = new ApiToken();
+        $token ->setOwnedBy($user);
+        $apiTokenController -> add($token);
 
         $response = [
             'token' => $token->getToken(),
@@ -100,29 +107,45 @@ class SecurityController extends AbstractController
         }
 
         return new JsonResponse([
-                'id' =>$user->getId(),
-                'email'=>$user->getEmail(),
-                'roles'=>$user->getRoles(),
-                'userName' => $user->getUsername(),
-                'employee' => $employee ?? null
-            ]);
+            'id' =>$user->getId(),
+            'email'=>$user->getEmail(),
+            'roles'=>$user->getRoles(),
+            'userName' => $user->getUsername(),
+            'employee' => $employee ?? null
+        ]);
     }
 
-    #[Route('/user/changePassword', methods: ['POST'])]
-    public function updatePassword(#[CurrentUser] User $user, UserPasswordHasherInterface $userPasswordHasher, string $oldPassword, string $newPassword)
+    #[Route('/api/user/changePassword', methods: ['POST'])]
+    public function updatePassword(#[CurrentUser] User $user, UserPasswordHasherInterface $userPasswordHasher, Request $request)
     {
-        if (!$userPasswordHasher->isPasswordValid($user, $oldPassword)) {
-            $user->setPlainPassword($newPassword);
+        $requestData = json_decode($request->getContent(), true);
 
-            if($user->getPlainPassword())
-            {
-                $user->setPassword($userPasswordHasher->hashPassword($user,$user->getPlainPassword()));
-                return true;
-            }
-        }else{
-            throw new AuthenticationException("Aktualne hasło jest niepoprawne.");
+        if (empty($requestData['oldPassword'])) {
+            throw new BadRequestException("oldPassword is required");
+        }
+
+        if (empty($requestData['newPassword'])) {
+            throw new BadRequestException("newPassword is required");
+        }
+
+        if ($requestData['oldPassword'] == $requestData['newPassword']) {
+            throw new BadRequestException("newPassword and newPassword can't be the same");
+        }
+
+        $oldPassword = $requestData['oldPassword'];
+        $newPassword = $requestData['newPassword'];
+
+        if ($userPasswordHasher->isPasswordValid($user, $oldPassword)) {
+
+            $hashedNewPassword = $userPasswordHasher->hashPassword($user, $newPassword);
+            $user->setPassword($hashedNewPassword);
+
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+
+            return new JsonResponse(["message" => "Twoje hasło zostało zmienione."]);
+        } else {
+            throw new BadRequestException("Aktualne hasło jest niepoprawne.");
         }
     }
-
-
 }
