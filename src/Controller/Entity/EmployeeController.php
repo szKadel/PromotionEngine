@@ -125,7 +125,7 @@ class EmployeeController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('api/employee/department/', methods: ['POST'])]
-    public function setExternalDepartmentsRight(Request $request, EmployeeExtendedAccessesRepository $employeeExtendedAccessesRepository)
+    public function setExternalDepartmentsRight(Request $request, EmployeeExtendedAccessesRepository $employeeExtendedAccessesRepository): Response
     {
         $postData = json_decode($request->getContent());
 
@@ -141,7 +141,26 @@ class EmployeeController extends AbstractController
             }
         }
 
-       return new Response(json_encode($postData),200);
+        return new Response(json_encode($postData),200);
+    }
+
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('api/employee/department/', methods: ['PUT'])]
+    public function updateExternalDepartmentsRight(Request $request, EmployeeExtendedAccessesRepository $employeeExtendedAccessesRepository): Response
+    {
+        $postData = json_decode($request->getContent());
+
+        $records = $employeeExtendedAccessesRepository->findBy(['employee' => $this->iriConverter->getResourceFromIri($postData ?->iri ?? throw new BadRequestException("Bad Exception"))]);
+
+        foreach ($records as $record) {
+            $employeeExtendedAccessesRepository->removeExtendedAccessById($record->getId());
+        }
+
+        if(!empty($postData ?->departments)) {
+            $this->setExternalDepartmentsRight($request, $employeeExtendedAccessesRepository);
+        }
+
+        return new Response(json_encode($postData),200);
     }
 
 
