@@ -15,6 +15,7 @@ use App\Repository\UserRepository;
 use App\Repository\VacationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,7 +31,8 @@ class EmployeeController extends AbstractController
         private ApiTokenRepository $apiTokenRepository,
         private VacationRepository $vacationRepository,
         private EntityManagerInterface $entityManager,
-        private IriConverterInterface $iriConverter
+        private IriConverterInterface $iriConverter,
+        private Security $security
     )
     {
 
@@ -134,6 +136,9 @@ class EmployeeController extends AbstractController
         $departments = $postData ?->departments ?? throw new BadRequestException("Bad Exception");
         foreach ($departments as $department)
         {
+            if($department->getId() == $this->security->getUser()?->getEmployee()->getDepartment()->getId()){
+                continue;
+            }
             $department = $this->iriConverter->getResourceFromIri($department);
             if($department instanceof Department)
             {
