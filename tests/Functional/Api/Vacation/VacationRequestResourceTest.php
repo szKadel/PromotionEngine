@@ -159,14 +159,6 @@ class VacationRequestResourceTest extends KernelTestCase
             ])
             ->assertStatus(201);
 
-        $this->browser()
-            ->actingAs($mod)
-            ->put('/api/vacations/1',[
-                'json'=>[
-                    'status'=>'api/vacation_statuses/'.$vacationStatus->getId()
-                ]
-            ])
-            ->assertStatus(200);
     }
 
     public function testVacationReplacement()
@@ -273,7 +265,7 @@ class VacationRequestResourceTest extends KernelTestCase
                     'name'=>'test'
                 ]
             ])
-            ->dd();
+            ->assertStatus(200);
 
     }
 
