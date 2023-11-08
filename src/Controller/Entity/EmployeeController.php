@@ -134,12 +134,14 @@ class EmployeeController extends AbstractController
         $employee = $this->iriConverter->getResourceFromIri($postData ?->iri ?? throw new BadRequestException("Bad Exception"))?? throw new BadRequestException("Bad Exception");
 
         $departments = $postData ?->departments ?? throw new BadRequestException("Bad Exception");
+
         foreach ($departments as $department)
         {
+            $department = $this->iriConverter->getResourceFromIri($department) ?? throw new BadRequestException("Bad Exception");
             if($department->getId() == $this->security->getUser()?->getEmployee()->getDepartment()->getId()){
                 continue;
             }
-            $department = $this->iriConverter->getResourceFromIri($department);
+
             if($department instanceof Department)
             {
                 $employeeExtendedAccessesRepository->addNew($employee, $department);

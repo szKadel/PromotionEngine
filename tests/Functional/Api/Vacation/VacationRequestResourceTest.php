@@ -153,11 +153,11 @@ class VacationRequestResourceTest extends KernelTestCase
                 'json'=>[
                     'employee'=>'api/employees/'.$employee->getId(),
                     'type'=> 'api/vacation_types/'.$vacationType->getId(),
-                    'dateFrom'=> '2024-09-15',
-                    'dateTo'=>'2024-09-12'
+                    'dateFrom'=> '2023-09-15',
+                    'dateTo'=>'2023-09-21'
                 ]
             ])
-            ->dd();
+            ->assertStatus(201);
 
         $this->browser()
             ->actingAs($user)
