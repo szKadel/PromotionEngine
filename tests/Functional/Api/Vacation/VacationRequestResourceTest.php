@@ -268,8 +268,12 @@ class VacationRequestResourceTest extends KernelTestCase
         // Wnioski jako mod
         $this->browser()
             ->actingAs($mod)
-            ->get('api/vacations',[])
-            ->assertJsonMatches('"hydra:totalItems"',10);
+            ->put('/api/vacations/3',[
+                'json'=>[
+                    'name'=>'test'
+                ]
+            ])
+            ->dd();
 
     }
 
