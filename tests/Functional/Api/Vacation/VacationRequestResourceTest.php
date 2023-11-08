@@ -160,10 +160,10 @@ class VacationRequestResourceTest extends KernelTestCase
             ->assertStatus(201);
 
         $this->browser()
-            ->actingAs($user)
+            ->actingAs($mod)
             ->put('/api/vacations/1',[
                 'json'=>[
-                    'status'=>'api/vacation_statuses/2'
+                    'status'=>'api/vacation_statuses/'.$vacationStatus->getId()
                 ]
             ])
             ->assertStatus(200);
