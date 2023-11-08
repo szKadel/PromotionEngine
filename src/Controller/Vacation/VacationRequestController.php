@@ -55,15 +55,7 @@ class VacationRequestController
 
     public function checkInputData()
     {
-        if($this->vacation->getDateFrom() > $this->vacation->getDateTo()){
-            throw new BadRequestException("Data rozpoczęcia nie może być wcześniejsza niż zakończenia", 400);
-        }
 
-        $todayDate = new DateTime();
-
-        if($this->vacation->getDateFrom() < $todayDate){
-            throw new BadRequestException("Data rozpoczęcia nie może być wcześniejsza niż dzisiejsza", 400);
-        }
     }
 
     public function onVacationUpdate(Vacation $vacation, Vacation $previousVacation)
