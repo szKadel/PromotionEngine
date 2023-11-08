@@ -60,12 +60,14 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
         $queryBuilder->andWhere('u.department = :department');
         $queryBuilder->setParameter('department', $user->getEmployee()->getDepartment());
 
-        foreach ($user->getEmployee()->getEmployeeExtendedAccesses() as $employeeExtendedAccesses){
-            $key = "department".$employeeExtendedAccesses->getId();
-            $queryBuilder->orWhere('u.department = :'.$key);
-            $queryBuilder->setParameter($key, $employeeExtendedAccesses->getDepartment());
+        $extendedAccess = $user->getEmployee()->getEmployeeExtendedAccesses();
+        if(!empty($extendedAccess)) {
+            foreach ($extendedAccess as $employeeExtendedAccesses) {
+                $key = "department" . $employeeExtendedAccesses->getId();
+                $queryBuilder->orWhere('u.department = :' . $key);
+                $queryBuilder->setParameter($key, $employeeExtendedAccesses->getDepartment());
+            }
         }
-
 
     }
 }
