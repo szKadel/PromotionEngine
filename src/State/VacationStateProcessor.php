@@ -61,6 +61,11 @@ class VacationStateProcessor implements ProcessorInterface
                 {
                     if($data->getStatus()->getName() == "Potwierdzony") {
 
+                        if($data->getType()->getName() == "Inny" || $data->getType()->getName() == "Plan Urlopowy")
+                        {
+                            throw new BadRequestException('Uwaga! Nie możesz zaakceptować tego wniosku. Ustaw inny typ urlopu');
+                        }
+
                         $data->setAcceptedAt(new \DateTimeImmutable());
 
                         $user = $this->security->getUser();
