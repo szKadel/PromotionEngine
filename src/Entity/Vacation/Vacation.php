@@ -117,6 +117,7 @@ class Vacation
     #[Groups(['vacationRequest:read'])]
     private mixed $annulledAt = null;
 
+    #[ORM\ManyToOne]
     #[Groups(['vacationRequest:read'])]
     private ?User $createdBy = null;
 
