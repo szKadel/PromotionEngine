@@ -51,6 +51,7 @@ class VacationStateProcessor implements ProcessorInterface
                 $this->vacationRequestController->onVacationRequestPost($data);
 
             } elseif ($operation instanceof Put) {
+                dd("test") ;
                 if ($data->getType()->getId() != 1 || $data->getType()->getId() != 11) {
                     $this->checkVacationLimits($data);
 
@@ -126,7 +127,6 @@ class VacationStateProcessor implements ProcessorInterface
 
     private function checkVacationLimits(Vacation $vacation)
     {
-        dd("test") ;
         $vacationUsedInDays = $this->vacationRepository->findVacationUsedByUser(
             $vacation->getEmployee(),
             $vacation->getStatus(),
