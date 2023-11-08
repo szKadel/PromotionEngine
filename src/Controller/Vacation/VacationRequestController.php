@@ -55,7 +55,7 @@ class VacationRequestController
 
     public function checkInputData()
     {
-        if($this->vacation->getDateFrom()->format('Y-m-d') >= $this->vacation->getDateTo() ){
+        if($this->vacation->getDateFrom()->format('Y-m-d') >= $this->vacation->getDateTo()->format('Y-m-d') ){
             throw new BadRequestException("Data rozpoczęcia nie może być wcześniejsza niż zakończenia", 400);
         }
 
