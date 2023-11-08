@@ -4,6 +4,7 @@ namespace App\Entity\Vacation;
 
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
@@ -16,6 +17,7 @@ use App\Entity\User;
 use App\Repository\VacationRepository;
 use App\Service\WorkingDaysCounterService;
 use DateTime;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
@@ -41,8 +43,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     paginationClientItemsPerPage: true,
     paginationItemsPerPage: 7,
 )]
-#[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,properties: ['employee.department'=>'exact'])]
 #[ApiFilter(OrderFilter::class, properties: ['id','createdAt','acceptedAt','dateFrom','dateTo'])]
+#[ApiFilter(SearchFilter::class,properties: ['employee.department'=>'exact'])]
 class Vacation
 {
     #[ORM\Id]
@@ -57,13 +59,13 @@ class Vacation
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank]
     #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
-    #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'exact')]
+    #[ApiFilter(SearchFilter::class,strategy: 'exact')]
     private ?Employee $employee = null;
 
     #[ORM\ManyToOne]
     #[Assert\NotBlank]
     #[ORM\JoinColumn(nullable: false)]
-    #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'exact')]
+    #[ApiFilter(SearchFilter::class,strategy: 'exact')]
     #[Groups(['vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
     private ?VacationTypes $type = null;
 
@@ -71,15 +73,15 @@ class Vacation
     #[ApiFilter(DateFilter::class)]
     #[Assert\NotBlank]
     #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
-    #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
-    private ?\DateTimeInterface $dateFrom = null;
+    #[Groups(['vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
+    private ?DateTimeInterface $dateFrom = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotBlank]
     #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
     #[ApiFilter(DateFilter::class)]
-    #[Groups(['vacationRequest:read', 'vacationRequest:write'])]
-    private ?\DateTimeInterface $dateTo = null;
+    #[Groups(['vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
+    private ?DateTimeInterface $dateTo = null;
 
     #[ORM\Column]
     #[Groups('vacationRequest:read')]
@@ -90,7 +92,7 @@ class Vacation
     private ?Employee $replacement = null;
 
     #[ORM\ManyToOne]
-    #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'exact')]
+    #[ApiFilter(SearchFilter::class,strategy: 'exact')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['vacationRequest:read','vacationRequest:update'])]
     private ?VacationStatus $status = null;
@@ -99,33 +101,33 @@ class Vacation
     #[Groups(['vacationRequest:read', 'vacationRequest:write','vacationRequest:update'])]
     private ?string $comment = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: "datetime",nullable: true)]
     #[Groups(['vacationRequest:read'])]
-    private ?\DateTimeInterface $createdAt = null;
+    private mixed $createdAt = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: "datetime",nullable: true)]
     #[Groups(['vacationRequest:read'])]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private mixed $updatedAt = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: "datetime",nullable: true)]
     #[Groups(['vacationRequest:read'])]
-    private ?\DateTimeImmutable $acceptedAt = null;
+    private mixed $acceptedAt = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: "datetime",nullable: true)]
     #[Groups(['vacationRequest:read'])]
-    private ?\DateTimeImmutable $annulledAt = null;
+    private mixed $annulledAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'createdVacationRequest')]
     #[Groups(['vacationRequest:read'])]
     private ?User $createdBy = null;
 
-    #[ORM\ManyToOne(inversedBy: 'AcceptedVacations')]
+    #[ORM\ManyToOne]
     #[Groups(['vacationRequest:read'])]
     private ?User $acceptedBy = null;
 
-    #[ORM\ManyToOne(inversedBy: 'AnnulledVacationRequest')]
+    #[ORM\ManyToOne]
     #[Groups(['vacationRequest:read'])]
     private ?User $AnnulledBy = null;
+
 
     public function __construct()
     {
@@ -136,6 +138,15 @@ class Vacation
     public function preUpdate(PreUpdateEventArgs $eventArgs)
     {
 
+        if($this->status?->getName() == "Anulowany")
+        {
+            $this->setAnnulledAt(new DateTime());
+        }
+
+        if($this->status?->getName() == "Zaakceptowany")
+        {
+            $this->setAcceptedAt(new DateTime());
+        }
     }
 
     public function getId(): ?int
@@ -167,24 +178,24 @@ class Vacation
         return $this;
     }
 
-    public function getDateFrom(): ?\DateTimeInterface
+    public function getDateFrom(): ?DateTimeInterface
     {
         return $this->dateFrom;
     }
 
-    public function setDateFrom(\DateTimeInterface $dateFrom): static
+    public function setDateFrom(DateTimeInterface $dateFrom): static
     {
         $this->dateFrom = $dateFrom;
 
         return $this;
     }
 
-    public function getDateTo(): ?\DateTimeInterface
+    public function getDateTo(): ?DateTimeInterface
     {
         return $this->dateTo;
     }
 
-    public function setDateTo(\DateTimeInterface $dateTo): static
+    public function setDateTo(DateTimeInterface $dateTo): static
     {
         $this->dateTo = $dateTo;
         $this->setSpendVacationDays();
@@ -240,52 +251,68 @@ class Vacation
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(?\DateTimeInterface $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    public function getAcceptedAt(): ?\DateTimeImmutable
-    {
-        return $this->acceptedAt;
-    }
-
-    public function setAcceptedAt(?\DateTimeImmutable $acceptedAt): static
-    {
-        $this->acceptedAt = $acceptedAt;
-
-        return $this;
-    }
-
-    public function getAnnulledAt(): ?\DateTimeImmutable
+    /**
+     * @return mixed
+     */
+    public function getAnnulledAt()
     {
         return $this->annulledAt;
     }
 
-    public function setAnnulledAt(?\DateTimeImmutable $annulledAt): static
+    /**
+     * @param mixed $annulledAt
+     */
+    public function setAnnulledAt($annulledAt): void
     {
         $this->annulledAt = $annulledAt;
+    }
 
-        return $this;
+    /**
+     * @return mixed
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param mixed $createdAt
+     */
+    public function setCreatedAt($createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param mixed $updatedAt
+     */
+    public function setUpdatedAt($updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAcceptedAt()
+    {
+        return $this->acceptedAt;
+    }
+
+    /**
+     * @param mixed $acceptedAt
+     */
+    public function setAcceptedAt($acceptedAt): void
+    {
+        $this->acceptedAt = $acceptedAt;
     }
 
     public function getCreatedBy(): ?User
@@ -323,5 +350,4 @@ class Vacation
 
         return $this;
     }
-
 }
