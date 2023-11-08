@@ -10,6 +10,7 @@ use App\Repository\UserRepository;
 use App\Repository\VacationRepository;
 use App\Service\EmailService;
 use App\Service\Vacation\CounterVacationDays;
+use DateTime;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
@@ -43,13 +44,24 @@ class VacationRequestController
     public function onVacationRequestPost(Vacation $vacation)
     {
         $this -> setVacation($vacation);
-        $this -> checkDateAvailability();
+        $this -> checkDateAvailability()->checkInputData();
         $this -> checkVacationStatus();
         $this -> checkVacationDaysLimit();
         $this -> checkReplacement();
         $this -> vacation -> setCreatedBy($this->userRepository->find($this->security->getUser()->getId()));
         $this -> vacation -> setCreatedAt(new \DateTime());
         $this -> emailNotificationController    ->  OnVacationAdd($vacation);
+    }
+
+    public function checkInputData()
+    {
+        if($this->vacation->getDateFrom() >= $this->vacation->getDateTo() ){
+            throw new BadRequestException("Data rozpoczęcia nie może być wcześniejsza niż zakończenia", 400);
+        }
+
+        if($this->vacation->getDateFrom() > new DateTime('Y-m-d') ){
+            throw new BadRequestException("Data rozpoczęcia nie może być wcześniejsza niż zakończenia", 400);
+        }
     }
 
     public function onVacationUpdate(Vacation $vacation, Vacation $previousVacation)
@@ -76,9 +88,10 @@ class VacationRequestController
         }
     }
 
-    private function checkDateAvailability():void
+    private function checkDateAvailability():self
     {
         $this->vacationRepository->findExistingVacationForUserInDateRange($this->vacation->getEmployee(),$this->vacation->getDateFrom(),$this->vacation->getDateTo());
+        return $this;
     }
 
     private function checkVacationStatus():void
