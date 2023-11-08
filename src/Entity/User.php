@@ -73,9 +73,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[SerializedName('password')]
     private ?string $plainPassword = null;
 
-    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Vacation::class)]
-    private Collection $createdVacationRequest;
-
     #[ORM\OneToMany(mappedBy: 'acceptedBy', targetEntity: Vacation::class)]
     private Collection $AcceptedVacations;
 
@@ -85,7 +82,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->apiTokens = new ArrayCollection();
-        $this->createdVacationRequest = new ArrayCollection();
         $this->AcceptedVacations = new ArrayCollection();
         $this->AnnulledVacationRequest = new ArrayCollection();
     }
@@ -230,36 +226,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getPlainPassword():?string
     {
         return $this->plainPassword??null;
-    }
-
-    /**
-     * @return Collection<int, Vacation>
-     */
-    public function getCreatedVacationRequest(): Collection
-    {
-        return $this->createdVacationRequest;
-    }
-
-    public function addCreatedVacationRequest(Vacation $createdVacationRequest): static
-    {
-        if (!$this->createdVacationRequest->contains($createdVacationRequest)) {
-            $this->createdVacationRequest->add($createdVacationRequest);
-            $createdVacationRequest->setCreatedBy($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCreatedVacationRequest(Vacation $createdVacationRequest): static
-    {
-        if ($this->createdVacationRequest->removeElement($createdVacationRequest)) {
-            // set the owning side to null (unless already changed)
-            if ($createdVacationRequest->getCreatedBy() === $this) {
-                $createdVacationRequest->setCreatedBy(null);
-            }
-        }
-
-        return $this;
     }
 
     /**

@@ -269,7 +269,7 @@ class VacationRequestResourceTest extends KernelTestCase
         $this->browser()
             ->actingAs($mod)
             ->get('api/vacations',[])
-            ->dd();
+            ->assertJsonMatches('"hydra:totalItems"',10);
 
     }
 
