@@ -59,7 +59,9 @@ class VacationRequestController
             throw new BadRequestException("Data rozpoczęcia nie może być wcześniejsza niż zakończenia", 400);
         }
 
-        if($this->vacation->getDateFrom()->format('Y-m-d') > new DateTime('Y-m-d') ){
+        $todayDate = new DateTime;
+
+        if($this->vacation->getDateFrom()->format('Y-m-d') > $todayDate->format('Y-m-d')){
             throw new BadRequestException("Data rozpoczęcia nie może być wcześniejsza niż zakończenia", 400);
         }
     }
