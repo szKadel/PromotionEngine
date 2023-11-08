@@ -147,5 +147,6 @@ class VacationStateProcessor implements ProcessorInterface
                 throw new BadRequestException('Uwaga! Nie możesz zaakceptować tego wniosku. Limit na ten rok dla tego użytkownika został wykorzystany.');
             }
         }
+        dd("test");
     }
 }
