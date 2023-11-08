@@ -91,7 +91,7 @@ class EmployeeController extends AbstractController
             throw new BadRequestException("Nie znaleziono elementu.",404);
         }
 
-        $apiTokens =  $this->apiTokenRepository->findBy(['ownedById' => $user]);
+        $apiTokens =  $this->security->getUser()->getEmployee()->getApiTokens();
 
         foreach ($apiTokens as $apiToken)
         {
