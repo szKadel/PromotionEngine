@@ -5,12 +5,9 @@ namespace App\Controller\Vacation;
 use App\Controller\Notification\EmailNotificationController;
 use App\Entity\Vacation\Vacation;
 use App\Entity\Vacation\VacationLimits;
-use App\Repository\Settings\NotificationRepository;
 use App\Repository\UserRepository;
 use App\Repository\VacationRepository;
-use App\Service\EmailService;
 use App\Service\Vacation\CounterVacationDays;
-use DateTime;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
@@ -102,7 +99,7 @@ class VacationRequestController
 
         $limitDays = $this->getVacationLimits()->getDaysLimit();
 
-        $spendDays = $this->counterVacationDays->getVacationDaysSpend($this->vacation->getEmployee(),$this->vacation->getType(),$this->vacation->getStatus());
+        $spendDays = $this->counterVacationDays->getVacationDaysSpend($this->vacation->getEmployee(),$this->vacation->getType());
 
         if ($limitDays == 0) {
             return;

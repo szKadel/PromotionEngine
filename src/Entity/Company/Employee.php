@@ -91,6 +91,8 @@ class Employee
     #[Groups(['user:read','user:write','employeeExtended:read'])]
     private Collection $employeeExtendedAccesses;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $active = null;
 
     public function __construct()
     {
@@ -180,7 +182,6 @@ class Employee
     public function removeVacation(Vacation $vacation): static
     {
         if ($this->vacations->removeElement($vacation)) {
-            // set the owning side to null (unless already changed)
             if ($vacation->getEmployee() === $this) {
                 $vacation->setEmployee(null);
             }
@@ -292,4 +293,17 @@ class Employee
 
         return $this;
     }
+
+    public function isActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(?bool $active): static
+    {
+        $this->active = $active ?? true;
+
+        return $this;
+    }
+
 }

@@ -80,7 +80,7 @@ class VacationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findVacationUsedByUser(Employee $employee, VacationStatus $vacationStatus, VacationTypes $vacationTypes):int
+    public function findVacationUsedByUser(Employee $employee, VacationTypes $vacationTypes):int
     {
         $statusAccepted = $this->vacationStatusRepository->findByName("Potwierdzony");
 

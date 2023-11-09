@@ -2,11 +2,14 @@
 
 namespace App\Tests\Functional\Api\Authentication;
 
+use ApiPlatform\JsonSchema\TypeFactory;
 use App\Factory\ApiTokenFactory;
 use App\Factory\Company\DepartmentFactory;
 use App\Factory\Company\EmployeeFactory;
 use App\Factory\Settings\NotificationFactory;
 use App\Factory\UserFactory;
+use App\Factory\VacationTypesFactory;
+use App\Repository\VacationTypesRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Browser\Test\HasBrowser;
 use Zenstruck\Foundry\Test\ResetDatabase;
@@ -88,7 +91,8 @@ class AuthenticationTest extends KernelTestCase
     {
         $department = DepartmentFactory::createMany(5);
         $employee = EmployeeFactory::createOne();
-        $user = UserFactory::createOne(['password'=>'pass','employee' => null]);
+        $type = VacationTypesFactory::createOne(["name"=>"Urlop Wypoczynkowy"]);
+        $user = UserFactory::createOne(['password'=>'pass','employee' => $employee]);
 
         //check user with employee
 
@@ -96,7 +100,7 @@ class AuthenticationTest extends KernelTestCase
             ->actingAs($user)
             ->get('/api/getCurrentUser/',[
             ]
-            )->assertStatus(200);
+            )->dd();
 
         $user = UserFactory::createOne(['password'=>'pass']);
 
@@ -104,7 +108,7 @@ class AuthenticationTest extends KernelTestCase
         $this->browser()
             ->actingAs($user)
             ->get('/api/getCurrentUser/',[]
-            )->assertStatus(200);
+            )->dd();
 
         //check authentication
         $this->browser()

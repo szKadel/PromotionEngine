@@ -301,14 +301,6 @@ class Vacation
     }
 
     /**
-     * @return mixed
-     */
-    public function getAcceptedAt()
-    {
-        return $this->acceptedAt;
-    }
-
-    /**
      * @param mixed $acceptedAt
      */
     public function setAcceptedAt($acceptedAt): void
