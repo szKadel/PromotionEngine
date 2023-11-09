@@ -83,7 +83,7 @@ class EmailService
         foreach ($extMods as $extMod){
             if(!empty($extMod->getEmployee()->getUser()?->getEmail() )) {
                 $this->sendEmail(
-                    "BestCs - powiadomienie",
+                    "HHG - powiadomienie",
                     $extMod->getEmployee()->getUser()?->getEmail(),
                     "modNewVacation.html.twig",$vacation);
             }
