@@ -80,7 +80,7 @@ class ExtractController extends AbstractController
         $row = 2;
         foreach ($result as $vacation) {
             if($vacation instanceof Vacation){
-                $sheet->setCellValue('A' . $row, mb_strtoupper($vacation->getEmployee()->getSurname()."_".$vacation->getEmployee()->getName(), 'UTF-8'));
+                $sheet->setCellValue('A' . $row, iconv('UTF-8', 'ASCII//TRANSLIT',mb_strtoupper($vacation->getEmployee()->getSurname()."_".$vacation->getEmployee()->getName(), 'UTF-8')));
                 $sheet->setCellValue('B' . $row, $vacation->getEmployee()->getSurname());
                 $sheet->setCellValue('C' . $row, $vacation->getEmployee()->getName());
                 $sheet->setCellValue('D' . $row, $vacation->getType()->getName());

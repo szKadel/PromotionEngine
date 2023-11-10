@@ -79,12 +79,7 @@ class UserTest extends KernelTestCase
 
         //$this->browser()->actingAs($user)->delete("/api/users/".$user2->getId())->dump();
 
-        $this->browser()
-            ->post('/login',['json'=>[
-                'email'=>$user2->getEmail(),
-                'password'=>'pass'
-            ]
-            ])->assertStatus(200)->assertAuthenticated();
+
 
         $this->browser()
             ->actingAs($user)

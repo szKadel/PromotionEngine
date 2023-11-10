@@ -53,7 +53,9 @@ class VacationRequestController
 
     public function checkInputData()
     {
-
+        if($this->vacation->getDateFrom() > $this->vacation->getDateTo()){
+            throw new BadRequestException("Data rozpoczęcia musi być wcześniej niż zakończenia.", 400);
+        }
     }
 
     public function checkCompany():void
@@ -61,6 +63,7 @@ class VacationRequestController
         if($this->vacation->getEmployee()?->getCompany()?->getId() == 5){
             throw new BadRequestException("Nie można utworzyć urlopu dla użytkownika z firmy zlecenie.", 400);
         }
+
     }
 
     public function onVacationUpdate(Vacation $vacation, Vacation $previousVacation)
