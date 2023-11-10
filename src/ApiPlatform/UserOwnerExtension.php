@@ -78,10 +78,10 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
             return;
         }
 
-        $company = $this->iriConverter->getResourceFromIri("/api/companies/2");
+        $company = $this->iriConverter->getResourceFromIri("/api/companies/5");
 
-        $queryBuilder->andWhere('o.company != :zlecenie');
-        $queryBuilder->setParameter('zlecenie', $company);
+        $queryBuilder->andWhere('o.company != :Zlecenia');
+        $queryBuilder->setParameter('Zlecenia', $company);
 
     }
 }
