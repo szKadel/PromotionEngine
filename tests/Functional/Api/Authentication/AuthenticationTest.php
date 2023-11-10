@@ -42,7 +42,7 @@ class AuthenticationTest extends KernelTestCase
 
     public function testRegistration()
     {
-        $department = DepartmentFactory::createMany(5);
+        $department = DepartmentFactory::createMany(2);
         $employee = EmployeeFactory::createOne();
         $token = ApiTokenFactory::createOne();
         NotificationFactory::createOne();
@@ -66,11 +66,6 @@ class AuthenticationTest extends KernelTestCase
             ->get(
                 '/api/users',
                 [
-                    'json'=>[
-                        'email'=>'test5@test.pl',
-                        'password'=>'test',
-                        'username'=>'test5'
-                    ]
                 ]
             )->assertStatus(200);
 
@@ -89,10 +84,8 @@ class AuthenticationTest extends KernelTestCase
 
     public function testCheckUser()
     {
-        $department = DepartmentFactory::createMany(5);
         $employee = EmployeeFactory::createOne();
-        $type = VacationTypesFactory::createOne(["name"=>"Urlop Wypoczynkowy"]);
-        $user = UserFactory::createOne(['password'=>'pass','employee' => $employee]);
+        $user = UserFactory::createOne(['password'=>'pass']);
 
         //check user with employee
 
@@ -100,15 +93,7 @@ class AuthenticationTest extends KernelTestCase
             ->actingAs($user)
             ->get('/api/getCurrentUser/',[
             ]
-            )->dd();
-
-        $user = UserFactory::createOne(['password'=>'pass']);
-
-        //check user whit employee
-        $this->browser()
-            ->actingAs($user)
-            ->get('/api/getCurrentUser/',[]
-            )->dd();
+            )->assertStatus(200);
 
         //check authentication
         $this->browser()

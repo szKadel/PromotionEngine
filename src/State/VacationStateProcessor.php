@@ -135,7 +135,6 @@ class VacationStateProcessor implements ProcessorInterface
     {
         $vacationUsedInDays = $this->vacationRepository->findVacationUsedByUser(
             $vacation->getEmployee(),
-            $vacation->getStatus(),
             $vacation->getType()
         );
 

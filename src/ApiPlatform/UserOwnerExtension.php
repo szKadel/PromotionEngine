@@ -1,9 +1,11 @@
 <?php
 
 namespace App\ApiPlatform;
+
 use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
+use ApiPlatform\Metadata\IriConverterInterface;
 use ApiPlatform\Metadata\Operation;
 use App\Entity\Company\Employee;
 use App\Entity\Vacation\Vacation;
@@ -14,13 +16,14 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusExce
 final class UserOwnerExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
 
-    public function __construct(private readonly Security $security)
+    public function __construct(private readonly Security $security, private IriConverterInterface $iriConverter)
     {
     }
 
     public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []): void
     {
         $this->addWhere($queryBuilder, $resourceClass);
+        $this->kadrWhere($queryBuilder, $resourceClass);
         $this->groupModerator($queryBuilder, $resourceClass);
     }
 
@@ -31,7 +34,7 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
 
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass): void
     {
-        if (Vacation::class !== $resourceClass || $this->security->isGranted('ROLE_ADMIN') || $this->security->isGranted('ROLE_MOD') || null === $user = $this->security->getUser()) {
+        if (Vacation::class !== $resourceClass || $this->security->isGranted('ROLE_ADMIN') || $this->security->isGranted('ROLE_MOD') || $this->security->isGranted('ROLE_KADR') || null === $user = $this->security->getUser()) {
             return;
         }
 
@@ -66,6 +69,19 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
                 $queryBuilder->setParameter($key, $employeeExtendedAccesses->getDepartment());
             }
         }
+
+    }
+
+    public function kadrWhere($queryBuilder, $resourceClass)
+    {
+        if(!$this->security->isGranted('ROLE_KADR') || Employee::class !== $resourceClass  ) {
+            return;
+        }
+
+        $company = $this->iriConverter->getResourceFromIri("/api/companies/2");
+
+        $queryBuilder->andWhere('o.company != :zlecenie');
+        $queryBuilder->setParameter('zlecenie', $company);
 
     }
 }
