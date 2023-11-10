@@ -42,9 +42,9 @@ final class UserFactory extends ModelFactory
     {
         return [
             'email' => self::faker()->email(),
-            'password' => 'password',
+            'password' => 'pass',
             'username' => self::faker()->randomElement(self::USERNAMES) . self::faker()->randomNumber(3),
-            'employee' => EmployeeFactory::random()
+            'employee' => null
         ];
     }
     /**

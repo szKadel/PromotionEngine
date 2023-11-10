@@ -90,6 +90,10 @@ class EmployeeController extends AbstractController
         {
             throw new BadRequestException("Nie znaleziono elementu.",404);
         }
+        if(!empty($user->getEmployee())){
+            throw new BadRequestException("Nie można usunać użytkownika z przypisanym pracownikiem.",404);
+        }
+
         $apiTokens = $apiTokenRepository->findBy(["ownedBy"=>$id]);
 
         if(count($apiTokens) > 1) {
