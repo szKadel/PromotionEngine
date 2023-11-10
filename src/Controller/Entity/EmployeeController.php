@@ -90,6 +90,7 @@ class EmployeeController extends AbstractController
         {
             throw new BadRequestException("Nie znaleziono elementu.",400);
         }
+
         if($user->getEmployee()){
             throw new BadRequestException("Nie można usunać użytkownika z przypisanym pracownikiem.",400);
         }
