@@ -74,8 +74,8 @@ class UserTest extends KernelTestCase
 
         $user = UserFactory::createOne(['employee'=>$employee2,'password'=>'pass','roles'=>['ROLE_ADMIN']]);
         $user2 = UserFactory::createOne(['employee'=>$employee3,'password'=>'pass']);
-        $user3 = UserFactory::createOne(['employee'=>$employee4,'password'=>'pass']);
-        $user3 = UserFactory::createOne(['employee'=>$employee,'password'=>'pass']);
+        $user3 = UserFactory::createOne(['password'=>'pass']);
+        $user5 = UserFactory::createOne(['employee'=>$employee,'password'=>'pass']);
 
         //$this->browser()->actingAs($user)->delete("/api/users/".$user2->getId())->dump();
 
@@ -89,6 +89,11 @@ class UserTest extends KernelTestCase
         $this->browser()
             ->actingAs($user)
             ->delete('api/user/custom/'.$user2->getId(),[]
-            )->dd();
+            )->assertStatus(400);
+
+        $this->browser()
+            ->actingAs($user)
+            ->delete('api/user/custom/'.$user3->getId(),[]
+            )->assertStatus(200);
     }
 }
