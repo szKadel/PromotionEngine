@@ -42,6 +42,7 @@ class VacationRequestController
     {
         $this -> setVacation($vacation);
         $this -> checkDateAvailability()->checkInputData();
+        $this -> checkCompany();
         $this -> checkVacationStatus();
         $this -> checkVacationDaysLimit();
         $this -> checkReplacement();
@@ -53,6 +54,13 @@ class VacationRequestController
     public function checkInputData()
     {
 
+    }
+
+    public function checkCompany():void
+    {
+        if($this->vacation->getEmployee()->getCompany()->getId() == 5){
+            throw new BadRequestException("Nie można utworzyć urlopu dla użytkownika z firmy zlecenie.", 400);
+        }
     }
 
     public function onVacationUpdate(Vacation $vacation, Vacation $previousVacation)
