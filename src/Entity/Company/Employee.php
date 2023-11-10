@@ -91,9 +91,6 @@ class Employee
     #[Groups(['user:read','user:write','employeeExtended:read'])]
     private Collection $employeeExtendedAccesses;
 
-    #[ORM\Column(nullable: true)]
-    private ?bool $active = null;
-
     public function __construct()
     {
         $this->vacationLimits = new ArrayCollection();
@@ -294,16 +291,5 @@ class Employee
         return $this;
     }
 
-    public function isActive(): ?bool
-    {
-        return $this->active;
-    }
-
-    public function setActive(?bool $active): static
-    {
-        $this->active = $active ?? true;
-
-        return $this;
-    }
 
 }
