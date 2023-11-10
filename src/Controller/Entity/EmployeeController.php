@@ -81,7 +81,7 @@ class EmployeeController extends AbstractController
     }
     #[IsGranted('ROLE_ADMIN')]
     #[Route('api/user/custom/{id}', methods: ['DELETE'])]
-    public function deleteUser($id)
+    public function deleteUser(int $id, ApiTokenRepository $apiTokenRepository)
     {
 
         $user = $this->userRepository->find($id);
@@ -90,12 +90,12 @@ class EmployeeController extends AbstractController
         {
             throw new BadRequestException("Nie znaleziono elementu.",404);
         }
+        $apiTokens = $apiTokenRepository->findBy(["ownedBy"=>$id]);
 
-        $apiTokens =  $this->security->getUser()->getEmployee()->getApiTokens();
-
-        foreach ($apiTokens as $apiToken)
-        {
-            $this->delete($apiToken);
+        if(count($apiTokens) > 1) {
+            foreach ($apiTokens as $apiToken) {
+                $this->delete($apiToken);
+            }
         }
 
         if(!empty($user->getEmployee())){
