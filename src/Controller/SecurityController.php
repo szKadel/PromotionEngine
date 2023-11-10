@@ -86,7 +86,7 @@ class SecurityController extends AbstractController
 
             $vacationType = $typesRepository->findBy(["name"=>"Urlop Wypoczynkowy"])[0] ?? 0;
             $vacationLimit = $employeeVacationLimitRepository->findBy(["Employee"=>$user->getEmployee(),"vacationType"=>$vacationType])[0]?? 0;
-            $spendDays = $vacationLimit != 0 ? $this->counterVacationDays->getVacationDaysSpend($user->getEmployee(),$vacationType) : 0;
+            $spendDays = $vacationLimit instanceof VacationLimits ? $this->counterVacationDays->getVacationDaysSpend($user->getEmployee(),$vacationType) : 0;
             $limit = $vacationLimit instanceof VacationLimits ? $vacationLimit->getDaysLimit() : 0;
             $leftVacationDays = $limit - $spendDays;
 
