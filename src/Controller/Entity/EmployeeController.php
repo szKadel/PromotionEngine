@@ -96,6 +96,8 @@ class EmployeeController extends AbstractController
             foreach ($apiTokens as $apiToken) {
                 $this->delete($apiToken);
             }
+        }elseif (count($apiTokens) == 1){
+            $this->delete($apiTokens[0]);
         }
 
         if(!empty($user->getEmployee())){
