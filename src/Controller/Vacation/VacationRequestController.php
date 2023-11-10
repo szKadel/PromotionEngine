@@ -58,7 +58,7 @@ class VacationRequestController
 
     public function checkCompany():void
     {
-        if($this->vacation->getEmployee()->getCompany()->getId() == 5){
+        if($this->vacation->getEmployee()?->getCompany()?->getId() == 5){
             throw new BadRequestException("Nie można utworzyć urlopu dla użytkownika z firmy zlecenie.", 400);
         }
     }

@@ -2,7 +2,9 @@
 
 namespace App\State;
 
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Operation;
+use ApiPlatform\Metadata\Post;
 use ApiPlatform\State\ProcessorInterface;
 use App\Controller\Vacation\VacationRequestController;
 use App\Entity\User;
@@ -38,6 +40,13 @@ class UserStateProcessor implements ProcessorInterface
 
                 if($context["previous_data"]->getRoles() != $data->getRoles()){
                     throw new BadRequestException("Brak Uprawnień", 401);
+                }
+            }
+            if($operation instanceof Delete) {
+                if (!empty($data->getEmployee())) {
+                    throw new BadRequestException(
+                        "Nie można usunąć użytkownika który ma przypisanego pracownika.", 400
+                    );
                 }
             }
         }
