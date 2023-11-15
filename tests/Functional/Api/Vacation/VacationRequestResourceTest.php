@@ -270,41 +270,4 @@ class VacationRequestResourceTest extends KernelTestCase
 
     }
 
-    public function testVacationKadrExtensionsRight()
-    {
-        VacationStatusFactory::createOne(['name'=>'Oczekujący']);
-        VacationStatusFactory::createOne(['name'=>'Zaplanowany']);
-        $company1 = CompanyFactory::createOne();
-        $company2 = CompanyFactory::createOne();
-        $vacationStatus = VacationStatusFactory::createOne(['name'=>'Zaakceptowany']);
-
-        $department = DepartmentFactory::createOne();
-        $department2 = DepartmentFactory::createOne();
-
-        $employee = EmployeeFactory::createOne(['department'=>$department,'company'=>$company1 ]);
-        $employee2 = EmployeeFactory::createOne(['department'=>$department2,'company'=>$company1 ]);
-        EmployeeFactory::createOne(['department'=>$department2]);
-
-        $employeeMod = EmployeeFactory::createOne(['department'=>$department, 'employeeExtendedAccesses'=>[]]);
-
-        $mod = UserFactory::createOne(['employee' => $employeeMod, 'roles'=>['ROLE_MOD']]);
-        $user = UserFactory::createOne(['employee' => $employee, 'roles'=>['ROLE_KADR'],]);
-        $user2 = UserFactory::createOne(['employee' => $employee2, 'roles'=>['ROLE_USER']]);
-
-        VacationTypesFactory::createOne();
-        $vacationType = VacationTypesFactory::createOne(['name'=>'Inny']);
-        $vacationType2 = VacationTypesFactory::createOne(['name'=>'Urlop']);
-
-        VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>500]);
-        VacationLimitsFactory::createOne(["employee"=>$employeeMod,'vacationType'=>$vacationType, 'daysLimit'=>20]);
-        VacationLimitsFactory::createOne(["employee"=>$employee2,'vacationType'=>$vacationType, 'daysLimit'=>20]);
-
-        VacationFactory::createMany(5,["employee"=>$employee,'type'=>$vacationType]);
-        VacationFactory::createMany(5,["employee"=>$employeeMod,'type'=>$vacationType]);
-        VacationFactory::createMany(5,["employee"=>$employee2,'type'=>$vacationType]);
-
-        $this->browser()
-            ->actingAs($user) -> get('api/employees',[]) ->dd();
-    }
-
 }

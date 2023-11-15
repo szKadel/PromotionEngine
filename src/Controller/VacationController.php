@@ -27,11 +27,8 @@ class VacationController extends AbstractController
         $monday = date('Y-m-d', strtotime('last Monday', strtotime($today)));
         $friday = date('Y-m-d', strtotime('this Friday', strtotime($today)));
 
-        if($this->security->isGranted('ROLE_ADMIN') || $this->security->isGranted('ROLE_KADR')){
-            $dbResult = $this->vacationRepository->findEmployeeOnVacationForAdmin($monday, $friday);
-        }else {
-            $dbResult = $this->vacationRepository->findEmployeeOnVacation($monday, $friday);
-        }
+        $dbResult = $this->vacationRepository->findEmployeeOnVacationForAdmin($monday, $friday);
+
 
         foreach ($dbResult as $vacation){
             $result[] = [
