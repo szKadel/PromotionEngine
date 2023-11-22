@@ -69,7 +69,6 @@ final class UserOwnerExtension implements QueryCollectionExtensionInterface, Que
                 $queryBuilder->setParameter($key, $employeeExtendedAccesses->getDepartment());
             }
         }
-
     }
 
     public function kadrWhere($queryBuilder, $resourceClass)

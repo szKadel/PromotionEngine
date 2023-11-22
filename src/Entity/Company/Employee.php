@@ -91,6 +91,10 @@ class Employee
     #[Groups(['user:read','user:write','employeeExtended:read'])]
     private Collection $employeeExtendedAccesses;
 
+    #[ORM\Column]
+    #[Groups(['employee:read','employee:write','vacationLimit:read','user:read','user:write','user:read','vacationRequest:read'])]
+    private ?bool $unActive = null;
+
     public function __construct()
     {
         $this->vacationLimits = new ArrayCollection();
@@ -287,6 +291,18 @@ class Employee
                 $employeeExtendedAccess->setEmployee(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isUnActive(): ?bool
+    {
+        return $this->unActive;
+    }
+
+    public function setUnActive(bool $unActive): static
+    {
+        $this->unActive = $unActive;
 
         return $this;
     }

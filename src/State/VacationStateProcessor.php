@@ -11,6 +11,7 @@ use App\Controller\Vacation\VacationRequestController;
 use App\Entity\User;
 use App\Entity\Vacation\Vacation;
 use App\Entity\Vacation\VacationLimits;
+use App\Entity\Vacation\VacationStatus;
 use App\Repository\EmployeeVacationLimitRepository;
 use App\Repository\Settings\NotificationRepository;
 use App\Repository\UserRepository;
@@ -33,7 +34,8 @@ class VacationStateProcessor implements ProcessorInterface
         private EmployeeVacationLimitRepository $employeeVacationLimitRepository,
         private EmailService $emailService,
         private UserRepository $userRepository,
-        private NotificationRepository $notificationRepository
+        private NotificationRepository $notificationRepository,
+        private VacationStatusRepository $vacationStatusRepository
     )
     {
 
@@ -114,6 +116,26 @@ class VacationStateProcessor implements ProcessorInterface
                         }
                     }
                 }
+                if ($data->getType() != $context["previous_data"]->getType())
+                {
+                    if($context["previous_data"]->getType()->getName() == "Plan urlopowy") {
+                        $data->setStatus($this->vacationStatusRepository->findByName("Oczekujący"));
+                    }
+                }
+
+                if ($data->getType() != $context["previous_data"]->getType())
+                {
+                    if($context["previous_data"]->getType()->getName() == "Oczekujący" && $data->getType()->getName() == 'Plan urlopowy') {
+                        $data->setStatus($this->vacationStatusRepository->findByName("Zaplanowany"));
+                    }
+                }
+
+
+            $data->setSpendVacationDays();
+
+            if($data->getSpendVacationDays() == 0){
+                throw new BadRequestException('Wniosek nie może być wystawiony na 0 dni.');
+            }
             }
         }
 
