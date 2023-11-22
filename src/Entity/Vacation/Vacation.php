@@ -144,7 +144,7 @@ class Vacation
             $this->setAnnulledAt(new DateTime());
         }
 
-        if($this->status?->getName() == "Zaakceptowany")
+        if($this->status?->getName() == "Potwierdzony")
         {
             $this->setAcceptedAt(new DateTime());
         }
