@@ -80,7 +80,7 @@ class ExtractController extends AbstractController
         $row = 2;
         foreach ($result as $vacation) {
             if($vacation instanceof Vacation){
-                $sheet->setCellValue('A' . $row, iconv('UTF-8', 'ASCII//TRANSLIT',mb_strtoupper($vacation->getEmployee()->getSurname()."_".$vacation->getEmployee()->getName(), 'UTF-8')));
+                $sheet->setCellValue('A' . $row, $this->formatString(mb_strtoupper($vacation->getEmployee()->getSurname()."_".$vacation->getEmployee()->getName())));
                 $sheet->setCellValue('B' . $row, $vacation->getEmployee()->getSurname());
                 $sheet->setCellValue('C' . $row, $vacation->getEmployee()->getName());
                 $sheet->setCellValue('D' . $row, $vacation->getType()->getName());
@@ -104,5 +104,20 @@ class ExtractController extends AbstractController
         $response->setContent($excelData);
 
         return $response;
+    }
+
+    public function formatString(string $alias)
+    {
+        $alias= strtolower($alias);
+        $alias = str_replace(' ', '-', $alias);
+
+        $alias = strtr($alias, 'ęóąśłżźćń', 'eoaslzzcn');
+        $alias = strtr($alias, 'ˇ¦¬±¶Ľ','ASZasz');
+
+        $alias = preg_replace('/[^0-9a-z\-]+/', '', $alias);
+        $alias = preg_replace('/[\-]+/', '-', $alias);
+        $alias= trim($alias,'-');
+
+        return strtr($alias, ' ','-');
     }
 }
