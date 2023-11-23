@@ -8,7 +8,9 @@ use App\Entity\ApiToken;
 use App\Entity\User;
 use App\Entity\Vacation\VacationLimits;
 use App\Repository\EmployeeVacationLimitRepository;
+use App\Repository\UserRepository;
 use App\Repository\VacationTypesRepository;
+use App\Service\EmailService;
 use App\Service\Vacation\CounterVacationDays;
 use Doctrine\ORM\EntityManagerInterface;
 use MongoDB\Driver\Exception\AuthenticationException;
@@ -160,5 +162,43 @@ class SecurityController extends AbstractController
         } else {
             throw new BadRequestException("Aktualne hasło jest niepoprawne.");
         }
+    }
+
+    #[Route('/api/user/resetPassword', methods: ['POST'])]
+    public function resetPassword(UserRepository $userRepository,UserPasswordHasherInterface $userPasswordHasher, Request $request, EmailService $emailService)
+    {
+        $requestData = json_decode($request->getContent(), true);
+
+        if (empty($requestData['email'])) {
+            throw new BadRequestException("email is required");
+        }else{
+            $email = $requestData['email'];
+        }
+
+        $user = $userRepository->findBy(['email'=>$email]);
+
+        if (empty($user[0])) {
+            throw new BadRequestException("User dont exist");
+        }else{
+            $user = $user[0];
+        }
+
+        $newPassword =  RandomPasswordGenerator::generatePassword();
+
+        $hashedNewPassword = $userPasswordHasher->hashPassword($user, $newPassword);
+        $user->setPassword($hashedNewPassword);
+
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        $emailService ->sendResetPassword(
+            "BestCs - powiadomienie",
+            $user->getEmail(),
+            "resetPassword.html.twig",
+            $user,
+            $newPassword
+        );
+
+        return new JsonResponse(["message" => "Wysłaliśmy Informację na twój adres email."]);
     }
 }

@@ -100,6 +100,7 @@ class Employee
         $this->vacationLimits = new ArrayCollection();
         $this->vacations = new ArrayCollection();
         $this->employeeExtendedAccesses = new ArrayCollection();
+        $this->setUnActive(false);
     }
 
     public function getId(): ?int
@@ -297,12 +298,12 @@ class Employee
 
     public function isUnActive(): ?bool
     {
-        return $this->unActive;
+        return $this->unActive ?? false;
     }
 
     public function setUnActive(bool $unActive): static
     {
-        $this->unActive = $unActive;
+            $this->unActive = $unActive ?? false;
 
         return $this;
     }

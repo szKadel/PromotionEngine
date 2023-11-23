@@ -38,7 +38,6 @@ class VacationStateProcessor implements ProcessorInterface
         private VacationStatusRepository $vacationStatusRepository
     )
     {
-
     }
 
     public function process(
@@ -136,6 +135,7 @@ class VacationStateProcessor implements ProcessorInterface
             if($data->getSpendVacationDays() == 0){
                 throw new BadRequestException('Wniosek nie może być wystawiony na 0 dni.');
             }
+
             }
         }
 
@@ -169,8 +169,10 @@ class VacationStateProcessor implements ProcessorInterface
             throw new BadRequestException('Ten Urlop nie został przypisany dla tego użytkownika.');
         }
 
-        if ($limit[0]->getDaysLimit() != 0) {
-            if ($limit[0]->getDaysLimit() < $vacationUsedInDays + $vacation->getSpendVacationDays()) {
+        $limitDays = $limit[0]->getDaysLimit() + ($limit[0]->getUnusedDaysFromPreviousYear() ?? 0);
+
+        if ($limitDays != 0) {
+            if ($limitDays < $vacationUsedInDays + $vacation->getSpendVacationDays()) {
                 throw new BadRequestException('Uwaga! Nie możesz zaakceptować tego wniosku. Limit na ten rok dla tego użytkownika został wykorzystany.');
             }
         }
