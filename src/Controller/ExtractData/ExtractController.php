@@ -115,7 +115,6 @@ class ExtractController extends AbstractController
         $alias = strtr($alias, 'ˇ¦¬±¶Ľ','ASZasz');
 
         $alias = preg_replace('/[^0-9a-z\-]+/', '', $alias);
-        $alias = preg_replace('/[\-]+/', '-', $alias);
         $alias= trim($alias,'-');
 
         return strtr($alias, ' ','-');
