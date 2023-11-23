@@ -65,7 +65,7 @@ class VacationStateProcessor implements ProcessorInterface
 
                         if($data->getType()->getName() == "Inny" || $data->getType()->getName() == "Plan Urlopowy")
                         {
-                            throw new BadRequestException('Uwaga! Nie możesz zaakceptować tego wniosku. Ustaw inny typ urlopu');
+                            throw new BadRequestException('Drogi Moderatorze! Nie możesz zaakceptować wniosku "Inne" wybierz rodzaj wniosku zawarty w komentarzu Pracownika');
                         }
 
                         $data->setAcceptedAt(new \DateTimeImmutable());
@@ -120,10 +120,7 @@ class VacationStateProcessor implements ProcessorInterface
                     if($context["previous_data"]->getType()->getName() == "Plan urlopowy") {
                         $data->setStatus($this->vacationStatusRepository->findByName("Oczekujący"));
                     }
-                }
 
-                if ($data->getType() != $context["previous_data"]->getType())
-                {
                     if($context["previous_data"]->getType()->getName() == "Oczekujący" && $data->getType()->getName() == 'Plan urlopowy') {
                         $data->setStatus($this->vacationStatusRepository->findByName("Zaplanowany"));
                     }
