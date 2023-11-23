@@ -108,15 +108,15 @@ class ExtractController extends AbstractController
 
     public function formatString(string $alias)
     {
-        $alias= strtolower($alias);
-        $alias = str_replace(' ', '-', $alias);
+        $replace = array(
+            'ą' => 'a', 'ć' => 'c', 'ę' => 'e',
+            'ł' => 'l', 'ń' => 'n', 'ó' => 'o',
+            'ś' => 's', 'ż' => 'z', 'ź' => 'z',
+            'Ą' => 'A', 'Ć' => 'C', 'Ę' => 'E',
+            'Ł' => 'L', 'Ń' => 'N', 'Ó' => 'O',
+            'Ś' => 'S', 'Ż' => 'Z', 'Ź' => 'Z'
+        );
 
-        $alias = strtr($alias, 'ęóąśłżźćń', 'eoaslzzcn');
-        $alias = strtr($alias, 'ˇ¦¬±¶Ľ','ASZasz');
-
-        $alias = preg_replace('/[^0-9a-z\-]+/', '', $alias);
-        $alias= trim($alias);
-
-        return strtr($alias, ' ','-');
+        return strtr($alias, $replace);
     }
 }
