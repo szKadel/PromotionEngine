@@ -120,6 +120,10 @@ class VacationRequestController
 
         $spendDays = $this->counterVacationDays->getVacationDaysSpend($this->vacation->getEmployee(),$this->vacation->getType());
 
+        if($this->vacation->getSpendVacationDays() == 0){
+            throw new BadRequestException('Wniosek nie może być wystawiony na 0 dni.');
+        }
+
         if ($limitDays == 0) {
             return;
         }
