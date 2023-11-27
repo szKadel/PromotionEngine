@@ -2,7 +2,6 @@
 
 namespace App\State;
 
-use ApiPlatform\Api\IriConverterInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
@@ -11,14 +10,12 @@ use App\Controller\Vacation\VacationRequestController;
 use App\Entity\User;
 use App\Entity\Vacation\Vacation;
 use App\Entity\Vacation\VacationLimits;
-use App\Entity\Vacation\VacationStatus;
 use App\Repository\EmployeeVacationLimitRepository;
 use App\Repository\Settings\NotificationRepository;
 use App\Repository\UserRepository;
 use App\Repository\VacationRepository;
 use App\Repository\VacationStatusRepository;
 use App\Service\EmailService;
-use DateTime;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -54,7 +51,11 @@ class VacationStateProcessor implements ProcessorInterface
             } elseif ($operation instanceof Put) {
 
                 if($data->getEmployee()->getUnActive()){
-                    throw new BadRequestException("Wniosek tego pracownika jest dezaktywowany.");
+                    throw new BadRequestException("Pracownika dla tego wniosku jest dezaktywowany.");
+                }
+
+                if($data->getReplacement()->getUnActive()){
+                    throw new BadRequestException("Pracownik na zastępstwie jest dezaktywowany.");
                 }
 
                 if ($data->getType()->getId() != 1 || $data->getType()->getId() != 11) {

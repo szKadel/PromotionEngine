@@ -44,6 +44,10 @@ class VacationRequestController
             throw new BadRequestException("Wniosek tego pracownika jest dezaktywowany.");
         }
 
+        if($vacation->getReplacement()->getUnActive()){
+            throw new BadRequestException("Pracownik na zastępstwie jest dezaktywowany.");
+        }
+
         $this -> setVacation($vacation);
         $this -> checkDateAvailability()->checkInputData();
         $this -> checkCompany();
