@@ -53,6 +53,10 @@ class VacationStateProcessor implements ProcessorInterface
 
             } elseif ($operation instanceof Put) {
 
+                if($data->getEmployee()->getUnActive()){
+                    throw new BadRequestException("Wniosek tego pracownika jest dezaktywowany.");
+                }
+
                 if ($data->getType()->getId() != 1 || $data->getType()->getId() != 11) {
                     $this->checkVacationLimits($data);
 
