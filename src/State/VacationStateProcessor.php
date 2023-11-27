@@ -54,7 +54,7 @@ class VacationStateProcessor implements ProcessorInterface
                     throw new BadRequestException("Pracownika dla tego wniosku jest dezaktywowany.");
                 }
 
-                if(!empty($data->getReplacement()?->getUnActive())){
+                if($data->getReplacement()?->getUnActive()){
                     throw new BadRequestException("Pracownik na zastępstwie jest dezaktywowany.");
                 }
 
