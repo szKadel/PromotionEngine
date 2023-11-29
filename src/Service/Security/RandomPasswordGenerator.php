@@ -1,5 +1,8 @@
 <?php
 
+
+namespace App\Service\Security;
+
 class RandomPasswordGenerator
 {
     public static function generatePassword(int $length = 10): string
