@@ -4,12 +4,14 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\Vacation\VacationLimits;
+use App\Repository\EmployeeRepository;
 use App\Repository\EmployeeVacationLimitRepository;
 use App\Repository\VacationRepository;
 use App\Repository\VacationTypesRepository;
 use App\Service\Vacation\CounterVacationDays;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
@@ -20,6 +22,7 @@ class VacationController extends AbstractController
     public function __construct(
         private VacationRepository $vacationRepository,
         private Security $security,
+        private EmployeeRepository $employeeRepository,
         private VacationTypesRepository $typesRepository,
         private EmployeeVacationLimitRepository $employeeVacationLimitRepository,
          private CounterVacationDays $counterVacationDays
@@ -59,13 +62,15 @@ class VacationController extends AbstractController
         return new JsonResponse($result ?? []);
     }
 
-    #[Route('/api/vacations/type')]
+    #[Route('/api/vacations/{employeeId}/type')]
     #[IsGranted('ROLE_USER')]
-    public function getSpendDays(#[CurrentUser] User $user = null)
+    public function getSpendDays(int $employeeId)
     {
+        $employee = $this->employeeRepository->find($employeeId) ?? throw new BadRequestException("Nie znaleziono pracownika");
+
         $vacationType = $this->typesRepository->findBy(["id"=>"Urlop Wypoczynkowy"])[0] ?? 0;
-        $vacationLimit = $this->employeeVacationLimitRepository->findBy(["Employee"=>$user->getEmployee(),"vacationType"=>$vacationType])[0]?? 0;
-        $spendDays = $vacationLimit instanceof VacationLimits ? $this->counterVacationDays->getVacationDaysSpend($user->getEmployee(),$vacationType) : 0;
+        $vacationLimit = $this->employeeVacationLimitRepository->findBy(["Employee"=>$employee,"vacationType"=>$vacationType])[0]?? 0;
+        $spendDays = $vacationLimit instanceof VacationLimits ? $this->counterVacationDays->getVacationDaysSpend($employee,$vacationType) : 0;
 
         $result = [
             'type' =>   $vacationLimit->getVacationType()->getName(),
