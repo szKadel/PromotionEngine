@@ -2,18 +2,27 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Entity\Vacation\VacationLimits;
+use App\Repository\EmployeeVacationLimitRepository;
 use App\Repository\VacationRepository;
+use App\Repository\VacationTypesRepository;
+use App\Service\Vacation\CounterVacationDays;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class VacationController extends AbstractController
 {
     public function __construct(
         private VacationRepository $vacationRepository,
-        private Security $security
+        private Security $security,
+        private VacationTypesRepository $typesRepository,
+        private EmployeeVacationLimitRepository $employeeVacationLimitRepository,
+         private CounterVacationDays $counterVacationDays
     )
     {
     }
@@ -50,5 +59,20 @@ class VacationController extends AbstractController
         return new JsonResponse($result ?? []);
     }
 
+    #[Route('/api/vacations/type')]
+    #[IsGranted('ROLE_USER')]
+    public function getSpendDays(#[CurrentUser] User $user = null)
+    {
+        $vacationType = $this->typesRepository->findBy(["id"=>"Urlop Wypoczynkowy"])[0] ?? 0;
+        $vacationLimit = $this->employeeVacationLimitRepository->findBy(["Employee"=>$user->getEmployee(),"vacationType"=>$vacationType])[0]?? 0;
+        $spendDays = $vacationLimit instanceof VacationLimits ? $this->counterVacationDays->getVacationDaysSpend($user->getEmployee(),$vacationType) : 0;
+
+        $result = [
+            'type' =>   $vacationLimit->getVacationType()->getName(),
+            'spendDays'=> $spendDays ?? ""
+        ];
+
+        return new JsonResponse($result ?? []);
+    }
 
 }
