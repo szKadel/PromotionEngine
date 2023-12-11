@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-class ExtractController extends AbstractController
+class  ExtractController extends AbstractController
 {
 
     public function __construct(private VacationRepository $vacationRepository,
@@ -80,7 +80,7 @@ class ExtractController extends AbstractController
         $row = 2;
         foreach ($result as $vacation) {
             if($vacation instanceof Vacation){
-                $sheet->setCellValue('A' . $row, mb_strtoupper($this->formatString($vacation->getEmployee()->getSurname())."_".$this->formatString($vacation->getEmployee()->getName())));
+                $sheet->setCellValue('A' . $row, mb_strtoupper($vacation->getEmployee()->getSurname()."_".$vacation->getEmployee()->getName()));
                 $sheet->setCellValue('B' . $row, $vacation->getEmployee()->getSurname());
                 $sheet->setCellValue('C' . $row, $vacation->getEmployee()->getName());
                 $sheet->setCellValue('D' . $row, $vacation->getType()->getName());
