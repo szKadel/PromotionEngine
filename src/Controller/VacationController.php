@@ -23,8 +23,7 @@ class VacationController extends AbstractController
         private EmployeeRepository $employeeRepository,
         private VacationTypesRepository $typesRepository,
         private EmployeeVacationLimitRepository $employeeVacationLimitRepository,
-         private CounterVacationDays $counterVacationDays,
-        private IriConverterInterface $iriConverter
+         private CounterVacationDays $counterVacationDays
     )
     {
     }
@@ -71,7 +70,7 @@ class VacationController extends AbstractController
         $spendDays = $this->counterVacationDays->getVacationDaysSpend($employee,$vacationType);
 
         $result = [
-            'iri' => $this->iriConverter->getIriFromResource($vacationType),
+            'iri' => '/api/vacation_types/'.$vacationType->getId(),
             'type' =>   $vacationType->getName() ?? "Nie znaleziono tego typu urlopu u tego pracownika",
             'spendDays'=> $spendDays ?? ""
         ];
