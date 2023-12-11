@@ -22,7 +22,6 @@ class VacationController extends AbstractController
         private Security $security,
         private EmployeeRepository $employeeRepository,
         private VacationTypesRepository $typesRepository,
-        private EmployeeVacationLimitRepository $employeeVacationLimitRepository,
          private CounterVacationDays $counterVacationDays
     )
     {
