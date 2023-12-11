@@ -3,8 +3,6 @@
 namespace App\Controller;
 
 use ApiPlatform\Api\IriConverterInterface;
-use App\Entity\User;
-use App\Entity\Vacation\VacationLimits;
 use App\Repository\EmployeeRepository;
 use App\Repository\EmployeeVacationLimitRepository;
 use App\Repository\VacationRepository;
@@ -15,7 +13,6 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class VacationController extends AbstractController
