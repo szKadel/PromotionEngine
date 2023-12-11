@@ -73,7 +73,7 @@ class VacationController extends AbstractController
         $spendDays = $vacationLimit instanceof VacationLimits ? $this->counterVacationDays->getVacationDaysSpend($employee,$vacationType) : 0;
 
         $result = [
-            'type' =>   $vacationLimit->getVacationType()->getName(),
+            'type' =>   $vacationLimit?->getVacationType()?->getName() ?? "Nie znaleziono tego typu urlopu u tego pracownika",
             'spendDays'=> $spendDays ?? ""
         ];
 
