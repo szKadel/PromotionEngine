@@ -129,9 +129,9 @@ class Vacation
     #[Groups(['vacationRequest:read'])]
     private ?User $AnnulledBy = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: "datetime",nullable: true)]
     #[Groups(['vacationRequest:read'])]
-    private ?DateTimeInterface $rejectAt = null;
+    private mixed $rejectAt = null;
 
     #[ORM\ManyToOne]
     #[Groups(['vacationRequest:read'])]
