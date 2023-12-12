@@ -131,7 +131,7 @@ class Vacation
 
     #[ORM\Column(nullable: true)]
     #[Groups(['vacationRequest:read'])]
-    private mixed $rejectAt = null;
+    private ?DateTimeInterface $rejectAt = null;
 
     #[ORM\ManyToOne]
     #[Groups(['vacationRequest:read'])]
@@ -157,6 +157,10 @@ class Vacation
             $this->setAcceptedAt(new DateTime());
         }
 
+        if($this->status?->getName() == "Odrzucony")
+        {
+            $this->setRejectAt(new DateTime());
+        }
     }
 
     public function getId(): ?int
