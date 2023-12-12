@@ -129,6 +129,14 @@ class Vacation
     #[Groups(['vacationRequest:read'])]
     private ?User $AnnulledBy = null;
 
+    #[ORM\Column(nullable: true)]
+    #[Groups(['vacationRequest:read'])]
+    private mixed $rejectAt = null;
+
+    #[ORM\ManyToOne]
+    #[Groups(['vacationRequest:read'])]
+    private ?User $rejectBy = null;
+
 
     public function __construct()
     {
@@ -147,6 +155,11 @@ class Vacation
         if($this->status?->getName() == "Potwierdzony")
         {
             $this->setAcceptedAt(new DateTime());
+        }
+
+        if($this->status?->getName() == "Odrzucony")
+        {
+            $this->setRejectAt(new DateTime());
         }
     }
 
@@ -340,6 +353,30 @@ class Vacation
     public function setAnnulledBy(?User $AnnulledBy): static
     {
         $this->AnnulledBy = $AnnulledBy;
+
+        return $this;
+    }
+
+    public function getRejectAt(): ?DateTimeInterface
+    {
+        return $this->rejectAt;
+    }
+
+    public function setRejectAt(?DateTimeInterface $rejectAt): static
+    {
+        $this->rejectAt = $rejectAt;
+
+        return $this;
+    }
+
+    public function getRejectBy(): ?User
+    {
+        return $this->rejectBy;
+    }
+
+    public function setRejectBy(?User $rejectBy): static
+    {
+        $this->rejectBy = $rejectBy;
 
         return $this;
     }

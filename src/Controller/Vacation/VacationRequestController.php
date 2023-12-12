@@ -137,6 +137,4 @@ class VacationRequestController
     {
         return $this->limitsVacationController->getVacationLimit($this->vacation);
     }
-
-
 }

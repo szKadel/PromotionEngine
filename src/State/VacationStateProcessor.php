@@ -88,6 +88,9 @@ class VacationStateProcessor implements ProcessorInterface
                         if($this -> security -> isGranted('ROLE_KADR')){
                             throw new BadRequestException('Brak Uprawnień');
                         }
+
+                        $user = $this->security->getUser();
+                        $data->setRejectBy($this->userRepository->find($user->getId()));
                     }
 
                     if ($this->notificationRepository -> getNotificationsSettings() ?-> isNotificateUserOnVacationRequestAccept()) {
