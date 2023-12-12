@@ -362,7 +362,7 @@ class Vacation
         return $this->rejectAt;
     }
 
-    public function setRejectAt(?DateTimeInterface $rejectAt): static
+    public function setRejectAt($rejectAt): static
     {
         $this->rejectAt = $rejectAt;
 
