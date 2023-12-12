@@ -35,11 +35,15 @@ class VacationRepository extends ServiceEntityRepository
     {
         $statusAccepted = $this->vacationStatusRepository->findByName("Potwierdzony");
         $statusWaiting = $this->vacationStatusRepository->findByName("Oczekujący");
+        $statusPlaned = $this->vacationStatusRepository->findByName("Zaplanowany");
 
         $result = $this->createQueryBuilder('v')
             ->andWhere('v.employee = :employee')
+            ->andWhere('(v.status = :status or v.status = :status2 or v.status = :status3)')
             ->andWhere('(:dateFrom BETWEEN v.dateFrom AND v.dateTo OR :dateTo BETWEEN v.dateFrom AND v.dateTo OR v.dateFrom BETWEEN :dateFrom AND :dateFrom OR v.dateFrom BETWEEN :dateFrom AND :dateTo OR :dateFrom = v.dateTo OR v.dateTo = :dateFrom OR v.dateFrom = :dateTo)')
-
+            ->setParameter('status', $statusAccepted)
+            ->setParameter('status2', $statusWaiting)
+            ->setParameter('status3', $statusPlaned)
             ->setParameter('employee', $employee)
             ->setParameter('dateFrom', $startDate->format('Y-m-d'))
             ->setParameter('dateTo', $endDate->format('Y-m-d'))
