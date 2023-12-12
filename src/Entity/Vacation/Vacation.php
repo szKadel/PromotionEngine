@@ -157,10 +157,6 @@ class Vacation
             $this->setAcceptedAt(new DateTime());
         }
 
-        if($this->status?->getName() == "Odrzucony")
-        {
-            $this->setRejectAt(new DateTime());
-        }
     }
 
     public function getId(): ?int
@@ -362,11 +358,9 @@ class Vacation
         return $this->rejectAt;
     }
 
-    public function setRejectAt($rejectAt): static
+    public function setRejectAt($rejectAt): void
     {
         $this->rejectAt = $rejectAt;
-
-        return $this;
     }
 
     public function getRejectBy(): ?User
@@ -374,10 +368,8 @@ class Vacation
         return $this->rejectBy;
     }
 
-    public function setRejectBy(?User $rejectBy): static
+    public function setRejectBy(?User $rejectBy):void
     {
         $this->rejectBy = $rejectBy;
-
-        return $this;
     }
 }
