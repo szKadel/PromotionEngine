@@ -5,6 +5,7 @@ namespace App\Entity\Company;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 use App\Entity\EmployeeExtendedAccesses;
 use App\Repository\DepartmentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -16,6 +17,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     operations: [
         new get(normalizationContext: ['groups' => ['departmentOne:read']],security: "is_granted('ROLE_USER')"),
+        new Post(normalizationContext: ['groups' => ['departmentOne:create']],security: "is_granted('ROLE_ADMIN')"),
         new GetCollection(normalizationContext: ['groups' => ['department:read']],security: "is_granted('ROLE_USER')"),
     ],
     paginationClientItemsPerPage: true,
@@ -30,7 +32,7 @@ class Department
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['department:read','department:write','employee:read','departmentOne:read','vacationRequest:read'])]
+    #[Groups(['department:read','department:write','employee:read','departmentOne:read','vacationRequest:read','departmentOne:create'])]
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'department', targetEntity: Employee::class)]
