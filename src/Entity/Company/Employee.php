@@ -93,6 +93,7 @@ class Employee
 
     #[ORM\Column]
     #[Groups(['employee:read','employee:write','vacationLimit:read','user:read','user:write','user:read','vacationRequest:read'])]
+    #[ApiFilter(\ApiPlatform\Doctrine\Orm\Filter\SearchFilter::class,strategy: 'exact')]
     private ?bool $unActive = null;
 
     public function __construct()
