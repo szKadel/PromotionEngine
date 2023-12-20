@@ -6,8 +6,10 @@ use App\Controller\Notification\EmailNotificationController;
 use App\Entity\Vacation\Vacation;
 use App\Entity\Vacation\VacationLimits;
 use App\Repository\UserRepository;
+use App\Repository\Vacation\Settings\BankHolidayRepository;
 use App\Repository\VacationRepository;
 use App\Service\Vacation\CounterVacationDays;
+use App\Service\WorkingDaysCounterService;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
@@ -23,7 +25,8 @@ class VacationRequestController
         private CounterVacationDays $counterVacationDays,
         private EmailNotificationController $emailNotificationController,
         private Security $security,
-        private UserRepository $userRepository
+        private UserRepository $userRepository,
+        private BankHolidayRepository $bankHolidayRepository
     )
     {
     }
@@ -49,6 +52,7 @@ class VacationRequestController
         }
 
         $this -> setVacation($vacation);
+        $this->setSpendVacationDays();
         $this -> checkDateAvailability()->checkInputData();
         $this -> checkCompany();
         $this -> checkVacationStatus();
@@ -131,6 +135,11 @@ class VacationRequestController
         if ($limitDays < $spendDays + $this->vacation->getSpendVacationDays()) {
             throw new BadRequestException('Drogi Pracowniku! Wniosek nie może zostać utworzony z powodu przekroczenia limitu dostępnych dni wolnych.');
         }
+    }
+
+    public function setSpendVacationDays():void
+    {
+        $this->vacation->setSpendVacationDays(WorkingDaysCounterService::countWorkingDays($this->vacation->getDateFrom(),$this->vacation->getDateTo(),$this->bankHolidayRepository));
     }
 
     private function getVacationLimits():VacationLimits

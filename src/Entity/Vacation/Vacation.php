@@ -212,7 +212,7 @@ class Vacation
     public function setDateTo(DateTimeInterface $dateTo): static
     {
         $this->dateTo = $dateTo;
-        $this->setSpendVacationDays();
+        $this->setSpendVacationDays(0);
         return $this;
     }
 
@@ -221,10 +221,9 @@ class Vacation
         return $this->SpendVacationDays;
     }
 
-    public function setSpendVacationDays(): static
+    public function setSpendVacationDays(int $SpendVacationDays): static
     {
-        $this->SpendVacationDays = WorkingDaysCounterService::countWorkingDays($this->dateFrom,$this->dateTo);
-
+        $this->SpendVacationDays = $SpendVacationDays;
         return $this;
     }
 
