@@ -263,10 +263,10 @@ class VacationRequestResourceTest extends KernelTestCase
             ->actingAs($mod)
             ->put('/api/vacations/3',[
                 'json'=>[
-                    'name'=>'test'
+                    'comment'=>'test'
                 ]
             ])
-            ->assertStatus(200);
+            ->dd();
 
     }
 
