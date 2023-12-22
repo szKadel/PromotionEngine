@@ -34,16 +34,16 @@ class BankHoliday
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['vacationRequest:read'])]
+    #[Groups(['bankHoliday:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['vacationRequest:read','bankHoliday:write'])]
+    #[Groups(['bankHoliday:read','bankHoliday:write'])]
     #[Assert\NotBlank]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    #[Groups(['vacationRequest:read','bankHoliday:write'])]
+    #[Groups(['bankHoliday:read','bankHoliday:write'])]
     #[ApiFilter(DateFilter::class)]
     #[Assert\NotBlank]
     #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
