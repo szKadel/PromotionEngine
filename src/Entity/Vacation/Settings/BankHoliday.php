@@ -25,9 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new GetCollection(normalizationContext: ['groups' => ['bankHoliday:read']],security: "is_granted('ROLE_USER')"),
         new Post(denormalizationContext: ['groups' => ['bankHoliday:write']],security: "is_granted('ROLE_ADMIN')"),
         new Delete(denormalizationContext: ['groups' => ['bankHoliday:write']],security: "is_granted('ROLE_ADMIN')")
-    ],
-    paginationClientItemsPerPage: true,
-    paginationItemsPerPage: 7,
+    ]
 )]
 class BankHoliday
 {
