@@ -7,9 +7,10 @@ use App\Entity\Vacation\Vacation;
 use App\Entity\Vacation\VacationStatus;
 use App\Entity\Vacation\VacationTypes;
 use App\Repository\EmployeeVacationLimitRepository;
+use App\Repository\Vacation\Settings\BankHolidayRepository;
 use App\Repository\VacationRepository;
 use App\Repository\VacationTypesRepository;
-use Composer\XdebugHandler\Status;
+use App\Service\WorkingDaysCounterService;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class CounterVacationDays
@@ -19,17 +20,9 @@ class CounterVacationDays
 
     public function __construct(
         private VacationRepository $vacationRepository,
-        private VacationTypesRepository $typesRepository
-    )
-    {
-    }
-
-    public function getVacationDaysSpend(Employee $employee, VacationTypes $vacationType)
-    {
-        return $this->vacationRepository->findVacationUsedByUser(
-            $employee,
-            $vacationType
-        );
+        private VacationTypesRepository $typesRepository,
+        private BankHolidayRepository $bankHolidayRepository
+    ) {
     }
 
     public function countHolidaysForEmployee(Employee $employee): int
@@ -47,13 +40,18 @@ class CounterVacationDays
     public function countVacationSpendDays(Employee $employee, VacationTypes $vacationType) :int
     {
         $days = 0;
+
+
         if(!empty($result = $this->vacationRepository->findVacationUsedByUserArray($employee, $vacationType))) {
             foreach ($result as $element) {
-                $days += $element->getSpendVacationDays();
+                if($element instanceof Vacation) {
+                    $days +=  WorkingDaysCounterService::countWorkingDays($element->getDateFrom(),$element->getDateTo(),$this->bankHolidayRepository);
+                }
             }
         }
 
         return $days;
 
     }
+
 }

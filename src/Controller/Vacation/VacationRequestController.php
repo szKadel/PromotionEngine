@@ -47,15 +47,16 @@ class VacationRequestController
             throw new BadRequestException("Wniosek tego pracownika jest dezaktywowany.");
         }
 
-        if($vacation->getReplacement()?->getUnActive()){
-            throw new BadRequestException("Pracownik na zastępstwie jest dezaktywowany.");
-        }
-
         $this -> setVacation($vacation);
         $this->setSpendVacationDays();
         $this -> checkDateAvailability()->checkInputData();
         $this -> checkCompany();
         $this -> checkVacationStatus();
+
+        if($vacation->getSpendVacationDays() == 0){
+            throw new BadRequestException('Wniosek nie może być wystawiony na 0 dni.');
+        }
+
         $this -> checkVacationDaysLimit();
         $this -> checkReplacement();
         $this -> vacation -> setCreatedBy($this->userRepository->find($this->security->getUser()->getId()));
@@ -122,7 +123,7 @@ class VacationRequestController
 
         $limitDays = $this->getVacationLimits()->getDaysLimit() + ($this->getVacationLimits()->getUnusedDaysFromPreviousYear() ?? 0);
 
-        $spendDays = $this->counterVacationDays->getVacationDaysSpend($this->vacation->getEmployee(),$this->vacation->getType());
+        $spendDays = $this->counterVacationDays->countVacationSpendDays($this->vacation->getEmployee(),$this->vacation->getType());
 
         if($this->vacation->getSpendVacationDays() == 0){
             throw new BadRequestException('Wniosek nie może być wystawiony na 0 dni.');

@@ -6,7 +6,9 @@ use App\Entity\Vacation\Vacation;
 use App\Entity\Vacation\VacationLimits;
 use App\Factory\Company\EmployeeFactory;
 use App\Factory\VacationTypesFactory;
+use App\Repository\Vacation\Settings\BankHolidayRepository;
 use App\Repository\VacationRepository;
+use App\Service\WorkingDaysCounterService;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
@@ -37,7 +39,9 @@ final class VacationFactory extends ModelFactory
      *
      * @todo inject services if required
      */
-    public function __construct()
+    public function __construct(
+        private BankHolidayRepository $bankHolidayRepository
+    )
     {
         parent::__construct();
     }
@@ -55,10 +59,16 @@ final class VacationFactory extends ModelFactory
 
         VacationLimitsFactory::createOne(['daysLimit'=>225,'employee'=>$employee,'vacationType'=>$vacation_type]);
 
+        $dateFrom = self::faker()->dateTime()->setDate(2023,10,22);
+        $dateTo = self::faker()->dateTimeThisMonth('+20 days');
+
+        $spendVacationDays = WorkingDaysCounterService::countWorkingDays($dateFrom,$dateTo,$this->bankHolidayRepository);
+
         return [
-            'dateFrom' => self::faker()->dateTime()->setDate(2023,7,20),
-            'dateTo' => self::faker()->dateTimeThisMonth('+20 days'),
+            'dateFrom' => $dateFrom,
+            'dateTo' => $dateTo,
             'employee' => $employee,
+            'SpendVacationDays' => $spendVacationDays,
             'status' => VacationStatusFactory::findOrCreate(['name' => 'Oczekujący']),
             'type' => $vacation_type
         ];

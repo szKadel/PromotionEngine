@@ -258,16 +258,6 @@ class VacationRequestResourceTest extends KernelTestCase
             ])
             ->assertStatus(200);
 
-        // Wnioski jako mod
-        $this->browser()
-            ->actingAs($mod)
-            ->put('/api/vacations/3',[
-                'json'=>[
-                    'comment'=>'test'
-                ]
-            ])
-            ->dd();
-
     }
 
 }

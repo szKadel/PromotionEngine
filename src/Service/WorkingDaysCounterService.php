@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Repository\Vacation\Settings\BankHolidayRepository;
-use DateTime;
 
 class WorkingDaysCounterService
 {

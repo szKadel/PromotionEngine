@@ -212,7 +212,6 @@ class Vacation
     public function setDateTo(DateTimeInterface $dateTo): static
     {
         $this->dateTo = $dateTo;
-        $this->setSpendVacationDays(0);
         return $this;
     }
 
