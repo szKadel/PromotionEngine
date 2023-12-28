@@ -66,7 +66,7 @@ class VacationController extends AbstractController
         $employee = $this->employeeRepository->find($employeeId) ?? throw new BadRequestException("Nie znaleziono pracownika");
 
         $vacationType = $this->typesRepository->findBy(["name"=>"Urlop Wypoczynkowy"])[0] ?? 0;
-        $spendDays = $this->counterVacationDays->getVacationDaysSpend($employee,$vacationType);
+        $spendDays = $this->counterVacationDays->countVacationSpendDays($employee,$vacationType);
 
         $result = [
             'iri' => '/api/vacation_types/'.$vacationType->getId(),
