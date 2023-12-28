@@ -3,14 +3,12 @@
 namespace App\Service;
 
 use App\Repository\Vacation\Settings\BankHolidayRepository;
+use DateTimeImmutable;
 
 class WorkingDaysCounterService
 {
     public static function countWorkingDays(\DateTimeInterface $fromDate, \DateTimeInterface $toDate, BankHolidayRepository $bankHolidayRepository): int
     {
-
-        $holidays = $bankHolidayRepository->findAll();
-
         if ($fromDate > $toDate) {
             [$fromDate, $toDate] = [$toDate, $fromDate];
         }
@@ -20,7 +18,9 @@ class WorkingDaysCounterService
         $currentDate = clone $fromDate;
         while ($currentDate <= $toDate) {
             if (self::isWorkingDay($currentDate)) {
-                if(!in_array($currentDate->format('Y-m-d'), $holidays)){
+                $dateTimeImmutable = DateTimeImmutable::createFromFormat('Y-m-d', $currentDate->format('Y-m-d'));
+                $holiday = $bankHolidayRepository->findOneBy(['date' => $dateTimeImmutable]);
+                if($holiday == null) {
                     $workingDays++;
                 }
             }
