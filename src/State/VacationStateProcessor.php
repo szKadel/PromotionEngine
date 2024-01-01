@@ -17,6 +17,7 @@ use App\Repository\Vacation\Settings\BankHolidayRepository;
 use App\Repository\Vacation\VacationRepository;
 use App\Repository\Vacation\VacationStatusRepository;
 use App\Service\EmailService;
+use App\Service\Vacation\CounterVacationDays;
 use App\Service\Vacation\WorkingDaysCounterService;
 use DateTimeImmutable;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -30,13 +31,13 @@ class VacationStateProcessor implements ProcessorInterface
         private readonly VacationRequestController $vacationRequestController,
         private readonly ProcessorInterface $innerProcessor,
         private readonly Security $security,
-        private readonly VacationRepository $vacationRepository,
         private readonly EmployeeVacationLimitRepository $employeeVacationLimitRepository,
         private readonly EmailService $emailService,
         private readonly UserRepository $userRepository,
         private readonly NotificationRepository $notificationRepository,
         private readonly VacationStatusRepository $vacationStatusRepository,
-        private readonly BankHolidayRepository $bankHolidayRepository
+        private readonly BankHolidayRepository $bankHolidayRepository,
+        private readonly CounterVacationDays $counterVacationDays,
     )
     {
     }
@@ -164,10 +165,7 @@ class VacationStateProcessor implements ProcessorInterface
 
     private function checkVacationLimits(Vacation $vacation)
     {
-        $vacationUsedInDays = $this->vacationRepository->findVacationUsedByUser(
-            $vacation->getEmployee(),
-            $vacation->getType()
-        );
+        $vacationUsedInDays = $this->counterVacationDays->countVacationSpendDays($vacation->getEmployee(),$vacation->getType(),$vacation->getDateFrom()->format('Y'));
 
         $limit = $this->employeeVacationLimitRepository->findLimitByTypes(
             $vacation->getEmployee(),

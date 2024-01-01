@@ -31,7 +31,11 @@ class VacationRepository extends ServiceEntityRepository
         parent::__construct($registry, Vacation::class);
         $this->security = $security;
 
-        $rok = date("Y");
+        $this->setYear(date("Y"));
+    }
+
+    public function setYear(int|string $rok)
+    {
         $this->firstDayOfYear = date("$rok-01-01");
         $this->lastDayOfYear = date("$rok-12-31");
     }

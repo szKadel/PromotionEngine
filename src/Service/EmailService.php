@@ -2,7 +2,8 @@
 
 namespace App\Service;
 
-use App\Entity\Security\User;
+
+use App\Entity\User;
 use App\Entity\Vacation\Vacation;
 use App\Repository\Security\UserRepository;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;

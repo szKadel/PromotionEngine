@@ -21,15 +21,15 @@ class MainController extends AbstractController
         return new RedirectResponse('/view/');
     }
 
-    #[Route('/Vacations/YearSummation', methods: ['GET'])]
-    public function annualYearSummary(EmployeeRepository $employeeRepository, CounterVacationDays $counterVacationDays, EmployeeVacationLimitRepository $employeeVacationLimitRepository,VacationLimitPresist $vacationLimitPresist, VacationTypesRepository $typesRepository): JsonResponse
+    #[Route('/Vacations/YearSummation/{year}', methods: ['GET'])]
+    public function annualYearSummary(EmployeeRepository $employeeRepository, CounterVacationDays $counterVacationDays, EmployeeVacationLimitRepository $employeeVacationLimitRepository,VacationLimitPresist $vacationLimitPresist, VacationTypesRepository $typesRepository, int|string $year): JsonResponse
     {
         $employees = $employeeRepository -> findAll();
         $holidayType = $typesRepository->findBy(['name'=>'Urlop Wypoczynkowy'])[0];
 
         foreach ($employees as $employee)
         {
-            $spendVacationsDays = $counterVacationDays ->countHolidaysForEmployee($employee);
+            $spendVacationsDays = $counterVacationDays ->countHolidaysForEmployee($employee,$year);
             $limit = $employeeVacationLimitRepository->findBy(['Employee' => $employee,'vacationType'=>$holidayType])[0] ?? 0;
 
             if($limit instanceof VacationLimits){
