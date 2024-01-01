@@ -2,14 +2,12 @@
 
 namespace App\Tests\Functional\Api\Authentication;
 
-use ApiPlatform\JsonSchema\TypeFactory;
+
 use App\Factory\ApiTokenFactory;
 use App\Factory\Company\DepartmentFactory;
 use App\Factory\Company\EmployeeFactory;
 use App\Factory\Settings\NotificationFactory;
 use App\Factory\UserFactory;
-use App\Factory\VacationTypesFactory;
-use App\Repository\VacationTypesRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Browser\Test\HasBrowser;
 use Zenstruck\Foundry\Test\ResetDatabase;
@@ -21,8 +19,8 @@ class AuthenticationTest extends KernelTestCase
 
     public function testLogin()
     {
-        $department = DepartmentFactory::createMany(5);
-        $employee = EmployeeFactory::createOne();
+       DepartmentFactory::createMany(5);
+       EmployeeFactory::createOne();
         $user = UserFactory::createOne(['password'=>'pass']);
 
         $this->browser()
@@ -42,9 +40,9 @@ class AuthenticationTest extends KernelTestCase
 
     public function testRegistration()
     {
-        $department = DepartmentFactory::createMany(2);
-        $employee = EmployeeFactory::createOne();
-        $token = ApiTokenFactory::createOne();
+        DepartmentFactory::createMany(2);
+        EmployeeFactory::createOne();
+        ApiTokenFactory::createOne();
         NotificationFactory::createOne();
         $user = UserFactory::createOne(['password'=>'pass', 'roles'=>['ROLE_ADMIN'], 'employee' => null]);
 
@@ -84,10 +82,8 @@ class AuthenticationTest extends KernelTestCase
 
     public function testCheckUser()
     {
-        $employee = EmployeeFactory::createOne();
+        EmployeeFactory::createOne();
         $user = UserFactory::createOne(['password'=>'pass']);
-
-        //check user with employee
 
         $this->browser()
             ->actingAs($user)
@@ -95,7 +91,6 @@ class AuthenticationTest extends KernelTestCase
             ]
             )->assertStatus(200);
 
-        //check authentication
         $this->browser()
             ->get('/api/getCurrentUser/',[
                 ]

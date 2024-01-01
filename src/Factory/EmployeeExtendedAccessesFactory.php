@@ -5,7 +5,7 @@ namespace App\Factory;
 use App\Entity\EmployeeExtendedAccesses;
 use App\Factory\Company\DepartmentFactory;
 use App\Factory\Company\EmployeeFactory;
-use App\Repository\EmployeeExtendedAccessesRepository;
+use App\Repository\Company\EmployeeExtendedAccessesRepository;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;

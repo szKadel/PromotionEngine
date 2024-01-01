@@ -9,13 +9,13 @@ use Doctrine\ORM\EntityManagerInterface;
 class EmployeePresist
 {
     public function __construct(
-        private EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager
     )
     {
     }
 
 
-    public function add(Employee $employee)
+    public function add(Employee $employee): void
     {
         $this->entityManager->persist($employee);
         $this->entityManager->flush();

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Vacation;
 
 use App\Entity\Vacation\VacationStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;

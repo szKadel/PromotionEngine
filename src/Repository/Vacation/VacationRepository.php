@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Vacation;
 
 use App\Entity\Company;
 use App\Entity\Company\Employee;
 use App\Entity\Vacation\Vacation;
-use App\Entity\Vacation\VacationStatus;
 use App\Entity\Vacation\VacationTypes;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -23,11 +23,17 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 class VacationRepository extends ServiceEntityRepository
 {
     private Security $security;
+    private string $firstDayOfYear;
+    private string $lastDayOfYear;
 
     public function __construct(ManagerRegistry $registry,private VacationStatusRepository $vacationStatusRepository,Security $security)
     {
         parent::__construct($registry, Vacation::class);
         $this->security = $security;
+
+        $rok = date("Y");
+        $this->firstDayOfYear = date("$rok-01-01");
+        $this->lastDayOfYear = date("$rok-12-31");
     }
 
 
@@ -90,9 +96,12 @@ class VacationRepository extends ServiceEntityRepository
             ->andWhere('v.employee = :employee')
             ->andWhere('v.status = :status')
             ->andWhere('v.type = :types')
+            ->andWhere('(v.dateFrom >= :startYear AND v.dateTo <= :endYear)')
             ->setParameter('employee', $employee)
             ->setParameter('status', $statusAccepted)
             ->setParameter('types', $vacationTypes)
+            ->setParameter('startYear', $this->firstDayOfYear)
+            ->setParameter('endYear', $this->lastDayOfYear)
             ->getQuery()
             ->getResult();
         $days = 0;
@@ -109,14 +118,19 @@ class VacationRepository extends ServiceEntityRepository
     public function findVacationUsedByUserArray(Employee $employee, VacationTypes $vacationTypes):array | null
     {
         $statusAccepted = $this->vacationStatusRepository->findByName("Potwierdzony");
+        $statusAwaited= $this->vacationStatusRepository->findByName("Oczekujący");
 
         return  $this->createQueryBuilder('v')
             ->andWhere('v.employee = :employee')
-            ->andWhere('v.status = :status')
+            ->andWhere('(v.status = :statusAccept OR v.status = :statusWait)')
+            ->andWhere('(v.dateFrom >= :startYear AND v.dateTo <= :endYear)')
             ->andWhere('v.type = :types')
             ->setParameter('employee', $employee)
-            ->setParameter('status', $statusAccepted)
+            ->setParameter('statusAccept', $statusAccepted)
+            ->setParameter('statusWait', $statusAwaited)
             ->setParameter('types', $vacationTypes)
+            ->setParameter('startYear', $this->firstDayOfYear)
+            ->setParameter('endYear', $this->lastDayOfYear)
             ->getQuery()
             ->getResult();
     }

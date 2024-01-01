@@ -5,11 +5,11 @@ namespace App\Controller\Vacation;
 use App\Controller\Notification\EmailNotificationController;
 use App\Entity\Vacation\Vacation;
 use App\Entity\Vacation\VacationLimits;
-use App\Repository\UserRepository;
+use App\Repository\Security\UserRepository;
 use App\Repository\Vacation\Settings\BankHolidayRepository;
-use App\Repository\VacationRepository;
+use App\Repository\Vacation\VacationRepository;
 use App\Service\Vacation\CounterVacationDays;
-use App\Service\WorkingDaysCounterService;
+use App\Service\Vacation\WorkingDaysCounterService;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
@@ -19,14 +19,14 @@ class VacationRequestController
     private Vacation $vacation;
 
     public function __construct(
-        private VacationRepository $vacationRepository,
-        private LimitsVacationController $limitsVacationController,
-        private StatusVacationController $statusVacationController,
-        private CounterVacationDays $counterVacationDays,
-        private EmailNotificationController $emailNotificationController,
-        private Security $security,
-        private UserRepository $userRepository,
-        private BankHolidayRepository $bankHolidayRepository
+        private readonly VacationRepository $vacationRepository,
+        private readonly LimitsVacationController $limitsVacationController,
+        private readonly StatusVacationController $statusVacationController,
+        private readonly CounterVacationDays $counterVacationDays,
+        private readonly EmailNotificationController $emailNotificationController,
+        private readonly Security $security,
+        private readonly UserRepository $userRepository,
+        private readonly BankHolidayRepository $bankHolidayRepository
     )
     {
     }

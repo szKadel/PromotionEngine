@@ -3,13 +3,12 @@
 namespace App\Controller\Vacation;
 
 use App\Entity\Vacation\VacationStatus;
-use App\Repository\VacationStatusRepository;
-use ContainerRW4SEIY\getVacationStatusRepositoryService;
+use App\Repository\Vacation\VacationStatusRepository;
 
 class StatusVacationController
 {
     public function __construct(
-        private VacationStatusRepository $vacationStatusRepository
+        private readonly VacationStatusRepository $vacationStatusRepository
     )
     {
     }

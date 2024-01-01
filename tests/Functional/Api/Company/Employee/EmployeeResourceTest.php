@@ -6,6 +6,7 @@ use App\Factory\Company\DepartmentFactory;
 use App\Factory\Company\EmployeeFactory;
 use App\Factory\Settings\NotificationFactory;
 use App\Factory\UserFactory;
+use App\Kernel;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Browser\Test\HasBrowser;
 use Zenstruck\Foundry\Test\ResetDatabase;
@@ -17,7 +18,7 @@ class EmployeeResourceTest extends KernelTestCase
 
     protected static function getKernelClass(): string
     {
-        return \App\Kernel::class;
+        return Kernel::class;
     }
 
     public function testGetCollectionOfEmployees()

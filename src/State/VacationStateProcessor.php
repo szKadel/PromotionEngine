@@ -10,14 +10,15 @@ use App\Controller\Vacation\VacationRequestController;
 use App\Entity\User;
 use App\Entity\Vacation\Vacation;
 use App\Entity\Vacation\VacationLimits;
-use App\Repository\EmployeeVacationLimitRepository;
+use App\Repository\Security\UserRepository;
 use App\Repository\Settings\NotificationRepository;
-use App\Repository\UserRepository;
+use App\Repository\Vacation\EmployeeVacationLimitRepository;
 use App\Repository\Vacation\Settings\BankHolidayRepository;
-use App\Repository\VacationRepository;
-use App\Repository\VacationStatusRepository;
+use App\Repository\Vacation\VacationRepository;
+use App\Repository\Vacation\VacationStatusRepository;
 use App\Service\EmailService;
-use App\Service\WorkingDaysCounterService;
+use App\Service\Vacation\WorkingDaysCounterService;
+use DateTimeImmutable;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -26,16 +27,16 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 class VacationStateProcessor implements ProcessorInterface
 {
     public function __construct(
-        private VacationRequestController $vacationRequestController,
-        private ProcessorInterface $innerProcessor,
-        private Security $security,
-        private VacationRepository $vacationRepository,
-        private EmployeeVacationLimitRepository $employeeVacationLimitRepository,
-        private EmailService $emailService,
-        private UserRepository $userRepository,
-        private NotificationRepository $notificationRepository,
-        private VacationStatusRepository $vacationStatusRepository,
-        private BankHolidayRepository $bankHolidayRepository
+        private readonly VacationRequestController $vacationRequestController,
+        private readonly ProcessorInterface $innerProcessor,
+        private readonly Security $security,
+        private readonly VacationRepository $vacationRepository,
+        private readonly EmployeeVacationLimitRepository $employeeVacationLimitRepository,
+        private readonly EmailService $emailService,
+        private readonly UserRepository $userRepository,
+        private readonly NotificationRepository $notificationRepository,
+        private readonly VacationStatusRepository $vacationStatusRepository,
+        private readonly BankHolidayRepository $bankHolidayRepository
     )
     {
     }
@@ -63,7 +64,6 @@ class VacationStateProcessor implements ProcessorInterface
 
                 if ($data->getType()->getId() != 1 || $data->getType()->getId() != 11) {
                     $this->checkVacationLimits($data);
-
                 }
 
                 if($data->getStatus() != $context["previous_data"]->getStatus())
@@ -76,7 +76,7 @@ class VacationStateProcessor implements ProcessorInterface
                             throw new BadRequestException('Drogi Moderatorze! Nie możesz zaakceptować wniosku "Inne" wybierz rodzaj wniosku zawarty w komentarzu Pracownika');
                         }
 
-                        $data->setAcceptedAt(new \DateTimeImmutable());
+                        $data->setAcceptedAt(new DateTimeImmutable());
 
                         $user = $this->security->getUser();
 
@@ -111,7 +111,7 @@ class VacationStateProcessor implements ProcessorInterface
                     if($this->security->getUser()->getId() == $data->getEmployee()->getUser()->getId() ??"" && $date <= $data->getDateFrom()) {
                         $user = $this->security->getUser();
 
-                        $data->setAnnulledAt(new \DateTimeImmutable());
+                        $data->setAnnulledAt(new DateTimeImmutable());
 
                         $data->setAnnulledBy($this->userRepository->find($user->getId()));
                     }
@@ -119,7 +119,7 @@ class VacationStateProcessor implements ProcessorInterface
                     if($this->security->isGranted("ROLE_ADMIN")&& $date <= $data->getDateTo()) {
                         $user = $this->security->getUser();
 
-                        $data->setAnnulledAt(new \DateTimeImmutable());
+                        $data->setAnnulledAt(new DateTimeImmutable());
 
                         if ($user instanceof User) {
                             $data->setAnnulledBy($user);

@@ -10,8 +10,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Entity\Company\Department;
 use App\Entity\Company\Employee;
-use App\Repository\EmployeeExtendedAccessesRepository;
-use App\Repository\UserRepository;
+use App\Repository\Company\EmployeeExtendedAccessesRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 

@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Connector;
 
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class BitrixService
 {
-    private $httpClient;
-    private $bitrixWebhookUrl;
+    private HttpClientInterface $httpClient;
+    private string $bitrixWebhookUrl;
 
     public function __construct(HttpClientInterface $httpClient)
     {

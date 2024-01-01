@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Vacation;
 
 use App\Entity\Company\Employee;
 use App\Entity\Vacation\VacationLimits;

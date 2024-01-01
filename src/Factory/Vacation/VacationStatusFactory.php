@@ -3,7 +3,7 @@
 namespace App\Factory\Vacation;
 
 use App\Entity\Vacation\VacationStatus;
-use App\Repository\VacationStatusRepository;
+use App\Repository\Vacation\VacationStatusRepository;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;

@@ -2,33 +2,52 @@
 
 namespace App\Service;
 
-use App\Entity\Company\Employee;
+use App\Entity\Security\User;
 use App\Entity\Vacation\Vacation;
-use App\Repository\UserRepository;
+use App\Repository\Security\UserRepository;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class EmailService
 {
 
     public function __construct(
-        private MailerInterface $mailer,
-        private UserRepository $userRepository,
-        private Environment $twig)
+        private readonly MailerInterface $mailer,
+        private readonly UserRepository $userRepository,
+        private readonly Environment $twig)
     {
 
     }
 
     /**
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \Twig\Error\LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws LoaderError
      */
     public function sendEmail(string $subject, string $to, string $templateName, Vacation $vacationRequest): void
     {
         $body = $this->twig->render("email/notification/".$templateName, ['vacation'=>$vacationRequest]);
+
+        $email = (new Email())
+            ->from('beuphr@beupsoft.pl')
+            ->to($to)
+            ->subject($subject)
+            ->html($body);
+        try {
+            $this->mailer->send($email);
+        } catch (TransportExceptionInterface $e) {
+
+        }
+    }
+
+    public function sendResetPassword(string $subject, string $to, string $templateName, User $user, string $password): void
+    {
+        $body = $this->twig->render("email/changePassword/".$templateName, ['user'=>$user, 'password'=>$password]);
 
         $email = (new Email())
             ->from('beuphr@beupsoft.pl')

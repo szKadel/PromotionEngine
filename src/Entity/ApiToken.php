@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Repository\ApiTokenRepository;
+use App\Repository\Security\ApiTokenRepository;
 use DateInterval;
 use Doctrine\ORM\Mapping as ORM;
 

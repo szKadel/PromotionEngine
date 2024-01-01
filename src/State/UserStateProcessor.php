@@ -4,15 +4,8 @@ namespace App\State;
 
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Operation;
-use ApiPlatform\Metadata\Post;
 use ApiPlatform\State\ProcessorInterface;
-use App\Controller\Vacation\VacationRequestController;
 use App\Entity\User;
-use App\Repository\EmployeeVacationLimitRepository;
-use App\Repository\Settings\NotificationRepository;
-use App\Repository\UserRepository;
-use App\Repository\VacationRepository;
-use App\Service\EmailService;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -22,8 +15,8 @@ class UserStateProcessor implements ProcessorInterface
 {
 
     public function __construct(
-        private ProcessorInterface $innerProcessor,
-        private Security $security
+        private readonly ProcessorInterface $innerProcessor,
+        private readonly Security $security
     )
     {
 

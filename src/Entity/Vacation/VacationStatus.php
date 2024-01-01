@@ -5,7 +5,7 @@ namespace App\Entity\Vacation;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
-use App\Repository\VacationStatusRepository;
+use App\Repository\Vacation\VacationStatusRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 

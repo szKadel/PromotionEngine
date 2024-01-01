@@ -2,21 +2,19 @@
 
 namespace App\Controller\Presist;
 
-use App\Entity\Company\Employee;
 use App\Entity\Vacation\VacationLimits;
-use App\Repository\EmployeeVacationLimitRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class VacationLimitPresist
 {
     public function __construct(
-        private EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager
     )
     {
     }
 
 
-    public function remove(VacationLimits $employee)
+    public function remove(VacationLimits $employee): void
     {
         $this->entityManager->persist($employee);
         $this->entityManager->flush();

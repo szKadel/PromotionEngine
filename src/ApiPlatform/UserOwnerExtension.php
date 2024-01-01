@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusExce
 final class UserOwnerExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
 
-    public function __construct(private readonly Security $security, private IriConverterInterface $iriConverter)
+    public function __construct(private readonly Security $security, private readonly IriConverterInterface $iriConverter)
     {
     }
 

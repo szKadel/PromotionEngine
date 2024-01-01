@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Vacation;
 
-use App\Entity\Company\Employee;
 use App\Entity\Vacation\VacationTypes;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<\App\Entity\Vacation\VacationTypes>
+ * @extends ServiceEntityRepository<VacationTypes>
  *
  * @method VacationTypes|null find($id, $lockMode = null, $lockVersion = null)
  * @method VacationTypes|null findOneBy(array $criteria, array $orderBy = null)

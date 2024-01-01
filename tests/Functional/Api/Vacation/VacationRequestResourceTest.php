@@ -4,7 +4,6 @@ namespace App\Tests\Functional\Api\Vacation;
 
 use App\Factory\Company\DepartmentFactory;
 use App\Factory\Company\EmployeeFactory;
-use App\Factory\CompanyFactory;
 use App\Factory\Settings\NotificationFactory;
 use App\Factory\UserFactory;
 use App\Factory\Vacation\VacationFactory;
@@ -69,13 +68,9 @@ class VacationRequestResourceTest extends KernelTestCase
         VacationStatusFactory::createOne(['name'=>'Zaplanowany']);
 
         $department = DepartmentFactory::createOne();
-        $department2 = DepartmentFactory::createOne();
 
         $employee = EmployeeFactory::createOne(['department'=>$department]);
-        $employee3 = EmployeeFactory::createOne(['department'=>$department2]);
         $employeeMod = EmployeeFactory::createOne(['department'=>$department]);
-
-        $mod = UserFactory::createOne(['employee' => $employeeMod, 'roles'=>['ROLE_MOD']]);
 
         $user = UserFactory::createOne(['employee' => $employee, 'roles'=>['ROLE_USER']]);
 
@@ -96,7 +91,8 @@ class VacationRequestResourceTest extends KernelTestCase
                     'dateTo'=>'2023-09-21'
                 ]
             ])
-            ->dump();
+            ->assertStatus(201);
+
         NotificationFactory::createOne();
         $this->browser()
             ->actingAs($user)
@@ -128,7 +124,7 @@ class VacationRequestResourceTest extends KernelTestCase
     {
         VacationStatusFactory::createOne(['name'=>'Oczekujący']);
         VacationStatusFactory::createOne(['name'=>'Zaplanowany']);
-        $vacationStatus = VacationStatusFactory::createOne(['name'=>'Zaakceptowany']);
+        VacationStatusFactory::createOne(['name'=>'Zaakceptowany']);
 
         $department = DepartmentFactory::createOne();
         $department2 = DepartmentFactory::createOne();
@@ -137,13 +133,13 @@ class VacationRequestResourceTest extends KernelTestCase
         EmployeeFactory::createOne(['department'=>$department2]);
         $employeeMod = EmployeeFactory::createOne(['department'=>$department]);
 
-        $mod = UserFactory::createOne(['employee' => $employeeMod, 'roles'=>['ROLE_MOD']]);
+        UserFactory::createOne(['employee' => $employeeMod, 'roles'=>['ROLE_MOD']]);
 
         $user = UserFactory::createOne(['employee' => $employee, 'roles'=>['ROLE_USER']]);
 
         VacationTypesFactory::createOne();
         $vacationType = VacationTypesFactory::createOne(['name'=>'Inny']);
-        $vacationType2 = VacationTypesFactory::createOne(['name'=>'Urlop']);
+        VacationTypesFactory::createOne(['name'=>'Urlop']);
 
         VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>500]);
         VacationLimitsFactory::createOne(["employee"=>$employeeMod,'vacationType'=>$vacationType, 'daysLimit'=>20]);
@@ -166,7 +162,7 @@ class VacationRequestResourceTest extends KernelTestCase
     {
         VacationStatusFactory::createOne(['name'=>'Oczekujący']);
         VacationStatusFactory::createOne(['name'=>'Zaplanowany']);
-        $vacationStatus = VacationStatusFactory::createOne(['name'=>'Zaakceptowany']);
+        VacationStatusFactory::createOne(['name'=>'Zaakceptowany']);
 
         $department = DepartmentFactory::createOne();
         $department2 = DepartmentFactory::createOne();
@@ -176,14 +172,14 @@ class VacationRequestResourceTest extends KernelTestCase
         EmployeeFactory::createOne(['department'=>$department2]);
         $employeeMod = EmployeeFactory::createOne(['department'=>$department]);
 
-        $mod = UserFactory::createOne(['employee' => $employeeMod, 'roles'=>['ROLE_MOD']]);
+        UserFactory::createOne(['employee' => $employeeMod, 'roles'=>['ROLE_MOD']]);
 
         $user = UserFactory::createOne(['employee' => $employee, 'roles'=>['ROLE_USER']]);
         $user2 = UserFactory::createOne(['employee' => $employee2, 'roles'=>['ROLE_USER']]);
 
         VacationTypesFactory::createOne();
         $vacationType = VacationTypesFactory::createOne(['name'=>'Inny']);
-        $vacationType2 = VacationTypesFactory::createOne(['name'=>'Urlop']);
+        VacationTypesFactory::createOne(['name'=>'Urlop']);
 
         VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>500]);
         VacationLimitsFactory::createOne(["employee"=>$employeeMod,'vacationType'=>$vacationType, 'daysLimit'=>20]);
@@ -220,7 +216,7 @@ class VacationRequestResourceTest extends KernelTestCase
     {
         VacationStatusFactory::createOne(['name'=>'Oczekujący']);
         VacationStatusFactory::createOne(['name'=>'Zaplanowany']);
-        $vacationStatus = VacationStatusFactory::createOne(['name'=>'Zaakceptowany']);
+        VacationStatusFactory::createOne(['name'=>'Zaakceptowany']);
 
         $department = DepartmentFactory::createOne();
         $department2 = DepartmentFactory::createOne();
@@ -231,14 +227,14 @@ class VacationRequestResourceTest extends KernelTestCase
 
         $employeeMod = EmployeeFactory::createOne(['department'=>$department, 'employeeExtendedAccesses'=>[]]);
 
-        $mod = UserFactory::createOne(['employee' => $employeeMod, 'roles'=>['ROLE_MOD']]);
+        UserFactory::createOne(['employee' => $employeeMod, 'roles'=>['ROLE_MOD']]);
 
         $user = UserFactory::createOne(['employee' => $employee, 'roles'=>['ROLE_ADMIN']]);
-        $user2 = UserFactory::createOne(['employee' => $employee2, 'roles'=>['ROLE_USER']]);
+        UserFactory::createOne(['employee' => $employee2, 'roles'=>['ROLE_USER']]);
 
         VacationTypesFactory::createOne();
         $vacationType = VacationTypesFactory::createOne(['name'=>'Inny']);
-        $vacationType2 = VacationTypesFactory::createOne(['name'=>'Urlop']);
+        VacationTypesFactory::createOne(['name'=>'Urlop']);
 
         VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>500]);
         VacationLimitsFactory::createOne(["employee"=>$employeeMod,'vacationType'=>$vacationType, 'daysLimit'=>20]);
@@ -257,6 +253,55 @@ class VacationRequestResourceTest extends KernelTestCase
                 ]
             ])
             ->assertStatus(200);
+
+    }
+
+    public function testVacationsYearCounter()
+    {
+        VacationStatusFactory::createOne(['name'=>'Oczekujący']);
+        VacationStatusFactory::createOne(['name'=>'Zaplanowany']);
+        VacationStatusFactory::createOne(['name'=>'Zaakceptowany']);
+
+        $department = DepartmentFactory::createOne();
+        $department2 = DepartmentFactory::createOne();
+
+        $employee = EmployeeFactory::createOne(['department'=>$department]);
+        $employee2 = EmployeeFactory::createOne(['department'=>$department]);
+        EmployeeFactory::createOne(['department'=>$department2]);
+        $employeeMod = EmployeeFactory::createOne(['department'=>$department]);
+
+        UserFactory::createOne(['employee' => $employeeMod, 'roles'=>['ROLE_MOD']]);
+
+        $user = UserFactory::createOne(['employee' => $employee, 'roles'=>['ROLE_USER']]);
+        $user2 = UserFactory::createOne(['employee' => $employee2, 'roles'=>['ROLE_USER']]);
+
+        VacationTypesFactory::createOne();
+        $vacationType = VacationTypesFactory::createOne(['name'=>'Urlop Wypoczynkowy']);
+        VacationTypesFactory::createOne(['name'=>'Urlop']);
+
+        VacationLimitsFactory::createOne(["employee"=>$employee,'vacationType'=>$vacationType, 'daysLimit'=>26]);
+        NotificationFactory::createOne();
+
+        $this->browser()
+            ->actingAs($user)
+            ->post('/api/vacations',[
+                'json'=>[
+                    'employee'=>'api/employees/'.$employee->getId(),
+                    'type'=> 'api/vacation_types/'.$vacationType->getId(),
+                    'dateFrom'=> '2024-09-15',
+                    'dateTo'=>'2024-09-30'
+                ]
+            ])
+            ->assertStatus(201);
+
+
+        $response = $this->browser()
+            ->actingAs($user)
+            ->get('/api/getCurrentUser/',[]);
+
+        $jsonResponse = $response->json()->decoded();
+
+        $this->assertEquals(11, $jsonResponse['employee']['spendVacationsDays']);
 
     }
 

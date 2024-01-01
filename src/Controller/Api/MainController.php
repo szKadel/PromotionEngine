@@ -1,19 +1,17 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Api;
 
 use App\Controller\Presist\VacationLimitPresist;
 use App\Entity\Vacation\VacationLimits;
-use App\Repository\EmployeeRepository;
-use App\Repository\EmployeeVacationLimitRepository;
-use App\Repository\VacationTypesRepository;
+use App\Repository\Company\EmployeeRepository;
+use App\Repository\Vacation\EmployeeVacationLimitRepository;
+use App\Repository\Vacation\VacationTypesRepository;
 use App\Service\Vacation\CounterVacationDays;
-use Doctrine\DBAL\Schema\View;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Twig\Environment;
+use Symfony\Component\Routing\Annotation\Route;
 
 class MainController extends AbstractController
 {
@@ -24,7 +22,7 @@ class MainController extends AbstractController
     }
 
     #[Route('/Vacations/YearSummation', methods: ['GET'])]
-    public function annualYearSummary(EmployeeRepository $employeeRepository, CounterVacationDays $counterVacationDays, EmployeeVacationLimitRepository $employeeVacationLimitRepository,VacationLimitPresist $vacationLimitPresist, VacationTypesRepository $typesRepository)
+    public function annualYearSummary(EmployeeRepository $employeeRepository, CounterVacationDays $counterVacationDays, EmployeeVacationLimitRepository $employeeVacationLimitRepository,VacationLimitPresist $vacationLimitPresist, VacationTypesRepository $typesRepository): JsonResponse
     {
         $employees = $employeeRepository -> findAll();
         $holidayType = $typesRepository->findBy(['name'=>'Urlop Wypoczynkowy'])[0];

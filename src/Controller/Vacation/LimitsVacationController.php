@@ -3,13 +3,13 @@
 namespace App\Controller\Vacation;
 
 use App\Entity\Vacation\VacationLimits;
-use App\Repository\EmployeeVacationLimitRepository;
+use App\Repository\Vacation\EmployeeVacationLimitRepository;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class LimitsVacationController
 {
     public function __construct(
-        private EmployeeVacationLimitRepository $employeeVacationLimitRepository
+        private readonly EmployeeVacationLimitRepository $employeeVacationLimitRepository
     )
     {
     }

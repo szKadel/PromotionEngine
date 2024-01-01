@@ -3,11 +3,9 @@
 namespace App\Factory\Vacation;
 
 use App\Entity\Vacation\VacationLimits;
-use App\Entity\Vacation\VacationStatus;
 use App\Factory\Company\EmployeeFactory;
 use App\Factory\VacationTypesFactory;
-use App\Repository\EmployeeVacationLimitRepository;
-use App\Repository\VacationStatusRepository;
+use App\Repository\Vacation\EmployeeVacationLimitRepository;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;

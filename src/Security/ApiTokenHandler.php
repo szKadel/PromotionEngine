@@ -2,8 +2,7 @@
 
 namespace App\Security;
 
-use App\Repository\ApiTokenRepository;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use App\Repository\Security\ApiTokenRepository;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusException;
 use Symfony\Component\Security\Http\AccessToken\AccessTokenHandlerInterface;
@@ -12,7 +11,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 class ApiTokenHandler implements AccessTokenHandlerInterface
 {
 
-    public function __construct(private ApiTokenRepository $apiTokenRepository)
+    public function __construct(private readonly ApiTokenRepository $apiTokenRepository)
     {
 
     }

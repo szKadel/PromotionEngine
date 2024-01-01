@@ -2,12 +2,9 @@
 
 namespace App\Factory;
 use App\Entity\User;
-use App\Factory\Company\EmployeeFactory;
-use App\Repository\UserRepository;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Zenstruck\Foundry\ModelFactory;
-use Zenstruck\Foundry\Proxy;
-use Zenstruck\Foundry\RepositoryProxy;
+
 /**
  * @extends ModelFactory<User>
  */
@@ -28,7 +25,7 @@ final class UserFactory extends ModelFactory
      * @todo inject services if required
      */
     public function __construct(
-        private UserPasswordHasherInterface $passwordHasher
+        private readonly UserPasswordHasherInterface $passwordHasher
     )
     {
         parent::__construct();

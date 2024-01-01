@@ -3,7 +3,7 @@
 namespace App\Factory\Company;
 
 use App\Entity\Company\Department;
-use App\Repository\DepartmentRepository;
+use App\Repository\Company\DepartmentRepository;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;

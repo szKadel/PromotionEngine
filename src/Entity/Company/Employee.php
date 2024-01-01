@@ -2,7 +2,6 @@
 
 namespace App\Entity\Company;
 
-use ApiPlatform\Doctrine\Odm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
@@ -12,9 +11,9 @@ use ApiPlatform\Metadata\Put;
 use App\Entity\Company;
 use App\Entity\EmployeeExtendedAccesses;
 use App\Entity\User;
-use App\Entity\Vacation\VacationLimits;
 use App\Entity\Vacation\Vacation;
-use App\Repository\EmployeeRepository;
+use App\Entity\Vacation\VacationLimits;
+use App\Repository\Company\EmployeeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;

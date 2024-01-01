@@ -3,7 +3,6 @@
 namespace App\DataFixtures;
 
 use App\Factory\ApiTokenFactory;
-use App\Factory\DepartmentFactory;
 use App\Factory\UserFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;

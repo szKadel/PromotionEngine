@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Vacation;
 
 use App\Repository\Vacation\Settings\BankHolidayRepository;
 use DateTimeImmutable;
+use DateTimeInterface;
 
 class WorkingDaysCounterService
 {
-    public static function countWorkingDays(\DateTimeInterface $fromDate, \DateTimeInterface $toDate, BankHolidayRepository $bankHolidayRepository): int
+    public static function countWorkingDays(DateTimeInterface $fromDate, DateTimeInterface $toDate, BankHolidayRepository $bankHolidayRepository): int
     {
         if ($fromDate > $toDate) {
             [$fromDate, $toDate] = [$toDate, $fromDate];
@@ -30,7 +31,7 @@ class WorkingDaysCounterService
         return $workingDays;
     }
 
-    private static function isWorkingDay(\DateTimeInterface $date): bool
+    private static function isWorkingDay(DateTimeInterface $date): bool
     {
         return $date->format('N') < 6;
     }

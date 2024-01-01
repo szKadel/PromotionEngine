@@ -12,13 +12,13 @@ class EmailNotificationController
     private Notification | null $notification;
 
     public function __construct(
-        private NotificationRepository $notificationRepository,
-        private EmailService $emailService
+        private readonly NotificationRepository $notificationRepository,
+        private readonly EmailService $emailService
     )
     {
     }
 
-    private function setNotificationsSettings()
+    private function setNotificationsSettings(): void
     {
         $this->notification = $this->notificationRepository->getNotificationsSettings();
     }
@@ -40,10 +40,5 @@ class EmailNotificationController
         {
             $this->emailService->sendNotificationToModofDepartment($vacation);
         }
-    }
-
-    public function OnVacationUpdate():void
-    {
-
     }
 }

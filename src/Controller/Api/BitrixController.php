@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Api;
 
 use App\Controller\Presist\DepartmentPresist;
 use App\Controller\Presist\EmployeePresist;
 use App\Entity\Company\Department;
 use App\Entity\Company\Employee;
-use App\Repository\DepartmentRepository;
-use App\Repository\EmployeeRepository;
-use App\Service\BitrixService;
+use App\Repository\Company\DepartmentRepository;
+use App\Repository\Company\EmployeeRepository;
+use App\Service\Connector\BitrixService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-// TODO Make BitrixLib as an bundle
 class BitrixController extends AbstractController
 {
     #[Route('/bitrix/migration/users')]
@@ -99,10 +98,5 @@ class BitrixController extends AbstractController
         }
 
         return new JsonResponse($final_result);
-    }
-
-    public function migrate()
-    {
-
     }
 }

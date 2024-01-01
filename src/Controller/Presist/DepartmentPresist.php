@@ -8,13 +8,13 @@ use Doctrine\ORM\EntityManagerInterface;
 class DepartmentPresist
 {
     public function __construct(
-        private EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager
     )
     {
     }
 
 
-    public function add(Department $department)
+    public function add(Department $department): void
     {
         $this->entityManager->persist($department);
         $this->entityManager->flush();

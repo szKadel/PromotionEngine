@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Api;
 
 use ApiPlatform\Api\IriConverterInterface;
 use App\Controller\Authorisation\ApiTokenController;
 use App\Entity\ApiToken;
 use App\Entity\User;
 use App\Entity\Vacation\VacationLimits;
-use App\Repository\EmployeeVacationLimitRepository;
-use App\Repository\UserRepository;
-use App\Repository\VacationTypesRepository;
+use App\Repository\Security\UserRepository;
+use App\Repository\Vacation\EmployeeVacationLimitRepository;
+use App\Repository\Vacation\VacationTypesRepository;
 use App\Service\EmailService;
 use App\Service\Security\RandomPasswordGenerator;
 use App\Service\Vacation\CounterVacationDays;
@@ -26,14 +26,14 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class SecurityController extends AbstractController
 {
-    public function __construct(private EntityManagerInterface $entityManager, private CounterVacationDays $counterVacationDays)
+    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly CounterVacationDays $counterVacationDays)
     {
 
     }
 
 
     #[Route('/login', name: 'app_login', methods: ['POST'])]
-    public function login(IriConverterInterface $iriConverter,#[CurrentUser] User $user = null, ApiTokenController $apiTokenController) :Response
+    public function login(ApiTokenController $apiTokenController, #[CurrentUser] User $user = null) :Response
     {
         if($user === null ){
             throw new UnauthorizedHttpException("");
@@ -77,7 +77,7 @@ class SecurityController extends AbstractController
     #[Route('/api/getCurrentUser/', name: 'app_check_user', methods: ['GET'])]
     public function getCurrentUser(IriConverterInterface $iriConverter, VacationTypesRepository $typesRepository, EmployeeVacationLimitRepository $employeeVacationLimitRepository, #[CurrentUser] User $user):Response
     {
-        if(empty($user->getId()) || $user === null)
+        if(empty($user->getId()))
         {
             return new JsonResponse([
                 'error' => 'User dont found'
@@ -94,7 +94,7 @@ class SecurityController extends AbstractController
 
             $employee = [
                     '@id' => $iriConverter->getIriFromResource($user->getEmployee()) ?? "",
-                    'id' => $user->getEmployee()?->getId(),
+                    'id' => $user->getEmployee()->getId() ?? "",
                     'name' => $user->getEmployee()->getName()??"",
                     'surname' => $user->getEmployee()->getSurname() ?? "",
                     'department' => [
@@ -131,7 +131,7 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/api/user/changePassword', methods: ['POST'])]
-    public function updatePassword(#[CurrentUser] User $user, UserPasswordHasherInterface $userPasswordHasher, Request $request)
+    public function updatePassword(#[CurrentUser] User $user, UserPasswordHasherInterface $userPasswordHasher, Request $request):JsonResponse
     {
         $requestData = json_decode($request->getContent(), true);
 
@@ -165,7 +165,7 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/api/user/resetPassword', methods: ['POST'])]
-    public function resetPassword(UserRepository $userRepository,UserPasswordHasherInterface $userPasswordHasher, Request $request, EmailService $emailService)
+    public function resetPassword(UserRepository $userRepository,UserPasswordHasherInterface $userPasswordHasher, Request $request, EmailService $emailService): JsonResponse
     {
         $requestData = json_decode($request->getContent(), true);
 

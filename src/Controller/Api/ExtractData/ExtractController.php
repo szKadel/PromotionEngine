@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Controller\ExtractData;
+namespace App\Controller\Api\ExtractData;
 
 use App\Entity\Vacation\Vacation;
-use App\Repository\CompanyRepository;
-use App\Repository\VacationRepository;
+use App\Repository\Company\CompanyRepository;
+use App\Repository\Vacation\VacationRepository;
 use App\Security\ApiTokenHandler;
 use DateTime;
-
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,35 +15,28 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 
 class  ExtractController extends AbstractController
 {
 
-    public function __construct(private VacationRepository $vacationRepository,
-        private CompanyRepository$companyRepository,
-        private ApiTokenHandler $apiTokenHandler
+    public function __construct(private readonly VacationRepository $vacationRepository,
+        private readonly CompanyRepository$companyRepository,
+        private readonly ApiTokenHandler $apiTokenHandler
     )
     {
     }
 
     #[Route('/vacations/extract/{company}')]
-    public function generateExcel(Request $request,int $company)
+    public function generateExcel(Request $request,int $company): Response
     {
         if($request->query->has("auth"))
         {
-            $user = $this->apiTokenHandler->getUserBadgeFrom($request->query->get("auth"));
+            $this->apiTokenHandler->getUserBadgeFrom($request->query->get("auth"));
 
         }else{
             throw new AuthenticationException("Authorisation Error");
         }
-
-        if( $request->query->has('dateFrom')){
-            $dateFrom = DateTime::createFromFormat("Y-m-d", $request->query->get('dateFrom'));
-        }else{
-            throw new BadRequestException("DateFrom is required");
-        }
-
 
         if( $request->query->has('dateFrom')){
             $dateFrom = DateTime::createFromFormat("Y-m-d", $request->query->get('dateFrom'));
@@ -106,7 +98,7 @@ class  ExtractController extends AbstractController
         return $response;
     }
 
-    public function formatString(string $alias)
+    public function formatString(string $alias): string
     {
         $replace = array(
             'ą' => 'a', 'ć' => 'c', 'ę' => 'e',

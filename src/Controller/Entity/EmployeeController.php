@@ -7,12 +7,12 @@ use App\Entity\Company\Department;
 use App\Entity\Company\Employee;
 use App\Entity\User;
 use App\Entity\Vacation\Vacation;
-use App\Repository\ApiTokenRepository;
-use App\Repository\EmployeeExtendedAccessesRepository;
-use App\Repository\EmployeeRepository;
-use App\Repository\EmployeeVacationLimitRepository;
-use App\Repository\UserRepository;
-use App\Repository\VacationRepository;
+use App\Repository\Company\EmployeeExtendedAccessesRepository;
+use App\Repository\Company\EmployeeRepository;
+use App\Repository\Security\ApiTokenRepository;
+use App\Repository\Security\UserRepository;
+use App\Repository\Vacation\EmployeeVacationLimitRepository;
+use App\Repository\Vacation\VacationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -25,21 +25,20 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class EmployeeController extends AbstractController
 {
     public function __construct(
-        private EmployeeVacationLimitRepository $employeeVacationLimitRepository,
-        private EmployeeRepository $employeeRepository,
-        private UserRepository $userRepository,
-        private ApiTokenRepository $apiTokenRepository,
-        private VacationRepository $vacationRepository,
-        private EntityManagerInterface $entityManager,
-        private IriConverterInterface $iriConverter,
-        private Security $security
+        private readonly EmployeeVacationLimitRepository $employeeVacationLimitRepository,
+        private readonly EmployeeRepository $employeeRepository,
+        private readonly UserRepository $userRepository,
+        private readonly VacationRepository $vacationRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly IriConverterInterface $iriConverter,
+        private readonly Security $security
     )
     {
 
     }
     #[IsGranted('ROLE_ADMIN')]
     #[Route('api/employee/custom/{id}', methods: ['DELETE'])]
-    public function deleteEmployee($id)
+    public function deleteEmployee($id): Response
     {
         $employee = $this->employeeRepository->find($id) ;
 
@@ -81,7 +80,7 @@ class EmployeeController extends AbstractController
     }
     #[IsGranted('ROLE_ADMIN')]
     #[Route('api/user/custom/{id}', methods: ['DELETE'])]
-    public function deleteUser(int $id, ApiTokenRepository $apiTokenRepository)
+    public function deleteUser(int $id, ApiTokenRepository $apiTokenRepository): Response
     {
 
         $user = $this->userRepository->find($id);
@@ -149,7 +148,7 @@ class EmployeeController extends AbstractController
                 continue;
             }
 
-            if($department instanceof Department)
+            if($department instanceof Department && $employee instanceof Employee)
             {
                 $employeeExtendedAccessesRepository->addNew($employee, $department);
             }

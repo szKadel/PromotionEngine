@@ -7,7 +7,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\Entity\EmployeeExtendedAccesses;
-use App\Repository\DepartmentRepository;
+use App\Repository\Company\DepartmentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -89,7 +89,6 @@ class Department
     public function removeEmployee(Employee $employee): static
     {
         if ($this->employees->removeElement($employee)) {
-            // set the owning side to null (unless already changed)
             if ($employee->getDepartment() === $this) {
                 $employee->setDepartment(null);
             }
@@ -131,7 +130,6 @@ class Department
     public function removeEmployeeExtendedAccess(EmployeeExtendedAccesses $employeeExtendedAccess): static
     {
         if ($this->employeeExtendedAccesses->removeElement($employeeExtendedAccess)) {
-            // set the owning side to null (unless already changed)
             if ($employeeExtendedAccess->getDepartment() === $this) {
                 $employeeExtendedAccess->setDepartment(null);
             }

@@ -3,7 +3,7 @@
 namespace App\Factory;
 
 use App\Entity\Vacation\VacationTypes;
-use App\Repository\VacationTypesRepository;
+use App\Repository\Vacation\VacationTypesRepository;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;

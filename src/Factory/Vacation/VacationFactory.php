@@ -3,12 +3,11 @@
 namespace App\Factory\Vacation;
 
 use App\Entity\Vacation\Vacation;
-use App\Entity\Vacation\VacationLimits;
 use App\Factory\Company\EmployeeFactory;
 use App\Factory\VacationTypesFactory;
 use App\Repository\Vacation\Settings\BankHolidayRepository;
-use App\Repository\VacationRepository;
-use App\Service\WorkingDaysCounterService;
+use App\Repository\Vacation\VacationRepository;
+use App\Service\Vacation\WorkingDaysCounterService;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
@@ -40,7 +39,7 @@ final class VacationFactory extends ModelFactory
      * @todo inject services if required
      */
     public function __construct(
-        private BankHolidayRepository $bankHolidayRepository
+        private readonly BankHolidayRepository $bankHolidayRepository
     )
     {
         parent::__construct();
