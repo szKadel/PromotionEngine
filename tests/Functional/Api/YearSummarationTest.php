@@ -18,9 +18,6 @@ class YearSummarationTest extends KernelTestCase
     {
         $vacationType = VacationTypesFactory::createOne(["name"=>"Urlop Wypoczynkowy"]);
 
-        $department = DepartmentFactory::createOne();
-        $employee = EmployeeFactory::createOne(['department'=>$department]);
-
         $this->browser()->get('/Vacations/YearSummation/2023')->assertStatus(200);
     }
 }

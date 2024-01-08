@@ -119,6 +119,39 @@ class VacationRepository extends ServiceEntityRepository
         return $days;
     }
 
+    public function findAllVacationForCompany(string $dateFrom, string $dateTo, string $department = null) :mixed
+    {
+        $statusAccepted = $this->vacationStatusRepository->findByName("Potwierdzony");
+        $statusPlaned = $this->vacationStatusRepository->findByName("Zaplanowany");
+        $statusWaiting = $this->vacationStatusRepository->findByName("Oczekujący");
+
+        $query = $this->createQueryBuilder('v')
+            ->leftJoin('v.employee', "e")
+            ->andWhere('(v.dateTo BETWEEN :dateFrom AND :dateTo OR
+             v.dateFrom BETWEEN :dateFrom AND :dateTo OR 
+             :dateFrom BETWEEN v.dateFrom AND v.dateTo OR 
+             :dateTo BETWEEN v.dateFrom AND v.dateTo OR 
+             v.dateFrom BETWEEN :dateFrom AND :dateFrom OR 
+             v.dateFrom BETWEEN :dateFrom AND :dateTo OR
+             :dateFrom = v.dateTo OR
+              v.dateTo = :dateFrom OR
+              v.dateFrom = :dateTo)')
+            ->andWhere('(v.status = :accepted OR v.status = :planed OR v.status = :waiting)')
+            ->setParameter('dateFrom', $dateFrom)
+            ->setParameter('accepted', $statusAccepted)
+            ->setParameter('planed', $statusPlaned)
+            ->setParameter('waiting', $statusWaiting)
+            ->setParameter('dateTo', $dateTo);
+
+        if($department != null)
+        {
+            $query->andWhere('e.department = :department');
+            $query->setParameter('department', $department);
+        }
+
+        return $query ->getQuery() ->getResult();
+    }
+
     public function findVacationUsedByUserArray(Employee $employee, VacationTypes $vacationTypes):array | null
     {
         $statusAccepted = $this->vacationStatusRepository->findByName("Potwierdzony");
