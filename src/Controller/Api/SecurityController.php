@@ -26,11 +26,12 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class SecurityController extends AbstractController
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly CounterVacationDays $counterVacationDays)
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly CounterVacationDays $counterVacationDays)
     {
 
     }
-
 
     #[Route('/login', name: 'app_login', methods: ['POST'])]
     public function login(ApiTokenController $apiTokenController, #[CurrentUser] User $user = null) :Response

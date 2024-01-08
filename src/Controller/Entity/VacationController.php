@@ -63,15 +63,19 @@ class VacationController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function getAllVacationAndSortThem(
         VacationRepository $vacationRepository,
-        Request $request
+        Request $request,
+        Security $security,
+        #[CurrentUser] User $user = null
     ): JsonResponse
     {
-
-        $resultDb = $vacationRepository->findAllVacationForCompany(
-            $request->query->get('dateFrom') ?? throw new BadRequestException("dateFrom is required"),
-            $request->query->get('dateTo') ?? throw new BadRequestException("dateTo is required"),
-            $request->query->get("department_id") ?? null
-        );
+        if(!($security->isGranted(["R0LE_ADMIN"]) || $security->isGranted(["R0LE_KADR"]))) {
+            $department_id = $user->getEmployee()->getDepartment()->getId();
+        }
+            $resultDb = $vacationRepository->findAllVacationForCompany(
+                $request->query->get('dateFrom') ?? throw new BadRequestException("dateFrom is required"),
+                $request->query->get('dateTo') ?? throw new BadRequestException("dateTo is required"),
+                $department_id ?? null
+            );
 
         foreach ($resultDb as $vacation) {
             if ($vacation instanceof Vacation) {
