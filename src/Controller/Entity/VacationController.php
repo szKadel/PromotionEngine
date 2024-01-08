@@ -69,7 +69,7 @@ class VacationController extends AbstractController
     ): JsonResponse
     {
 
-        if(!$this->security->isGranted('ROLE_ADMIN')){
+        if($this->security->isGranted('ROLE_ADMIN')){
             $department_id = $user->getEmployee()->getDepartment()->getId();
         }
 
