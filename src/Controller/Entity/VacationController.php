@@ -69,6 +69,10 @@ class VacationController extends AbstractController
     ): JsonResponse
     {
 
+        if(!$this->security->isGranted('ROLE_ADMIN')){
+            $department_id = $user->getEmployee()->getDepartment()->getId();
+        }
+
             $resultDb = $vacationRepository->findAllVacationForCompany(
                 $request->query->get('dateFrom') ?? throw new BadRequestException("dateFrom is required"),
                 $request->query->get('dateTo') ?? throw new BadRequestException("dateTo is required"),
