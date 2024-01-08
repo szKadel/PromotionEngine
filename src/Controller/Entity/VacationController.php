@@ -68,11 +68,7 @@ class VacationController extends AbstractController
         #[CurrentUser] User $user = null
     ): JsonResponse
     {
-        if($security->isGranted(["R0LE_ADMIN"])) {
-            $department_id = null;
-        }else{
-            $department_id = $user->getEmployee()->getDepartment()->getId();
-        }
+
             $resultDb = $vacationRepository->findAllVacationForCompany(
                 $request->query->get('dateFrom') ?? throw new BadRequestException("dateFrom is required"),
                 $request->query->get('dateTo') ?? throw new BadRequestException("dateTo is required"),
